@@ -2,7 +2,12 @@ import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-export default function RootLayout({ children }) {
+// This tells TypeScript that 'children' is a React node
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className="antialiased bg-white text-gray-900">
