@@ -1,9 +1,34 @@
+import Image from "next/image";
+
 export function Header() {
   return (
     <header className="w-full h-20 flex items-center justify-between px-6 md:px-20 border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-      <div className="text-xl font-bold tracking-tight text-gray-900">
-        WA <span className="text-blue-600">AI</span> DIGITAL
-      </div>
+      <Image
+        src="/android-chrome-192x192.png"
+        alt="WA AI Digital Logo"
+        width={40}
+        height={40}
+      />
+      <span className="font-bold text-xl text-blue-900">WA AI Digital</span>
+
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/apple-touch-icon.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="/favicon-32x32.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href="/favicon-16x16.png"
+      />
+      <link rel="manifest" href="/site.webmanifest" />
 
       <nav className="hidden lg:flex gap-8 text-sm font-medium text-gray-600">
         <a href="#services" className="hover:text-blue-600 transition-colors">
