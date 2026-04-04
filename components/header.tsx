@@ -6,8 +6,8 @@ export function Header() {
       <Image
         src="/android-chrome-192x192.png"
         alt="WA AI Digital Logo"
-        width={40}
-        height={40}
+        width={30}
+        height={30}
       />
       <span className="font-bold text-xl text-blue-900">WA AI Digital</span>
 
