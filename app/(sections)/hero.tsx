@@ -99,7 +99,7 @@ export default function Hero() {
 
               {/* Caption Overlay */}
               <div className="absolute bottom-3 left-3 right-3 lg:bottom-6 lg:left-6 lg:right-6">
-                <div className="bg-white/95 backdrop-blur-md p-3 lg:p-4 rounded-xl lg:rounded-2xl border border-white/20 shadow-lg">
+                <div className="bg-white/80 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl border border-white/40 shadow-2xl">
                   <p className="text-[8px] lg:text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5 lg:mb-1">
                     System Feature 0{previews[index].id}
                   </p>
@@ -111,14 +111,16 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Floating Success Indicator - hidden on very small mobile to reduce clutter, visible from 'sm' up */}
+          {/* Floating Success Indicator - Now visible on all screens */}
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-4 -left-2 lg:-bottom-6 lg:-left-6 bg-emerald-500 text-white px-4 py-2 lg:px-5 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl flex items-center gap-2 lg:gap-3 z-20 hidden sm:flex"
+            className="absolute -bottom-2 -left-2 lg:-bottom-6 lg:-left-6 bg-emerald-500 text-white px-3 py-2 lg:px-5 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl flex items-center gap-2 lg:gap-3 z-30 flex"
           >
             <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-white rounded-full animate-pulse" />
-            <span className="text-xs lg:text-sm font-bold">System Live</span>
+            <span className="text-[10px] lg:text-sm font-bold uppercase tracking-widest">
+              System Live
+            </span>
           </motion.div>
         </div>
       </div>
