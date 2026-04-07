@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Header } from "@/components/header";
+import { Header } from "@/components/header"; // Corrected import
 import { Footer } from "@/components/footer";
 
-// This defines the <head>, <title>, and <meta> tags for the entire site
 export const metadata: Metadata = {
-  title: "WA AI Digital | Websites, Ordering Systems & Growth",
+  title: "WA AI Digital | Custom Websites & Ordering Systems",
   description:
-    "Bespoke digital solutions for WA businesses. From custom ordering systems to strategic marketing and digital growth & maintenance.",
+    "Innovating the West with bespoke digital solutions. From lightning-fast ordering systems to AI-driven business growth and maintenance.",
   keywords: [
     "Web Development WA",
     "AI Digital Perth",
-    "Ordering Systems",
+    "Ordering Systems Rockingham",
     "Digital Growth",
     "Website Maintenance",
   ],
@@ -20,6 +19,13 @@ export const metadata: Metadata = {
     description: "Innovating the West with Custom Web & AI Systems.",
     url: "https://waai.au",
     siteName: "WA AI Digital",
+    images: [
+      {
+        url: "/og-image.png", // Recommended: add a preview image in public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
     locale: "en_AU",
     type: "website",
   },
@@ -36,10 +42,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="antialiased bg-white text-gray-900 flex flex-col min-h-screen">
+      {/* Note: 'bg-slate-50' acts as a fallback for 'bg-horizon-shell'
+          to ensure the background isn't pure white before the glows load.
+      */}
+      <body className="relative min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-sky-100 selection:text-sky-900">
+        {/* --- Persistent Digital Horizon Background --- */}
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          {/* Top Left: Ocean Blue Glow */}
+          <div className="absolute -top-[10%] -left-[10%] w-[70%] h-[70%] bg-sky-100/50 rounded-full blur-[120px]" />
+
+          {/* Middle Right: Sandy Gold Glow (matches image_173b22.png) */}
+          <div className="absolute top-[30%] -right-[10%] w-[60%] h-[60%] bg-amber-50/70 rounded-full blur-[100px]" />
+
+          {/* Bottom Left: Pale Sky Glow */}
+          <div className="absolute -bottom-[10%] left-[10%] w-[50%] h-[50%] bg-sky-50/60 rounded-full blur-[120px]" />
+        </div>
+
+        {/* Replaced <Navbar /> with <Header /> */}
         <Header />
-        {/* min-h-screen on body and flex-1 on main ensures the footer stays at the bottom */}
-        <main className="flex-1">{children}</main>
+
+        {/* Added pt-24 to ensure content doesn't start under the fixed floating header */}
+        <main className="pt-24 md:pt-32">{children}</main>
+
         <Footer />
       </body>
     </html>

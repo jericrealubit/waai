@@ -1,43 +1,40 @@
+import { FeatureCard } from "@/components/ui/feature-card";
+import { Monitor, Zap, LineChart } from "lucide-react"; // Example icons
+
 const services = [
   {
-    title: "Restaurant Systems",
-    desc: "Fast, mobile-first digital menus with instant ordering and payments.",
-    icon: "🍔",
+    title: "High-Speed Ordering",
+    description:
+      "Lightning-fast digital menus designed for high-volume WA restaurants.",
+    icon: <Zap size={24} />,
   },
   {
-    title: "Online Ordering",
-    desc: "Pickup, delivery, or table service with reliable, real-time flows.",
-    icon: "📲",
+    title: "Bespoke Web Design",
+    description:
+      "Custom-built React and Next.js sites that convert visitors into customers.",
+    icon: <Monitor size={24} />,
   },
   {
-    title: "Storefronts",
-    desc: "Product catalogs and catalogs designed for high conversion.",
-    icon: "🛍️",
-  },
-  {
-    title: "Growth & Care",
-    desc: "Strategic marketing, SEO, and ongoing technical maintenance.",
-    icon: "📈",
+    title: "AI Business Insights",
+    description:
+      "Advanced data visualization to help you understand your local market trends.",
+    icon: <LineChart size={24} />,
   },
 ];
 
-export default function Services() {
+export default function ServicesSection() {
   return (
-    <section id="services" className="py-24 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-6 md:px-20">
-        <h2 className="text-center text-3xl font-bold mb-16">What We Build</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((s) => (
-            <div
-              key={s.title}
-              className="bg-white p-8 rounded-2xl border border-slate-200 hover:border-blue-400 transition-colors group"
-            >
-              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">
-                {s.icon}
-              </div>
-              <h3 className="text-lg font-bold mb-2">{s.title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">{s.desc}</p>
-            </div>
+    <section className="py-24 px-6 md:px-20">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8">
+          {services.map((service, i) => (
+            <FeatureCard
+              key={i}
+              index={i}
+              title={service.title}
+              description={service.description}
+              icon={service.icon}
+            />
           ))}
         </div>
       </div>
