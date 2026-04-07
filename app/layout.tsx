@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/header"; // Corrected import
 import { Footer } from "@/components/footer";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export const metadata: Metadata = {
   title: "WA AI Digital | Custom Websites & Ordering Systems",
@@ -63,6 +64,8 @@ export default function RootLayout({
 
         {/* Added pt-24 to ensure content doesn't start under the fixed floating header */}
         <main className="pt-24 md:pt-32">{children}</main>
+
+        <ScrollToTop />
 
         <Footer />
       </body>
