@@ -46,7 +46,10 @@ export default function RootLayout({
       {/* Note: 'bg-slate-50' acts as a fallback for 'bg-horizon-shell'
           to ensure the background isn't pure white before the glows load.
       */}
-      <body className="relative min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-sky-100 selection:text-sky-900">
+      <body
+        className="relative min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-sky-100 selection:text-sky-900"
+        suppressHydrationWarning
+      >
         {/* --- Persistent Digital Horizon Background --- */}
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
           {/* Top Left: Ocean Blue Glow */}
