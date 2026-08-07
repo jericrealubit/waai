@@ -127,3 +127,28 @@
     @apply font-sans;
   }
 }
+
+@layer components {
+  /* The glass surface used across cards, the header and the scroll-to-top
+     button. This was referenced by portfolio.tsx and pricing.tsx long before
+     it existed, so those sections rendered unstyled; the values here match
+     what components/ui/feature-card.tsx applies inline. */
+  .glass-card {
+    @apply rounded-[2.5rem] border border-white/40 bg-white/60 backdrop-blur-xl
+      shadow-[0_32px_64px_-16px_rgba(0,0,0,0.05)]
+      transition-all duration-500;
+  }
+
+  /* Hoverable variant — lifts and picks up a sky glow. Opt in, because not
+     every glass surface is a link. */
+  .glass-card-interactive {
+    @apply hover:-translate-y-2
+      hover:shadow-[0_48px_80px_-20px_rgba(14,165,233,0.15)];
+  }
+
+  /* The small uppercase eyebrow above a section heading. */
+  .section-label {
+    @apply inline-block rounded-full bg-sky-50 px-4 py-1.5
+      text-xs font-bold uppercase tracking-wider text-sky-600;
+  }
+}
