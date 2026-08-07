@@ -38,14 +38,26 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
       className="group glass-card relative isolate flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_48px_80px_-20px_rgba(14,165,233,0.15)]"
     >
       <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
-        <Image
-          src={study.screenshot.src}
-          alt={study.screenshot.alt}
-          fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-        />
-        {study.gated && (
+        {study.screenshot ? (
+          <Image
+            src={study.screenshot.src}
+            alt={study.screenshot.alt}
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-slate-100 to-sky-50 px-6 text-center">
+            <Lock className="h-7 w-7 text-slate-400" />
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Login-protected admin
+            </p>
+            <p className="max-w-[15rem] text-xs leading-relaxed text-slate-400">
+              No screenshot — the public URL only ever shows a sign-in button.
+            </p>
+          </div>
+        )}
+        {study.gated && study.screenshot && (
           <span className="absolute right-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
             <Lock className="h-3 w-3" />
             Internal tool

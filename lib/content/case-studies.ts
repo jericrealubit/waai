@@ -36,11 +36,17 @@ export interface CaseStudy {
   liveLabel: string;
   /** True when the live URL lands on a login wall rather than the product. */
   gated: boolean;
+  /**
+   * Null when there is no honest screenshot to show — i.e. the live URL only
+   * ever renders a login screen, so a capture would show nothing about the
+   * product. The card and detail page render a labelled fallback instead of
+   * inventing a mockup.
+   */
   screenshot: {
     src: string;
     alt: string;
     caption: string;
-  };
+  } | null;
   /** One sentence for the card. */
   outcome: string;
   /** Lead paragraph on the detail page. */
@@ -195,11 +201,13 @@ export const CASE_STUDIES: CaseStudy[] = [
     liveUrl: "http://waai.au/rubbergem",
     repoUrl: "https://github.com/jericrealubit/rubbergem",
     liveLabel: "waai.au/rubbergem",
-    gated: true,
+    // The entry form itself is publicly reachable; the live log, history and
+    // audit sheet sit behind an operator login.
+    gated: false,
     screenshot: {
       src: "/work/rubbergem.png",
-      alt: "Rubbergem single-page landscape production audit sheet showing logged cycles with total and faulty mat counts",
-      caption: "The one-page landscape production audit sheet",
+      alt: "Rubbergem press entry form showing shift information fields, the four-table mat type setup grid, and tap to start and tap to end cycle timing controls",
+      caption: "The press entry terminal — shift setup and cycle timing",
     },
     outcome:
       "Press cycles timed by tapping a tablet; the shift's audit sheet and fault totals generate themselves.",
@@ -216,7 +224,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
     highlights: [
       "The cycle timer re-syncs on visibilitychange, so a press cycle keeps timing correctly even when the operator's phone locks mid-cycle — the failure mode that would otherwise make the whole tool untrustworthy.",
-      "Both presses and all four mat types (DF, DD, CF, CD, SG) are first-class in the data model rather than free-text fields.",
+      "Both presses, all four tables and every mat type (DF, DD, CF, CD, SG) are first-class in the data model rather than free-text fields.",
       "The printable sheet is deliberately paper-shaped: the floor still wants a physical copy, and this one arrives already totalled.",
     ],
     stack: [
@@ -284,11 +292,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     repoUrl: "https://github.com/jericrealubit/ecommerce-admin",
     liveLabel: "nextjs-ecommerce-admin-jeric.vercel.app",
     gated: true,
-    screenshot: {
-      src: "/work/ecommerce-admin.png",
-      alt: "Ecommerce admin product edit form showing the sortable image grid and category property fields",
-      caption: "Product edit form with the drag-to-reorder image grid",
-    },
+    // The deployed admin renders nothing but a "Login with Google" button, so
+    // there is no screenshot that would tell a visitor anything true about the
+    // product. Capturing the real dashboard needs MONGODB_URI, Google OAuth
+    // credentials and AWS S3 keys to run it locally against seed data.
+    screenshot: null,
     outcome:
       "The panel the shop owner lives in: product CRUD, nested categories, drag-to-reorder galleries, and the orders that came through the storefront.",
     summary:

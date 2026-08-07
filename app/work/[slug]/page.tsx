@@ -35,7 +35,9 @@ export async function generateMetadata({
       siteName: "WA AI Digital",
       locale: "en_AU",
       type: "article",
-      images: [{ url: study.screenshot.src, width: 1440, height: 810 }],
+      ...(study.screenshot && {
+        images: [{ url: study.screenshot.src, width: 1440, height: 810 }],
+      }),
     },
   };
 }
@@ -110,23 +112,25 @@ export default async function CaseStudyPage({
         </div>
       </Section>
 
-      <Section className="py-8">
-        <figure>
-          <div className="glass-card relative aspect-video w-full overflow-hidden">
-            <Image
-              src={study.screenshot.src}
-              alt={study.screenshot.alt}
-              fill
-              sizes="(min-width: 1280px) 1280px, 100vw"
-              className="object-cover object-top"
-              priority
-            />
-          </div>
-          <figcaption className="mt-4 text-center text-sm text-slate-500">
-            {study.screenshot.caption}
-          </figcaption>
-        </figure>
-      </Section>
+      {study.screenshot && (
+        <Section className="py-8">
+          <figure>
+            <div className="glass-card relative aspect-video w-full overflow-hidden">
+              <Image
+                src={study.screenshot.src}
+                alt={study.screenshot.alt}
+                fill
+                sizes="(min-width: 1280px) 1280px, 100vw"
+                className="object-cover object-top"
+                priority
+              />
+            </div>
+            <figcaption className="mt-4 text-center text-sm text-slate-500">
+              {study.screenshot.caption}
+            </figcaption>
+          </figure>
+        </Section>
+      )}
 
       <Section className="py-12">
         <div className="grid gap-12 lg:grid-cols-3">
