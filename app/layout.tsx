@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://waai.au"),
   title: "WA AI Digital | Custom Websites & Ordering Systems",
   description:
     "Innovating the West with bespoke digital solutions. From lightning-fast ordering systems to AI-driven business growth and maintenance.",

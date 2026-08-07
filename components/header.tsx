@@ -2,24 +2,27 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Root-relative so these resolve from /services/* and /work/* too, not just
+  // from the home page.
   const navLinks = [
-    { href: "#services", label: "Websites" },
-    { href: "#growth", label: "Growth & Maintenance" },
-    { href: "#portfolio", label: "Our Work" },
-    { href: "#pricing", label: "Pricing" },
-    { href: "#contact", label: "Contact" },
+    { href: "/services", label: "Services" },
+    { href: "/work", label: "Our Work" },
+    { href: "/#process", label: "Process" },
+    { href: "/#pricing", label: "Pricing" },
+    { href: "/#contact", label: "Contact" },
   ];
 
   return (
     <header className="fixed top-0 w-full z-50 px-6 py-4 md:px-20">
       <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/70 backdrop-blur-xl border border-white/40 px-6 py-3 md:px-8 rounded-[2rem] shadow-[0_8px_32px_-6px_rgba(0,0,0,0.04)]">
         {/* Brand Section */}
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none rounded-xl">
           <Image
             src="/android-chrome-192x192.png"
             alt="WA AI Digital Logo"
@@ -29,26 +32,29 @@ export function Header() {
           <span className="font-black text-xl tracking-tighter text-slate-900">
             WA AI <span className="text-sky-600">Digital</span>
           </span>
-        </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex gap-8 text-[13px] font-bold uppercase tracking-wider text-slate-500">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
-              className="hover:text-sky-600 transition-colors"
+              className="hover:text-sky-600 transition-colors focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none rounded"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         {/* Action Section */}
         <div className="flex items-center gap-4">
-          <button className="hidden md:block bg-slate-900 hover:bg-sky-600 text-white px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-slate-200 hover:shadow-sky-100 transform hover:-translate-y-0.5">
+          <Link
+            href="/#contact"
+            className="hidden md:block bg-slate-900 hover:bg-sky-600 text-white px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-slate-200 hover:shadow-sky-100 transform hover:-translate-y-0.5 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+          >
             Start Project
-          </button>
+          </Link>
 
           {/* Burger Menu Button */}
           <button
@@ -87,18 +93,22 @@ export function Header() {
             className="absolute top-24 left-6 right-6 p-6 bg-white/90 backdrop-blur-2xl border border-white/40 rounded-[2rem] shadow-2xl lg:hidden flex flex-col gap-4 text-center"
           >
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
                 className="text-lg font-bold text-slate-900 py-2 hover:text-sky-600 transition-colors border-b border-slate-100 last:border-0"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
-            <button className="mt-2 bg-sky-600 text-white py-4 rounded-2xl font-bold">
+            <Link
+              href="/#contact"
+              onClick={() => setIsOpen(false)}
+              className="mt-2 bg-sky-600 text-white py-4 rounded-2xl font-bold text-center"
+            >
               Start Project
-            </button>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>
