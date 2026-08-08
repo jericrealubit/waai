@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header"; // Corrected import
 import { Footer } from "@/components/footer";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://waai.au"),
   title: "WA AI Digital | Custom Websites & Ordering Systems",
   description:
     "Innovating the West with bespoke digital solutions. From lightning-fast ordering systems to AI-driven business growth and maintenance.",
@@ -42,7 +54,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html
+      lang="en"
+      className={`scroll-smooth ${geistSans.variable} ${geistMono.variable}`}
+    >
       {/* Note: 'bg-slate-50' acts as a fallback for 'bg-horizon-shell'
           to ensure the background isn't pure white before the glows load.
       */}
