@@ -15,6 +15,11 @@
  *  - The ecommerce storefront has no user accounts despite its README saying so.
  *  - Stripe test-vs-live mode is unverified; describe the integration, never
  *    claim revenue figures.
+ *  - The ecommerce storefront and admin panel are ONE case study (`ecommerce-
+ *    platform`), not two — they're presented as a single combined build in
+ *    "Our work" via `secondaryLink`, since that's how the service is sold.
+ *    The admin panel is still gated (its live URL only renders a Google
+ *    sign-in button); the primary screenshot shown is the storefront's.
  *
  * `liveUrl` and `repoUrl` are the canonical copies of these URLs. They are
  * declared exactly once, here, so a card and its detail page cannot drift.
@@ -36,6 +41,19 @@ export interface CaseStudy {
   liveLabel: string;
   /** True when the live URL lands on a login wall rather than the product. */
   gated: boolean;
+  /**
+   * A second build linked from the same case study — e.g. the admin panel
+   * behind a storefront. Rendered as its own labelled live+repo link pair,
+   * on both the card and the detail page. Most case studies are a single
+   * build and omit this.
+   */
+  secondaryLink?: {
+    label: string;
+    liveUrl: string;
+    repoUrl: string;
+    liveLabel: string;
+    gated: boolean;
+  };
   /**
    * Null when there is no honest screenshot to show — i.e. the live URL only
    * ever renders a login screen, so a capture would show nothing about the
@@ -239,91 +257,64 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
   },
   {
-    slug: "ecommerce-storefront",
-    name: "Ecommerce Storefront",
+    slug: "ecommerce-platform",
+    name: "Ecommerce Storefront & Admin",
     client: "Reference build",
-    sector: "Retail storefront",
+    sector: "Retail — storefront & operations",
     service: "ecommerce",
     liveUrl: "https://nextjs-ecommerce-front.netlify.app/",
     repoUrl: "https://github.com/jericrealubit/ecommerce-front",
     liveLabel: "nextjs-ecommerce-front.netlify.app",
     gated: false,
+    secondaryLink: {
+      label: "Admin panel",
+      liveUrl: "https://nextjs-ecommerce-admin-jeric.vercel.app",
+      repoUrl: "https://github.com/jericrealubit/ecommerce-admin",
+      liveLabel: "nextjs-ecommerce-admin-jeric.vercel.app",
+      // The deployed admin renders nothing but a "Login with Google" button —
+      // there is no honest screenshot of it to show, so the card's screenshot
+      // is the storefront's, and this link is labelled as gated instead.
+      gated: true,
+    },
     screenshot: {
       src: "/work/ecommerce-storefront.webp",
       alt: "Ecommerce storefront cart page listing two products with price, quantity steppers, subtotals and a running total",
       caption: "Cart page — line items, quantity steppers and running total",
     },
     outcome:
-      "Guest checkout through Stripe, with a signature-verified webhook confirming payment before an order is marked paid.",
+      "Two apps, one database — a product added in the admin panel is live on the shop immediately, and an order placed on the shop appears in the admin's orders table immediately.",
     summary:
-      "The customer-facing half of a two-part ecommerce build: catalogue, cart and checkout, reading from the same database the admin panel writes to.",
+      "A two-part ecommerce build: the storefront customers buy from (catalogue, cart, Stripe checkout) and the admin panel the owner actually lives in (product CRUD, nested categories, orders) — both reading and writing the same MongoDB and S3 bucket.",
     problem:
-      "A storefront is only half a shop. Without an admin side sharing its data, every product change becomes a developer task.",
+      "Ecommerce is two products, not one. A storefront with no admin side sharing its data turns every price change into a developer task, and an admin panel that doesn't share the storefront's exact schema drifts out of sync the moment either side changes.",
     approach: [
-      "Built the catalogue against a shared MongoDB — a featured product and new arrivals on the homepage, a full product grid, and detail pages with an image gallery.",
-      "Held the cart in React Context with quantity steppers and a running total, surfaced as a live count in the header nav.",
-      "Took checkout through a Stripe Checkout session created server-side, so card details never touch the application.",
-      "Verified the Stripe webhook signature before flipping an order to paid — payment confirmation comes from Stripe, never from the browser redirect.",
-      "Served product imagery from the same S3 bucket the admin panel uploads to, so there is one canonical copy of every product photo.",
+      "Storefront: built the catalogue against a shared MongoDB — a featured product and new arrivals on the homepage, a full product grid, and detail pages with an image gallery.",
+      "Storefront: held the cart in React Context with quantity steppers and a running total, surfaced as a live count in the header nav.",
+      "Storefront: took checkout through a Stripe Checkout session created server-side, then verified the webhook signature before flipping an order to paid — payment confirmation comes from Stripe, never from the browser redirect.",
+      "Admin: put the whole panel behind Google OAuth via NextAuth, with sessions persisted in the same MongoDB.",
+      "Admin: built full product CRUD with dedicated new, edit and delete routes, and nested categories with per-category custom properties.",
+      "Admin: handled multi-image upload straight to AWS S3, with drag-and-drop reordering that sets the storefront's gallery order.",
+      "Shared: defined byte-identical Product schemas on both sides against one MongoDB and one S3 bucket, so there is exactly one canonical copy of every product and its photos.",
     ],
     highlights: [
+      "Admin and storefront share one schema and one database — a product added in the admin panel appears on the shop immediately, with no sync step.",
+      "The paid flag is set by a signed server-to-server Stripe webhook rather than a client redirect, which is the difference between a real payment integration and a demo.",
       "Checkout is guest-only by design — no account required to buy, which removes the most common drop-off point in a small catalogue.",
-      "The paid flag is set by a signed server-to-server webhook rather than a client redirect, which is the difference between a real payment integration and a demo.",
-      "Runs on live catalogue data rather than seed fixtures.",
+      "Sortable image thumbnails in the admin control gallery order on the storefront, so merchandising is a drag rather than a data edit.",
+      "SweetAlert2 confirmation on every destructive action in the admin — deleting a product is a two-step operation.",
     ],
     stack: [
       "Next.js 13 (Pages Router)",
       "React 18",
       "styled-components",
+      "Tailwind 3",
       "MongoDB",
       "Mongoose",
       "Stripe Checkout",
-      "AWS S3",
-      "Netlify",
-    ],
-  },
-  {
-    slug: "ecommerce-admin",
-    name: "Ecommerce Admin Panel",
-    client: "Reference build",
-    sector: "Retail operations",
-    service: "ecommerce",
-    liveUrl: "https://nextjs-ecommerce-admin-jeric.vercel.app",
-    repoUrl: "https://github.com/jericrealubit/ecommerce-admin",
-    liveLabel: "nextjs-ecommerce-admin-jeric.vercel.app",
-    gated: true,
-    // The deployed admin renders nothing but a "Login with Google" button, so
-    // there is no screenshot that would tell a visitor anything true about the
-    // product. Capturing the real dashboard needs MONGODB_URI, Google OAuth
-    // credentials and AWS S3 keys to run it locally against seed data.
-    screenshot: null,
-    outcome:
-      "The panel the shop owner lives in: product CRUD, nested categories, drag-to-reorder galleries, and the orders that came through the storefront.",
-    summary:
-      "The operator-facing half of the same ecommerce build — it authors the catalogue the storefront reads, and reads back the orders the storefront writes.",
-    problem:
-      "Catalogue management is the part of ecommerce that gets skipped, and then every price change, new product and reordered photo becomes a support ticket.",
-    approach: [
-      "Put the whole panel behind Google OAuth via NextAuth, with sessions persisted in the shared MongoDB.",
-      "Built full product CRUD with dedicated new, edit and delete routes.",
-      "Made categories nested, with a parent selector and per-category custom properties, so a product's fields follow from its category.",
-      "Handled multi-image upload straight to AWS S3, with drag-and-drop reordering that sets the storefront's gallery order.",
-      "Surfaced orders as a table — date, paid status, recipient, products — so the owner can see what sold without opening the database.",
-    ],
-    highlights: [
-      "Admin and storefront define byte-identical Product schemas against one MongoDB and one S3 bucket, which is what makes a product added here appear on the shop immediately.",
-      "SweetAlert2 confirmation on every destructive action — deleting a product is a two-step operation.",
-      "Sortable image thumbnails control gallery order on the storefront, so merchandising is a drag rather than a data edit.",
-    ],
-    stack: [
-      "Next.js 13",
-      "React 18",
-      "Tailwind 3",
       "NextAuth (Google)",
-      "MongoDB",
-      "Mongoose",
       "AWS S3",
       "react-sortablejs",
+      "Netlify",
       "Vercel",
     ],
   },

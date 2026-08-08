@@ -120,6 +120,35 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </span>
         </div>
+
+        {study.secondaryLink && (
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-slate-100 pt-3">
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              {study.secondaryLink.gated && <Lock className="h-3 w-3" />}
+              {study.secondaryLink.label}
+            </span>
+            <a
+              href={study.secondaryLink.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              Live site
+              <span className="sr-only"> — {study.secondaryLink.liveLabel}</span>
+            </a>
+            <a
+              href={study.secondaryLink.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+            >
+              <Github className="h-3.5 w-3.5" />
+              GitHub
+              <span className="sr-only"> repository for {study.secondaryLink.label}</span>
+            </a>
+          </div>
+        )}
       </div>
     </motion.article>
   );

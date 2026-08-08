@@ -2,11 +2,25 @@
  * The four service lines, and the single place their copy and pricing live.
  *
  * NOTE ON PRICING: figures were benchmarked against active Perth providers
- * (Aug 2026) — see waai-redesign notes. Tradie Websites is deliberately
- * priced below every comparable local agency ($499–$899 vs. $1,295+ for a
- * template build, $3,000+ for a custom one) as an entry wedge, backed by a
- * $50/yr hosting+domain+maintenance bundle that undercuts the $120–$600/yr
- * hosting-alone cost competitors charge separately.
+ * (Aug 2026) — see waai-redesign notes. All four lines are priced below
+ * their nearest comparable:
+ *   - Tradie Websites: $499–$899 vs. $1,295+ for a template build,
+ *     $3,000+ for a custom one. Backed by a $50/yr hosting+domain+
+ *     maintenance bundle that undercuts the $120–$600/yr competitors
+ *     charge for hosting alone.
+ *   - Restaurant & Food Cart Ordering: $699–$999 one-time vs. SaaS
+ *     ordering platforms charging $27–$99/week (i.e. $1,400–$5,150/yr)
+ *     forever, with no lock-in.
+ *   - Ecommerce Websites: $1,999–$4,999 vs. $1,500–$5,000 for a basic
+ *     pre-built Shopify setup — despite shipping a fully custom storefront
+ *     *and* admin panel, not just a Shopify theme.
+ *   - Manufacturing Log Automation: $1,499–$4,999 for a single-workflow
+ *     build vs. $15,000–$30,000+ from established Perth software firms
+ *     for the same scope; multi-workflow builds move to a custom quote.
+ *
+ * Every line also carries a flat $50/yr `yearlyCost` (hosting, domain and
+ * maintenance) — undercuts the $120–$600/yr competitors charge for hosting
+ * alone, let alone maintenance on top.
  */
 
 export type ServiceSlug =
@@ -89,8 +103,13 @@ export const SERVICES: Service[] = [
       "A menu people can actually order from — filterable, cart-based, with orders landing live on a kitchen dashboard.",
     intro:
       "A photo of your menu is not a menu. We build a filterable, searchable menu with item variants and dietary badges, a cart that survives a page refresh, and a staff dashboard where orders appear the moment they're placed — no phone, no third-party commission.",
-    fromPrice: 599,
+    fromPrice: 699,
+    toPrice: 999,
     priceNote: "for a menu, cart and live kitchen dashboard",
+    yearlyCost: {
+      amount: 50,
+      note: "per year for hosting, domain and maintenance",
+    },
     includes: [
       "Category filters, live search and dietary toggles",
       "Item variants and sizes with per-option pricing",
@@ -116,8 +135,14 @@ export const SERVICES: Service[] = [
       "Turn the clipboard on the factory floor into a tablet that times cycles, records defects, and prints the audit sheet for you.",
     intro:
       "Production floors run on grid checklists — cycle times, batch counts, defect positions. We rebuild that exact sheet as something an operator can tap through on a phone or tablet mid-shift, then have the totals, the audit sheet and the printable report generate themselves.",
-    fromPrice: null,
-    priceNote: "quoted per workflow — scope depends on your existing sheet",
+    fromPrice: 1499,
+    toPrice: 4999,
+    priceNote:
+      "for a single-workflow digital log — multi-workflow builds are quoted separately",
+    yearlyCost: {
+      amount: 50,
+      note: "per year for hosting, domain and maintenance",
+    },
     includes: [
       "Digital forms that mirror your existing paper grid, not a generic replacement",
       "Tap-to-start / tap-to-end cycle timing with automatic duration calculation",
@@ -143,8 +168,13 @@ export const SERVICES: Service[] = [
       "A storefront and the admin panel behind it — you manage the catalogue, customers check out, both halves share one database.",
     intro:
       "Ecommerce is two products, not one. We build the storefront your customers see and the admin panel you actually live in, sharing a single database and image store so a product you add is live on the shop immediately and an order placed there appears in your dashboard.",
-    fromPrice: 899,
+    fromPrice: 1999,
+    toPrice: 4999,
     priceNote: "for a storefront and admin panel on a shared catalogue",
+    yearlyCost: {
+      amount: 50,
+      note: "per year for hosting, domain and maintenance",
+    },
     includes: [
       "Product catalogue with categories, images and per-category attributes",
       "Cart with quantity controls and a running total",

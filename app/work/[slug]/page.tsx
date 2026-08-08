@@ -109,6 +109,44 @@ export default async function CaseStudyPage({
               </span>
             </p>
           )}
+
+          {study.secondaryLink && (
+            <div className="mt-8 border-t border-slate-100 pt-6">
+              <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                {study.secondaryLink.label}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href={study.secondaryLink.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-slate-200 transition-all hover:-translate-y-0.5 hover:bg-sky-600 hover:shadow-sky-100 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Visit {study.secondaryLink.liveLabel}
+                </a>
+                <a
+                  href={study.secondaryLink.repoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/70 px-6 py-3.5 text-sm font-bold text-slate-900 transition-all hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+                >
+                  <Github className="h-4 w-4" />
+                  View the repository
+                </a>
+              </div>
+              {study.secondaryLink.gated && (
+                <p className="mt-4 inline-flex items-start gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                  <Lock className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    The {study.secondaryLink.label.toLowerCase()} is an internal
+                    tool — the live link lands on a login screen. The repository
+                    is public.
+                  </span>
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </Section>
 
