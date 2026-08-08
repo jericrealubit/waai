@@ -76,6 +76,14 @@ export default async function ServiceDetailPage({
             </span>
             <span className="text-sm text-slate-500">{service.priceNote}</span>
           </div>
+          {service.yearlyCost && (
+            <p className="mt-2 text-sm font-bold text-sky-600">
+              + ${service.yearlyCost.amount}/year{" "}
+              <span className="font-medium text-slate-500">
+                {service.yearlyCost.note.replace(/^per year /, "")}
+              </span>
+            </p>
+          )}
         </div>
       </Section>
 

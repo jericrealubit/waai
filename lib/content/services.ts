@@ -1,9 +1,12 @@
 /**
  * The four service lines, and the single place their copy and pricing live.
  *
- * NOTE ON PRICING: the `fromPrice` figures are carried over from the previous
- * pricing section's tiers ($299 / $599 / $899 + $99/mo) and mapped onto the
- * service that tier actually described. They need a sign-off before launch.
+ * NOTE ON PRICING: figures were benchmarked against active Perth providers
+ * (Aug 2026) — see waai-redesign notes. Tradie Websites is deliberately
+ * priced below every comparable local agency ($499–$899 vs. $1,295+ for a
+ * template build, $3,000+ for a custom one) as an entry wedge, backed by a
+ * $50/yr hosting+domain+maintenance bundle that undercuts the $120–$600/yr
+ * hosting-alone cost competitors charge separately.
  */
 
 export type ServiceSlug =
@@ -28,7 +31,14 @@ export interface Service {
   intro: string;
   /** Displayed price. Null means "quoted per project". */
   fromPrice: number | null;
+  /** Optional upper bound — when set, displayed as a "$fromPrice–$toPrice" range instead of "From $fromPrice". */
+  toPrice?: number;
   priceNote: string;
+  /** Optional flat annual cost shown alongside the build price (e.g. hosting/domain/maintenance bundled in). */
+  yearlyCost?: {
+    amount: number;
+    note: string;
+  };
   /** What a build in this line covers. */
   includes: string[];
   /** Capabilities offered but not necessarily demonstrated in the case studies. */
@@ -47,8 +57,13 @@ export const SERVICES: Service[] = [
       "Lead-generating sites for trades — service pages, quote capture, and local search that puts you in front of nearby jobs.",
     intro:
       "Trade customers search by job and by suburb. We build a page per service so each one can rank on its own, wire up whichever conversion path suits your trade — a quote form or a tap-to-call number — and ship structured local SEO so you show up in the map pack.",
-    fromPrice: 899,
+    fromPrice: 499,
+    toPrice: 899,
     priceNote: "for a multi-page site with service pages and local SEO",
+    yearlyCost: {
+      amount: 50,
+      note: "per year for hosting, domain and maintenance",
+    },
     includes: [
       "A dedicated page per service so each ranks independently",
       "Quote form or tap-to-call, whichever converts for your trade",
@@ -156,9 +171,17 @@ export function getService(slug: string): Service | undefined {
   return SERVICES.find((service) => service.slug === slug);
 }
 
-/** Formats `fromPrice` for display, e.g. "From $899" or "Custom quote". */
+/**
+ * Formats the price for display, e.g. "From $899", "$499–$899" when a
+ * `toPrice` range is set, or "Custom quote" when `fromPrice` is null.
+ */
 export function formatFromPrice(service: Service): string {
-  return service.fromPrice === null
-    ? "Custom quote"
-    : `From $${service.fromPrice.toLocaleString("en-AU")}`;
+  if (service.fromPrice === null) return "Custom quote";
+
+  const from = service.fromPrice.toLocaleString("en-AU");
+
+  if (service.toPrice == null) return `From $${from}`;
+
+  const to = service.toPrice.toLocaleString("en-AU");
+  return `$${from}–$${to}`;
 }

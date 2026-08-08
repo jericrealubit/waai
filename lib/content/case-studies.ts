@@ -71,7 +71,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     liveLabel: "junsmaintenance.au",
     gated: false,
     screenshot: {
-      src: "/work/juns-maintenance.png",
+      src: "/work/juns-maintenance.webp",
       alt: "Jun's Maintenance homepage showing the hero with 'Get a Free Quote' and 'View Services' calls to action",
       caption: "Homepage hero with dual quote and services CTAs",
     },
@@ -115,7 +115,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     liveLabel: "hvtprestigepanelpaint.au",
     gated: false,
     screenshot: {
-      src: "/work/hvt-prestige-panel-paint.png",
+      src: "/work/hvt-prestige-panel-paint.webp",
       alt: "HVT Prestige Panel & Paint homepage hero with the phone number as the primary call to action",
       caption: "Homepage hero — phone number as the single conversion path",
     },
@@ -159,7 +159,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     liveLabel: "bbqheaven.au",
     gated: false,
     screenshot: {
-      src: "/work/bbq-heaven.png",
+      src: "/work/bbq-heaven.webp",
       alt: "BBQ Heaven menu grid showing category filters, menu search, a spicy badge and per-item variant pricing, under a local pickup only banner",
       caption: "The menu grid — category filters, search and variant pricing",
     },
@@ -205,7 +205,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     // audit sheet sit behind an operator login.
     gated: false,
     screenshot: {
-      src: "/work/rubbergem.png",
+      src: "/work/rubbergem.webp",
       alt: "Rubbergem press entry form showing shift information fields, the four-table mat type setup grid, and tap to start and tap to end cycle timing controls",
       caption: "The press entry terminal — shift setup and cycle timing",
     },
@@ -249,7 +249,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     liveLabel: "nextjs-ecommerce-front.netlify.app",
     gated: false,
     screenshot: {
-      src: "/work/ecommerce-storefront.png",
+      src: "/work/ecommerce-storefront.webp",
       alt: "Ecommerce storefront cart page listing two products with price, quantity steppers, subtotals and a running total",
       caption: "Cart page — line items, quantity steppers and running total",
     },
