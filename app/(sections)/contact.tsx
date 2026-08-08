@@ -6,16 +6,16 @@ export default function Contact() {
     >
       {/* Dynamic Background Elements */}
       <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white to-transparent" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-sky-100 rounded-full blur-3xl opacity-30 -z-10" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-30 -z-10" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="lg:pr-10">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-sky-50 text-sky-600 text-sm font-bold tracking-wide uppercase mb-6">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-sm font-bold tracking-wide uppercase mb-6">
               Get in Touch
             </span>
             <h2 className="text-4xl md:text-5xl font-black mb-6 text-slate-900 leading-[1.1]">
-              Ready to <span className="text-sky-600">Scale</span> Your
+              Ready to <span className="text-blue-600">Scale</span> Your
               Business?
             </h2>
             <p className="text-slate-600 text-lg mb-10 leading-relaxed max-w-md">
@@ -48,7 +48,7 @@ export default function Contact() {
                   key={idx}
                   className="group flex items-start gap-5 p-4 rounded-2xl hover:bg-white hover:shadow-sm transition-all duration-300"
                 >
-                  <div className="w-12 h-12 shrink-0 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-sky-600 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 shrink-0 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -70,7 +70,7 @@ export default function Contact() {
                     </h4>
                     <a
                       href={item.href}
-                      className="text-slate-700 font-semibold text-lg hover:text-sky-600 transition-colors"
+                      className="text-slate-700 font-semibold text-lg hover:text-blue-600 transition-colors"
                     >
                       {item.value}
                     </a>
@@ -82,7 +82,7 @@ export default function Contact() {
 
           <div className="relative">
             {/* Form Shadow/Glow Effect */}
-            <div className="absolute inset-0 bg-sky-600/5 blur-[100px] -z-10 rounded-full" />
+            <div className="absolute inset-0 bg-blue-600/5 blur-[100px] -z-10 rounded-full" />
 
             <div className="bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] rounded-[2rem] p-8 md:p-12">
               <form className="space-y-6">
@@ -94,7 +94,7 @@ export default function Contact() {
                     <input
                       type="text"
                       placeholder="e.g. John Doe"
-                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -104,7 +104,7 @@ export default function Contact() {
                     <input
                       type="text"
                       placeholder="e.g. Waikiki Cafe"
-                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
@@ -116,7 +116,7 @@ export default function Contact() {
                   <input
                     type="email"
                     placeholder="john@business.com.au"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                    className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all"
                   />
                 </div>
 
@@ -125,7 +125,7 @@ export default function Contact() {
                     Interested In
                   </label>
                   <div className="relative">
-                    <select className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 appearance-none cursor-pointer focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all">
+                    <select className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 appearance-none cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all">
                       <option>Restaurant Menu Website</option>
                       <option>Menu + Ordering System</option>
                       <option>E-commerce Store</option>
@@ -158,13 +158,13 @@ export default function Contact() {
                   <textarea
                     rows={4}
                     placeholder="Briefly describe your vision..."
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all resize-none"
+                    className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full group bg-sky-600 hover:bg-sky-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                  className="w-full group bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   Get My Free Plan
                   <svg

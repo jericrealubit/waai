@@ -1,31 +1,25 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Real shipped projects with real URLs. These previously pointed at
-// waai.au/demo/* addresses that do not exist.
 const previews = [
   {
     id: 1,
-    title: "Jun's Maintenance — trade services",
-    image: "/work/juns-maintenance.webp",
-    url: "junsmaintenance.au",
-    href: "/work/juns-maintenance",
+    title: "Digital Menu & Ordering",
+    image: "/menu-preview.png",
+    url: "waai.au/demo/ordering",
   },
   {
     id: 2,
-    title: "BBQ Heaven — menu & pickup ordering",
-    image: "/work/bbq-heaven.webp",
-    url: "bbqheaven.au",
-    href: "/work/bbq-heaven",
+    title: "Kitchen Management",
+    image: "/dashboard-preview.png",
+    url: "waai.au/demo/kitchen",
   },
   {
     id: 3,
-    title: "Ecommerce storefront — cart & checkout",
-    image: "/work/ecommerce-storefront.webp",
-    url: "nextjs-ecommerce-front.netlify.app",
-    href: "/work/ecommerce-storefront",
+    title: "AI Business Insights",
+    image: "/ai-insights-preview.png",
+    url: "waai.au/demo/insights",
   },
 ];
 
@@ -50,29 +44,24 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto px-6 md:px-20 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="text-center lg:text-left">
-          <span className="section-label mb-6">Based in Western Australia</span>
+          <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-wider text-blue-600 uppercase bg-blue-50 rounded-full">
+            Based in Western Australia
+          </span>
           <h1 className="text-4xl md:text-7xl font-black tracking-tight text-slate-900 leading-[1.1] mb-6">
-            Sites and systems{" "}
-            <span className="text-sky-600">that already work</span> somewhere.
+            Websites & <span className="text-blue-600">Ordering Systems</span>{" "}
+            Built for WA.
           </h1>
           <p className="text-base md:text-lg text-slate-600 mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-            Trade websites, restaurant ordering, factory-floor logging and
-            ecommerce — for WA businesses. Every service on this site is backed
-            by a project you can open in a browser and read on GitHub.
+            We build lightning-fast menus, digital stores, and AI-driven systems
+            specifically designed for local restaurants and retailers.
           </p>
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-            <Link
-              href="/#contact"
-              className="w-full sm:w-auto text-center bg-slate-900 hover:bg-sky-600 text-white px-8 py-4 rounded-2xl font-bold transition-all transform hover:-translate-y-1 shadow-xl shadow-slate-200 hover:shadow-sky-100 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
-            >
+            <button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold transition-all transform hover:-translate-y-1 shadow-xl shadow-blue-200">
               Start Your Project
-            </Link>
-            <Link
-              href="/work"
-              className="w-full sm:w-auto text-center bg-white border border-slate-200 hover:bg-sky-50 hover:border-sky-200 hover:text-sky-700 text-slate-700 px-8 py-4 rounded-2xl font-bold transition-all shadow-sm focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
-            >
-              See the work
-            </Link>
+            </button>
+            <button className="w-full sm:w-auto bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-8 py-4 rounded-2xl font-bold transition-all shadow-sm">
+              View Demo
+            </button>
           </div>
         </div>
 
@@ -82,7 +71,7 @@ export default function Hero() {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          <div className="absolute inset-0 bg-sky-400/20 blur-[80px] lg:blur-[120px] rounded-full -z-10" />
+          <div className="absolute inset-0 bg-blue-400/20 blur-[80px] lg:blur-[120px] rounded-full -z-10" />
 
           <div className="bg-white rounded-[2rem] lg:rounded-[2.5rem] p-2 md:p-4 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] border border-slate-100">
             <div className="relative rounded-[1.5rem] lg:rounded-[1.8rem] overflow-hidden border border-slate-200 bg-slate-50 aspect-[4/3]">
@@ -134,20 +123,19 @@ export default function Hero() {
               {/* Caption Overlay / Active Tab */}
               <div className="absolute bottom-3 left-3 right-3 lg:bottom-6 lg:left-6 lg:right-6">
                 <div
-                  className={`backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl border border-white/20 shadow-lg transition-all duration-500 ${isPaused ? "bg-sky-600 border-sky-700" : "bg-white/80"}`}
+                  className={`backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl border border-white/20 shadow-lg transition-all duration-500 ${isPaused ? "bg-blue-600 border-blue-700" : "bg-white/80"}`}
                 >
                   <p
-                    className={`text-[8px] lg:text-[10px] font-bold uppercase tracking-widest mb-0.5 lg:mb-1 transition-colors ${isPaused ? "text-sky-100" : "text-sky-600"}`}
+                    className={`text-[8px] lg:text-[10px] font-bold uppercase tracking-widest mb-0.5 lg:mb-1 transition-colors ${isPaused ? "text-blue-100" : "text-blue-600"}`}
                   >
-                    Live project 0{previews[index].id}{" "}
+                    System Feature 0{previews[index].id}{" "}
                     {isPaused && "• Paused"}
                   </p>
-                  <Link
-                    href={previews[index].href}
-                    className={`text-xs lg:text-sm font-bold transition-colors hover:underline underline-offset-4 ${isPaused ? "text-white" : "text-slate-900"}`}
+                  <h4
+                    className={`text-xs lg:text-sm font-bold transition-colors ${isPaused ? "text-white" : "text-slate-900"}`}
                   >
                     {previews[index].title}
-                  </Link>
+                  </h4>
                 </div>
               </div>
             </div>
