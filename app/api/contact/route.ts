@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
  * Contact form submission handler.
@@ -8,6 +9,12 @@ import { NextResponse } from "next/server";
  * so can't do SMTP. Requires RESEND_API_KEY:
  *   - Local dev: set it in .dev.vars (see .dev.vars.example)
  *   - Production: `wrangler secret put RESEND_API_KEY`
+ *
+ * IMPORTANT: on the OpenNext Cloudflare adapter, `.dev.vars`/Worker secrets
+ * are NOT bridged onto `process.env` — they only show up on the Workers-style
+ * `env` object via `getCloudflareContext().env`. Reading `process.env.X` here
+ * would silently be undefined even with a correctly-set `.dev.vars`/secret.
+ * See https://opennext.js.org/cloudflare/bindings.
  *
  * Sends from Resend's shared onboarding@resend.dev address rather than a
  * waai.au address, since that requires no domain verification — fine here
@@ -69,7 +76,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
+  const { env } = getCloudflareContext();
+  const apiKey = env.RESEND_API_KEY ?? process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("RESEND_API_KEY is not set");
     return NextResponse.json(
