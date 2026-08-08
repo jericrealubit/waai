@@ -1,20 +1,43 @@
-import { ServiceCard } from "@/components/service-card";
-import { Section } from "@/components/ui/section";
-import { SERVICES } from "@/lib/content/services";
+import { FeatureCard } from "@/components/ui/feature-card";
+import { Monitor, Zap, LineChart } from "lucide-react"; // Example icons
+
+const services = [
+  {
+    title: "High-Speed Ordering",
+    description:
+      "Lightning-fast digital menus designed for high-volume WA restaurants.",
+    icon: <Zap size={24} />,
+  },
+  {
+    title: "Bespoke Web Design",
+    description:
+      "Custom-built React and Next.js sites that convert visitors into customers.",
+    icon: <Monitor size={24} />,
+  },
+  {
+    title: "AI Business Insights",
+    description:
+      "Advanced data visualization to help you understand your local market trends.",
+    icon: <LineChart size={24} />,
+  },
+];
 
 export default function ServicesSection() {
   return (
-    <Section
-      id="services"
-      label="What we build"
-      heading="Four things we do properly"
-      description="Every one of them is backed by work you can open in a browser and read on GitHub."
-    >
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {SERVICES.map((service, index) => (
-          <ServiceCard key={service.slug} service={service} index={index} />
-        ))}
+    <section className="py-24 px-6 md:px-20">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8">
+          {services.map((service, i) => (
+            <FeatureCard
+              key={i}
+              index={i}
+              title={service.title}
+              description={service.description}
+              icon={service.icon}
+            />
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }
