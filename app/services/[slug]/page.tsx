@@ -55,7 +55,7 @@ export default async function ServiceDetailPage({
       <Section className="pb-12">
         <Link
           href="/services"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 transition-colors hover:text-sky-600 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
         >
           <ArrowLeft className="h-4 w-4" />
           All services
@@ -63,23 +63,23 @@ export default async function ServiceDetailPage({
 
         <div className="max-w-3xl">
           <span className="section-label">{service.shortName}</span>
-          <h1 className="mt-4 text-4xl font-black leading-[1.1] tracking-tight text-slate-900 md:text-6xl">
+          <h1 className="mt-4 text-4xl font-black leading-[1.1] tracking-tight text-foreground md:text-6xl">
             {service.name}
           </h1>
-          <p className="mt-6 text-lg leading-relaxed text-slate-600">
+          <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             {service.intro}
           </p>
 
           <div className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <span className="text-2xl font-black tracking-tight text-slate-900">
+            <span className="text-2xl font-black tracking-tight text-foreground">
               {formatFromPrice(service)}
             </span>
-            <span className="text-sm text-slate-500">{service.priceNote}</span>
+            <span className="text-sm text-muted-foreground">{service.priceNote}</span>
           </div>
           {service.yearlyCost && (
-            <p className="mt-2 text-sm font-bold text-sky-600">
+            <p className="mt-2 text-sm font-bold text-cyber-cyan">
               + ${service.yearlyCost.amount}/year{" "}
-              <span className="font-medium text-slate-500">
+              <span className="font-medium text-muted-foreground">
                 {service.yearlyCost.note.replace(/^per year /, "")}
               </span>
             </p>
@@ -90,13 +90,13 @@ export default async function ServiceDetailPage({
       <Section className="py-12">
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-6 text-xl font-black tracking-tight text-slate-900">
+            <h2 className="mb-6 text-xl font-black tracking-tight text-foreground">
               What a build includes
             </h2>
             <ul className="space-y-4">
               {service.includes.map((item) => (
-                <li key={item} className="flex gap-3 text-sm text-slate-600">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-sky-600" />
+                <li key={item} className="flex gap-3 text-sm text-muted-foreground">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyber-cyan" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -104,27 +104,27 @@ export default async function ServiceDetailPage({
           </div>
 
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-2 text-xl font-black tracking-tight text-slate-900">
+            <h2 className="mb-2 text-xl font-black tracking-tight text-foreground">
               Also available
             </h2>
-            <p className="mb-6 text-sm leading-relaxed text-slate-500">
+            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
               Capabilities we build on request. They aren&apos;t part of every
               project below — where a case study doesn&apos;t use one, it says so.
             </p>
             <ul className="space-y-4">
               {service.alsoAvailable.map((item) => (
-                <li key={item} className="flex gap-3 text-sm text-slate-600">
-                  <Plus className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+                <li key={item} className="flex gap-3 text-sm text-muted-foreground">
+                  <Plus className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="mt-8 border-t border-slate-100 pt-6">
-              <h3 className="mb-2 text-sm font-black tracking-tight text-slate-900">
+            <div className="mt-8 border-t border-border pt-6">
+              <h3 className="mb-2 text-sm font-black tracking-tight text-foreground">
                 Best for
               </h3>
-              <p className="text-sm leading-relaxed text-slate-600">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 {service.bestFor}
               </p>
             </div>
@@ -137,7 +137,7 @@ export default async function ServiceDetailPage({
           label="Proof"
           heading={studies.length === 1 ? "The case study" : "The case studies"}
           description="Live sites and public repositories, not mockups."
-          className="bg-white/40"
+          className="bg-white/[0.02]"
         >
           <div className="grid gap-8 md:grid-cols-2">
             {studies.map((study, index) => (
@@ -150,16 +150,16 @@ export default async function ServiceDetailPage({
       <Section className="py-12">
         <div className="glass-card flex flex-col items-start gap-6 p-10 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-2xl font-black tracking-tight text-slate-900">
+            <h2 className="text-2xl font-black tracking-tight text-foreground">
               Want one of these?
             </h2>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-muted-foreground">
               Tell us the business and we&apos;ll tell you what it takes.
             </p>
           </div>
           <Link
             href="/#contact"
-            className="shrink-0 rounded-2xl bg-slate-900 px-8 py-4 text-sm font-bold text-white shadow-lg shadow-slate-200 transition-all hover:-translate-y-0.5 hover:bg-sky-600 hover:shadow-sky-100 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+            className="shrink-0 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
           >
             Start a project
           </Link>

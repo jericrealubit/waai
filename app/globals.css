@@ -4,6 +4,89 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Cyber / neon brand tokens. Kept in a plain `@theme` (not `@theme inline`)
+   because these are literal values, not indirections through another variable.
+   Declaring the glows here rather than as hand-written classes means they
+   compose like any other utility — `shadow-neon-cyan`, `text-shadow-glow-cyan`,
+   `border-cyber-cyan/25`, `hover:text-cyber-cyan`. */
+@theme {
+  --color-cyber-dark: #080c14;
+  --color-cyber-cyan: #00f2ff;
+  --color-cyber-purple: #9d4edd;
+
+  --shadow-neon-cyan: 0 0 20px rgb(0 242 255 / 0.35),
+    inset 0 0 10px rgb(0 242 255 / 0.15);
+  --text-shadow-glow-cyan: 0 0 10px rgb(0 242 255 / 0.7),
+    0 0 25px rgb(0 242 255 / 0.4);
+  --text-shadow-glow-white: 0 0 12px rgb(255 255 255 / 0.6);
+
+  /* Footer attribution flame + the two smoke puffs drifting off it. Registered
+     as `--animate-*` tokens (with their keyframes inline, which is how v4 wants
+     them) so they're ordinary utilities: `animate-cyber-fire`, and crucially
+     `motion-safe:` works, letting the whole effect switch off for anyone with
+     reduced motion set. The two smoke tokens differ only in start delay. */
+  --animate-cyber-fire: flame-flicker 1.4s infinite ease-in-out;
+  --animate-smoke-1: smoke-rise 2.6s infinite ease-out;
+  --animate-smoke-2: smoke-rise 2.6s infinite ease-out 0.85s;
+  --animate-smoke-3: smoke-rise 2.6s infinite ease-out 1.7s;
+
+  /* Blinks as well as flickers — opacity swings hard between frames so the
+     flame visibly pulses rather than just wobbling in place. */
+  @keyframes flame-flicker {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(-1deg);
+      filter: drop-shadow(0 0 8px rgb(0 242 255 / 0.95))
+        drop-shadow(0 0 16px rgb(157 78 221 / 0.7));
+    }
+    20% {
+      opacity: 0.45;
+      transform: scale(1.16) rotate(3deg);
+      filter: drop-shadow(0 0 16px rgb(0 242 255 / 1))
+        drop-shadow(0 0 26px rgb(0 242 255 / 0.9));
+    }
+    40% {
+      opacity: 1;
+      transform: scale(0.9) rotate(-3deg);
+      filter: drop-shadow(0 0 6px rgb(157 78 221 / 0.9))
+        drop-shadow(0 0 12px rgb(0 242 255 / 0.7));
+    }
+    60% {
+      opacity: 0.35;
+      transform: scale(1.2) rotate(2deg);
+      filter: drop-shadow(0 0 20px rgb(0 242 255 / 1))
+        drop-shadow(0 0 30px rgb(157 78 221 / 0.85));
+    }
+    80% {
+      opacity: 0.9;
+      transform: scale(1.05) rotate(-2deg);
+      filter: drop-shadow(0 0 12px rgb(0 242 255 / 1))
+        drop-shadow(0 0 22px rgb(157 78 221 / 0.75));
+    }
+  }
+
+  /* Travels ~40px now (was 16px) and holds a much higher peak opacity, so the
+     puffs actually read as smoke leaving the top of the badge. */
+  @keyframes smoke-rise {
+    0% {
+      opacity: 0;
+      transform: translateY(0) scale(0.5) rotate(0deg);
+    }
+    25% {
+      opacity: 0.85;
+    }
+    60% {
+      opacity: 0.5;
+      transform: translateY(-24px) scale(1.4) rotate(8deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-40px) scale(2.2) rotate(16deg);
+    }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -50,73 +133,48 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* The site is dark-only, so the cyber palette lives directly in `:root` and
+   there is no separate `.dark` override to keep in sync. `<html>` still carries
+   the `dark` class (see app/layout.tsx) so the `dark:` variants baked into the
+   shadcn primitives resolve against the same values. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.58 0.22 27);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  /* Makes native UI — <select> dropdowns, scrollbars, date pickers — render
+     dark. Without this the contact form's dropdown is dark text on a white
+     popup in some browsers. */
+  color-scheme: dark;
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #080c14;
+  --foreground: #f8fafc;
+  --card: #0e121a;
+  --card-foreground: #f8fafc;
+  --popover: #0e121a;
+  --popover-foreground: #f8fafc;
+  --primary: #00f2ff;
+  --primary-foreground: #080c14;
+  --secondary: #181d28;
+  --secondary-foreground: #f8fafc;
+  --muted: #181d28;
+  --muted-foreground: #94a3b8;
+  --accent: #9d4edd;
+  --accent-foreground: #f8fafc;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: rgb(0 242 255 / 0.25);
+  --input: rgb(255 255 255 / 0.15);
+  --ring: #00f2ff;
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --radius: 0.75rem;
+  --sidebar: #0e121a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #00f2ff;
+  --sidebar-primary-foreground: #080c14;
+  --sidebar-accent: #181d28;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: rgb(0 242 255 / 0.25);
+  --sidebar-ring: #00f2ff;
 }
 
 @layer base {
@@ -131,27 +189,38 @@
   }
 }
 
+/* The dark "PCB" field behind the whole page — a near-black base lit by a cyan
+   and a purple bloom in opposite corners. Applied to <body> in app/layout.tsx. */
+.bg-pcb-pattern {
+  background-color: #080c14;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgb(0 242 255 / 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgb(157 78 221 / 0.08) 0%, transparent 40%);
+}
+
 @layer components {
-  /* The glass surface used across cards, the header and the scroll-to-top
-     button. This was referenced by portfolio.tsx and pricing.tsx long before
-     it existed, so those sections rendered unstyled; the values here match
-     what components/ui/feature-card.tsx applies inline. */
+  /* The brushed-metal surface used across cards, the header and the
+     scroll-to-top button. Still called `.glass-card` because six-plus files
+     reference it by that name; only the treatment changed, from a translucent
+     white pane to a dark metal panel with a lit cyan edge. */
   .glass-card {
-    @apply rounded-[2.5rem] border border-white/40 bg-white/60 backdrop-blur-xl
-      shadow-[0_32px_64px_-16px_rgba(0,0,0,0.05)]
+    @apply rounded-[2.5rem] border border-cyber-cyan/25
+      bg-[linear-gradient(145deg,#181d28,#0e121a)]
+      shadow-[0_20px_50px_rgb(0_0_0/0.8),inset_0_1px_1px_rgb(255_255_255/0.2)]
       transition-all duration-500;
   }
 
-  /* Hoverable variant — lifts and picks up a sky glow. Opt in, because not
-     every glass surface is a link. */
+  /* Hoverable variant — lifts and picks up a cyan glow. Opt in, because not
+     every metal surface is a link. */
   .glass-card-interactive {
-    @apply hover:-translate-y-2
-      hover:shadow-[0_48px_80px_-20px_rgba(14,165,233,0.15)];
+    @apply hover:-translate-y-2 hover:border-cyber-cyan/50
+      hover:shadow-[0_48px_80px_-20px_rgb(0_242_255/0.25)];
   }
 
   /* The small uppercase eyebrow above a section heading. */
   .section-label {
-    @apply inline-block rounded-full bg-sky-50 px-4 py-1.5
-      text-xs font-bold uppercase tracking-wider text-sky-600;
+    @apply inline-block rounded-full border border-cyber-cyan/40
+      bg-cyber-cyan/10 px-4 py-1.5
+      text-xs font-bold uppercase tracking-wider text-cyber-cyan;
   }
 }

@@ -36,14 +36,14 @@ export function Section({
           >
             {label && <span className="section-label">{label}</span>}
             {heading && (
-              <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-900 md:text-5xl">
+              <h2 className="mt-4 text-3xl font-black tracking-tight text-foreground md:text-5xl">
                 {heading}
               </h2>
             )}
             {description && (
               <p
                 className={cn(
-                  "mt-4 text-lg leading-relaxed text-slate-600",
+                  "mt-4 text-lg leading-relaxed text-muted-foreground",
                   centered && "mx-auto max-w-2xl",
                 )}
               >

@@ -11,7 +11,7 @@ export default function Pricing() {
       label="Transparent pricing"
       heading="What a build starts at"
       description="Indicative starting prices per service line. Scope moves the number — we quote properly once we know what you need."
-      className="bg-slate-50/50"
+      className="bg-transparent/50"
     >
       <div className="grid items-stretch gap-8 md:grid-cols-2 lg:grid-cols-4">
         {SERVICES.map((service) => (
@@ -19,20 +19,20 @@ export default function Pricing() {
             key={service.slug}
             className="glass-card flex h-full flex-col p-8"
           >
-            <h3 className="text-lg font-black tracking-tight text-slate-900">
+            <h3 className="text-lg font-black tracking-tight text-foreground">
               {service.name}
             </h3>
 
-            <p className="mt-4 text-3xl font-black tracking-tighter text-slate-900">
+            <p className="mt-4 text-3xl font-black tracking-tighter text-foreground">
               {formatFromPrice(service)}
             </p>
-            <p className="mt-2 text-xs font-medium leading-relaxed text-slate-500">
+            <p className="mt-2 text-xs font-medium leading-relaxed text-muted-foreground">
               {service.priceNote}
             </p>
             {service.yearlyCost && (
-              <p className="mt-1 text-xs font-bold text-sky-600">
+              <p className="mt-1 text-xs font-bold text-cyber-cyan">
                 + ${service.yearlyCost.amount}/year{" "}
-                <span className="font-medium text-slate-500">
+                <span className="font-medium text-muted-foreground">
                   {service.yearlyCost.note.replace(/^per year /, "")}
                 </span>
               </p>
@@ -40,8 +40,8 @@ export default function Pricing() {
 
             <ul className="mt-8 space-y-3">
               {service.includes.slice(0, 4).map((item) => (
-                <li key={item} className="flex gap-2.5 text-sm text-slate-600">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-sky-600" />
+                <li key={item} className="flex gap-2.5 text-sm text-muted-foreground">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyber-cyan" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -49,7 +49,7 @@ export default function Pricing() {
 
             <Link
               href={`/services/${service.slug}`}
-              className="mt-8 inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/70 px-5 py-3 text-sm font-bold text-slate-900 transition-all hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+              className="mt-8 inline-flex items-center justify-center rounded-2xl border border-border bg-white/5 px-5 py-3 text-sm font-bold text-foreground transition-all hover:border-cyber-cyan/50 hover:bg-cyber-cyan/10 hover:text-cyan-300 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
             >
               See what&apos;s included
             </Link>
@@ -57,11 +57,11 @@ export default function Pricing() {
         ))}
       </div>
 
-      <p className="mt-10 text-center text-sm text-slate-500">
+      <p className="mt-10 text-center text-sm text-muted-foreground">
         Ongoing care is separate — see the{" "}
         <Link
           href="/#growth"
-          className="font-bold text-sky-600 underline-offset-4 hover:underline"
+          className="font-bold text-cyber-cyan underline-offset-4 hover:underline"
         >
           maintenance retainer
         </Link>{" "}

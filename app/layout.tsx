@@ -27,6 +27,16 @@ export const metadata: Metadata = {
     "Digital Growth",
     "Website Maintenance",
   ],
+  // Generated from public/logo-swan.png — see public/favicon*.png,
+  // apple-touch-icon.png and android-chrome-*.png.
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "WA AI Digital",
     description: "Innovating the West with Custom Web & AI Systems.",
@@ -56,25 +66,25 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`scroll-smooth ${geistSans.variable} ${geistMono.variable}`}
+      className={`dark scroll-smooth ${geistSans.variable} ${geistMono.variable}`}
     >
-      {/* Note: 'bg-slate-50' acts as a fallback for 'bg-horizon-shell'
-          to ensure the background isn't pure white before the glows load.
-      */}
+      {/* `bg-pcb-pattern` paints the dark base plus its two corner blooms; the
+          `bg-cyber-dark` alongside it is the flat fallback that keeps the page
+          from flashing white before that gradient resolves. */}
       <body
-        className="relative min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-sky-100 selection:text-sky-900"
+        className="bg-pcb-pattern relative min-h-screen bg-cyber-dark text-foreground antialiased selection:bg-cyber-cyan/30 selection:text-white"
         suppressHydrationWarning
       >
-        {/* --- Persistent Digital Horizon Background --- */}
+        {/* --- Persistent Neon Horizon Background --- */}
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          {/* Top Left: Ocean Blue Glow */}
-          <div className="absolute -top-[10%] -left-[10%] w-[70%] h-[70%] bg-sky-100/50 rounded-full blur-[120px]" />
+          {/* Top Left: Cyan Glow */}
+          <div className="absolute -top-[10%] -left-[10%] w-[70%] h-[70%] bg-cyber-cyan/10 rounded-full blur-[120px]" />
 
-          {/* Middle Right: Sandy Gold Glow (matches image_173b22.png) */}
-          <div className="absolute top-[30%] -right-[10%] w-[60%] h-[60%] bg-amber-50/70 rounded-full blur-[100px]" />
+          {/* Middle Right: Purple Glow */}
+          <div className="absolute top-[30%] -right-[10%] w-[60%] h-[60%] bg-cyber-purple/10 rounded-full blur-[100px]" />
 
-          {/* Bottom Left: Pale Sky Glow */}
-          <div className="absolute -bottom-[10%] left-[10%] w-[50%] h-[50%] bg-sky-50/60 rounded-full blur-[120px]" />
+          {/* Bottom Left: Faint Cyan Glow */}
+          <div className="absolute -bottom-[10%] left-[10%] w-[50%] h-[50%] bg-cyber-cyan/5 rounded-full blur-[120px]" />
         </div>
 
         {/* Replaced <Navbar /> with <Header /> */}

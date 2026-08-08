@@ -35,9 +35,9 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group glass-card relative isolate flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_48px_80px_-20px_rgba(14,165,233,0.15)]"
+      className="group glass-card relative isolate flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_48px_80px_-20px_rgb(0_242_255/0.25)]"
     >
-      <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
+      <div className="relative aspect-video w-full overflow-hidden bg-black/40">
         {study.screenshot ? (
           <Image
             src={study.screenshot.src}
@@ -47,18 +47,18 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
             className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-slate-100 to-sky-50 px-6 text-center">
-            <Lock className="h-7 w-7 text-slate-400" />
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-slate-800 to-slate-900 px-6 text-center">
+            <Lock className="h-7 w-7 text-slate-500" />
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Login-protected admin
             </p>
-            <p className="max-w-[15rem] text-xs leading-relaxed text-slate-400">
+            <p className="max-w-[15rem] text-xs leading-relaxed text-slate-500">
               No screenshot — the public URL only ever shows a sign-in button.
             </p>
           </div>
         )}
         {study.gated && study.screenshot && (
-          <span className="absolute right-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
+          <span className="absolute right-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-black/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
             <Lock className="h-3 w-3" />
             Internal tool
           </span>
@@ -66,40 +66,40 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
       </div>
 
       <div className="flex flex-1 flex-col p-8">
-        <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+        <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
           {study.sector}
         </p>
 
-        <h3 className="mb-3 text-xl font-black tracking-tight text-slate-900">
+        <h3 className="mb-3 text-xl font-black tracking-tight text-foreground">
           <Link
             href={`/work/${study.slug}`}
-            className="after:absolute after:inset-0 after:z-0 after:content-[''] hover:text-sky-600 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+            className="after:absolute after:inset-0 after:z-0 after:content-[''] hover:text-cyber-cyan focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
           >
             {study.name}
           </Link>
         </h3>
 
-        <p className="mb-6 text-sm leading-relaxed text-slate-600">{study.outcome}</p>
+        <p className="mb-6 text-sm leading-relaxed text-muted-foreground">{study.outcome}</p>
 
         <div className="mb-6 flex flex-wrap gap-1.5">
           {badges.map((tech) => (
-            <Badge key={tech} variant="secondary" className="bg-sky-50 text-sky-700">
+            <Badge key={tech} variant="secondary" className="bg-cyber-cyan/10 text-cyber-cyan">
               {tech}
             </Badge>
           ))}
           {remaining > 0 && (
-            <Badge variant="outline" className="text-slate-500">
+            <Badge variant="outline" className="text-muted-foreground">
               +{remaining}
             </Badge>
           )}
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-slate-100 pt-5">
+        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5">
           <a
             href={study.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-sky-600 hover:text-sky-700 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-cyber-cyan hover:text-cyan-300 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
           >
             <ExternalLink className="h-4 w-4" />
             Live site
@@ -109,21 +109,21 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
             href={study.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-slate-600 hover:text-slate-900 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground hover:text-white focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
           >
             <Github className="h-4 w-4" />
             GitHub
             <span className="sr-only"> repository for {study.name}</span>
           </a>
-          <span className="ml-auto inline-flex items-center gap-1 text-sm font-bold text-slate-400 transition-colors group-hover:text-sky-600">
+          <span className="ml-auto inline-flex items-center gap-1 text-sm font-bold text-slate-500 transition-colors group-hover:text-cyber-cyan">
             Case study
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </span>
         </div>
 
         {study.secondaryLink && (
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-slate-100 pt-3">
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-border pt-3">
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">
               {study.secondaryLink.gated && <Lock className="h-3 w-3" />}
               {study.secondaryLink.label}
             </span>
@@ -131,7 +131,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
               href={study.secondaryLink.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-cyber-cyan hover:text-cyan-300 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Live site
@@ -141,7 +141,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
               href={study.secondaryLink.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-white focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
             >
               <Github className="h-3.5 w-3.5" />
               GitHub

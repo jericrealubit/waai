@@ -45,13 +45,13 @@ export default function Process() {
             transition={{ duration: 0.5, delay: index * 0.1 }}
             className="relative"
           >
-            <span className="mb-5 block text-5xl font-black tracking-tighter text-sky-600/20">
+            <span className="mb-5 block text-5xl font-black tracking-tighter text-cyber-cyan/20">
               {item.step}
             </span>
-            <h3 className="mb-3 text-lg font-black tracking-tight text-slate-900">
+            <h3 className="mb-3 text-lg font-black tracking-tight text-foreground">
               {item.title}
             </h3>
-            <p className="text-sm leading-relaxed text-slate-600">{item.body}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground">{item.body}</p>
           </motion.div>
         ))}
       </div>

@@ -38,7 +38,7 @@ export default function WorkIndexPage() {
 
         return (
           <Section key={service.slug} id={service.slug} className="py-12">
-            <h2 className="mb-8 text-2xl font-black tracking-tight text-slate-900">
+            <h2 className="mb-8 text-2xl font-black tracking-tight text-foreground">
               {service.name}
             </h2>
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

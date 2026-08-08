@@ -20,27 +20,29 @@ export function Header() {
 
   return (
     <header className="fixed top-0 w-full z-50 px-6 py-4 md:px-20">
-      <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/70 backdrop-blur-xl border border-white/40 px-6 py-3 md:px-8 rounded-[2rem] shadow-[0_8px_32px_-6px_rgba(0,0,0,0.04)]">
+      <div className="max-w-7xl mx-auto flex items-center justify-between bg-[#0e121a]/80 backdrop-blur-xl border border-cyber-cyan/25 px-6 py-3 md:px-8 rounded-[2rem] shadow-[0_8px_32px_-6px_rgb(0_0_0/0.7)]">
         {/* Brand Section */}
-        <Link href="/" className="flex items-center gap-3 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none rounded-xl">
+        <Link href="/" className="flex items-center gap-3 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none rounded-xl">
           <Image
-            src="/android-chrome-192x192.png"
+            src="/logo-swan.png"
             alt="WA AI Digital Logo"
-            width={32}
-            height={32}
+            width={40}
+            height={40}
+            priority
+            className="h-9 w-9 rounded-full md:h-10 md:w-10"
           />
-          <span className="font-black text-xl tracking-tighter text-slate-900">
-            WA AI <span className="text-sky-600">Digital</span>
+          <span className="font-black text-xl tracking-tighter text-foreground">
+            WA AI <span className="text-cyber-cyan">Digital</span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex gap-8 text-[13px] font-bold uppercase tracking-wider text-slate-500">
+        <nav className="hidden lg:flex gap-8 text-[13px] font-bold uppercase tracking-wider text-muted-foreground">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-sky-600 transition-colors focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none rounded"
+              className="hover:text-cyber-cyan transition-colors focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none rounded"
             >
               {link.label}
             </Link>
@@ -51,7 +53,7 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Link
             href="/#contact"
-            className="hidden md:block bg-slate-900 hover:bg-sky-600 text-white px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-slate-200 hover:shadow-sky-100 transform hover:-translate-y-0.5 focus-visible:ring-3 focus-visible:ring-sky-500/50 focus-visible:outline-none"
+            className="hidden md:block bg-cyber-cyan hover:bg-cyan-300 text-cyber-dark px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-neon-cyan hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] transform hover:-translate-y-0.5 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
           >
             Start Project
           </Link>
@@ -59,7 +61,7 @@ export function Header() {
           {/* Burger Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-slate-600 hover:bg-sky-50 rounded-xl transition-colors z-50"
+            className="lg:hidden p-2 text-muted-foreground hover:bg-cyber-cyan/10 rounded-xl transition-colors z-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -90,14 +92,14 @@ export function Header() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 left-6 right-6 p-6 bg-white/90 backdrop-blur-2xl border border-white/40 rounded-[2rem] shadow-2xl lg:hidden flex flex-col gap-4 text-center"
+            className="absolute top-24 left-6 right-6 p-6 bg-[#0e121a]/95 backdrop-blur-2xl border border-cyber-cyan/25 rounded-[2rem] shadow-2xl lg:hidden flex flex-col gap-4 text-center"
           >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="text-lg font-bold text-slate-900 py-2 hover:text-sky-600 transition-colors border-b border-slate-100 last:border-0"
+                className="text-lg font-bold text-foreground py-2 hover:text-cyber-cyan transition-colors border-b border-border last:border-0"
               >
                 {link.label}
               </Link>
@@ -105,7 +107,7 @@ export function Header() {
             <Link
               href="/#contact"
               onClick={() => setIsOpen(false)}
-              className="mt-2 bg-sky-600 text-white py-4 rounded-2xl font-bold text-center"
+              className="mt-2 bg-cyber-cyan text-cyber-dark py-4 rounded-2xl font-bold text-center shadow-neon-cyan"
             >
               Start Project
             </Link>

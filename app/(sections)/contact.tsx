@@ -74,23 +74,23 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="py-24 bg-slate-50 relative overflow-hidden"
+      className="py-24 relative overflow-hidden"
     >
       {/* Dynamic Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white to-transparent" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-sky-100 rounded-full blur-3xl opacity-30 -z-10" />
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-cyber-dark to-transparent" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-cyber-cyan/20 rounded-full blur-3xl opacity-30 -z-10" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="lg:pr-10">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-sky-50 text-sky-600 text-sm font-bold tracking-wide uppercase mb-6">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan text-sm font-bold tracking-wide uppercase mb-6">
               Get in Touch
             </span>
-            <h2 className="text-4xl md:text-5xl font-black mb-6 text-slate-900 leading-[1.1]">
-              Ready to <span className="text-sky-600">Scale</span> Your
+            <h2 className="text-4xl md:text-5xl font-black mb-6 text-foreground leading-[1.1]">
+              Ready to <span className="text-cyber-cyan">Scale</span> Your
               Business?
             </h2>
-            <p className="text-slate-600 text-lg mb-10 leading-relaxed max-w-md">
+            <p className="text-muted-foreground text-lg mb-10 leading-relaxed max-w-md">
               Whether you need a simple menu or a full AI-integrated ordering
               system, we provide clear plans and local WA expertise.
             </p>
@@ -99,9 +99,9 @@ export default function Contact() {
               {CONTACT_ITEMS.map((item, idx) => (
                 <div
                   key={idx}
-                  className="group flex items-start gap-5 p-4 rounded-2xl hover:bg-white hover:shadow-sm transition-all duration-300"
+                  className="group flex items-start gap-5 p-4 rounded-2xl hover:bg-white/5 transition-all duration-300"
                 >
-                  <div className="w-12 h-12 shrink-0 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-sky-600 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 shrink-0 bg-black/30 border border-cyber-cyan/30 rounded-xl flex items-center justify-center text-cyber-cyan group-hover:scale-110 transition-transform">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -118,12 +118,12 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-sm uppercase tracking-tighter opacity-50">
+                    <h4 className="font-bold text-foreground text-sm uppercase tracking-tighter opacity-50">
                       {item.label}
                     </h4>
                     <a
                       href={item.href}
-                      className="text-slate-700 font-semibold text-lg hover:text-sky-600 transition-colors"
+                      className="text-slate-200 font-semibold text-lg hover:text-cyber-cyan transition-colors"
                     >
                       {item.value}
                     </a>
@@ -135,12 +135,12 @@ export default function Contact() {
 
           <div className="relative">
             {/* Form Shadow/Glow Effect */}
-            <div className="absolute inset-0 bg-sky-600/5 blur-[100px] -z-10 rounded-full" />
+            <div className="absolute inset-0 bg-cyber-cyan/10 blur-[100px] -z-10 rounded-full" />
 
-            <div className="bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] rounded-[2rem] p-8 md:p-12">
+            <div className="bg-[linear-gradient(145deg,#181d28,#0e121a)] border border-cyber-cyan/25 shadow-[0_20px_50px_rgb(0_0_0/0.8),inset_0_1px_1px_rgb(255_255_255/0.2)] rounded-[2rem] p-8 md:p-12">
               {status === "success" ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-16 h-16 rounded-full bg-sky-50 flex items-center justify-center text-sky-600 mb-6">
+                  <div className="w-16 h-16 rounded-full bg-cyber-cyan/10 flex items-center justify-center text-cyber-cyan mb-6">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-8 w-8"
@@ -156,17 +156,17 @@ export default function Contact() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900 mb-3">
+                  <h3 className="text-2xl font-black text-foreground mb-3">
                     Message sent
                   </h3>
-                  <p className="text-slate-600 max-w-xs mb-8">
+                  <p className="text-muted-foreground max-w-xs mb-8">
                     Thanks — we've got your details and will be in touch
                     shortly.
                   </p>
                   <button
                     type="button"
                     onClick={() => setStatus("idle")}
-                    className="text-sm font-bold text-sky-600 hover:text-sky-700 transition-colors"
+                    className="text-sm font-bold text-cyber-cyan hover:text-cyan-300 transition-colors"
                   >
                     Send another message
                   </button>
@@ -177,7 +177,7 @@ export default function Contact() {
                     <div className="space-y-2">
                       <label
                         htmlFor="contact-name"
-                        className="text-sm font-bold text-slate-700 ml-1"
+                        className="text-sm font-bold text-slate-300 ml-1"
                       >
                         Your Name
                       </label>
@@ -190,13 +190,13 @@ export default function Contact() {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, name: e.target.value }))
                         }
-                        className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                        className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
                       />
                     </div>
                     <div className="space-y-2">
                       <label
                         htmlFor="contact-business"
-                        className="text-sm font-bold text-slate-700 ml-1"
+                        className="text-sm font-bold text-slate-300 ml-1"
                       >
                         Business Name
                       </label>
@@ -211,7 +211,7 @@ export default function Contact() {
                             businessName: e.target.value,
                           }))
                         }
-                        className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                        className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
                       />
                     </div>
                   </div>
@@ -219,7 +219,7 @@ export default function Contact() {
                   <div className="space-y-2">
                     <label
                       htmlFor="contact-email"
-                      className="text-sm font-bold text-slate-700 ml-1"
+                      className="text-sm font-bold text-slate-300 ml-1"
                     >
                       Work Email
                     </label>
@@ -232,14 +232,14 @@ export default function Contact() {
                       onChange={(e) =>
                         setForm((f) => ({ ...f, email: e.target.value }))
                       }
-                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                      className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <label
                       htmlFor="contact-interest"
-                      className="text-sm font-bold text-slate-700 ml-1"
+                      className="text-sm font-bold text-slate-300 ml-1"
                     >
                       Interested In
                     </label>
@@ -253,7 +253,7 @@ export default function Contact() {
                             interestedIn: e.target.value,
                           }))
                         }
-                        className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 appearance-none cursor-pointer focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                        className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
                       >
                         <option>Restaurant Menu Website</option>
                         <option>Menu + Ordering System</option>
@@ -262,7 +262,7 @@ export default function Contact() {
                         <option>E-commerce Store</option>
                         <option>Custom Digital Solution</option>
                       </select>
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5"
@@ -284,7 +284,7 @@ export default function Contact() {
                   <div className="space-y-2">
                     <label
                       htmlFor="contact-details"
-                      className="text-sm font-bold text-slate-700 ml-1"
+                      className="text-sm font-bold text-slate-300 ml-1"
                     >
                       Project Details
                     </label>
@@ -300,12 +300,12 @@ export default function Contact() {
                           projectDetails: e.target.value,
                         }))
                       }
-                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all resize-none"
+                      className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all resize-none"
                     />
                   </div>
 
                   {status === "error" && (
-                    <p className="text-sm font-semibold text-red-600 bg-red-50 rounded-2xl px-5 py-3">
+                    <p className="text-sm font-semibold text-red-300 bg-red-950/50 border border-red-500/40 rounded-2xl px-5 py-3">
                       {errorMessage}
                     </p>
                   )}
@@ -313,7 +313,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={status === "submitting"}
-                    className="w-full group bg-sky-600 hover:bg-sky-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+                    className="w-full group bg-cyber-cyan hover:bg-cyan-300 text-cyber-dark font-bold py-5 rounded-2xl shadow-neon-cyan hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
                   >
                     {status === "submitting" ? "Sending..." : "Get My Free Plan"}
                     {status !== "submitting" && (

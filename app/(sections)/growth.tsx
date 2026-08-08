@@ -40,27 +40,27 @@ export default function Growth() {
       label="After launch"
       heading="Digital Growth & Maintenance"
       description="Building the site is just the beginning. We provide the strategic marketing and technical care needed to scale your business."
-      className="bg-slate-50"
+      className="bg-transparent"
     >
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {features.map((feature) => (
           <div key={feature.title} className="glass-card p-8">
-            <div className="mb-5 w-fit rounded-xl bg-sky-50 p-3">
-              <feature.icon className="h-6 w-6 text-sky-600" />
+            <div className="mb-5 w-fit rounded-xl bg-cyber-cyan/10 p-3">
+              <feature.icon className="h-6 w-6 text-cyber-cyan" />
             </div>
-            <h3 className="mb-3 text-lg font-black tracking-tight text-slate-900">
+            <h3 className="mb-3 text-lg font-black tracking-tight text-foreground">
               {feature.title}
             </h3>
-            <p className="text-sm leading-relaxed text-slate-600">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               {feature.description}
             </p>
           </div>
         ))}
       </div>
 
-      <p className="mt-10 text-center text-sm font-bold text-slate-900">
+      <p className="mt-10 text-center text-sm font-bold text-foreground">
         From $99/month
-        <span className="ml-2 font-medium text-slate-500">
+        <span className="ml-2 font-medium text-muted-foreground">
           on top of any build
         </span>
       </p>

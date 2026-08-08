@@ -46,20 +46,37 @@ Anything added to layout must respect that stacking (`-z-10` background,
 
 ## Styling conventions
 
-The visual language is glassmorphism over the layout's glow background — semi
-transparent white surfaces (`bg-white/60`, `bg-white/70`), `backdrop-blur-xl`,
-`border-white/40`, large custom radii (`rounded-[2rem]`, `rounded-[2.5rem]`) and
-soft custom shadows. Sky/amber/slate are the accent families. Match this rather
-than introducing solid cards or default shadows.
+The visual language is **dark "brushed metal + neon cyan"**. The site is
+dark-only: `:root` in `app/globals.css` holds the dark palette directly and
+`<html>` carries a permanent `dark` class, so there is no light mode and no
+theme toggle. Surfaces are dark metal panels — `linear-gradient(145deg,#181d28,#0e121a)`
+with a lit `border-cyber-cyan/25` edge — over the layout's PCB background, using
+large custom radii (`rounded-[2rem]`, `rounded-[2.5rem]`).
+
+Reach for the tokens rather than raw colours:
+
+- `bg-cyber-dark`, `text-cyber-cyan`, `bg-cyber-purple` (from the `@theme` block)
+- `shadow-neon-cyan`, `text-shadow-glow-cyan`, `text-shadow-glow-white`
+- `.glass-card` / `.glass-card-interactive` / `.section-label` for shared surfaces
+- semantic tokens (`text-foreground`, `text-muted-foreground`, `border-border`,
+  `bg-card`) so the shadcn primitives stay consistent
+
+**Cyan is a light colour.** Anything on a `bg-cyber-cyan` fill needs
+`text-cyber-dark`, never `text-white` — white on `#00f2ff` is ~1.4:1 and fails
+contrast badly.
 
 Entrance animations use framer-motion `initial` / `whileInView` with
 `viewport={{ once: true }}` and a `delay: index * 0.1` stagger (see
 `components/ui/feature-card.tsx`). `"use client"` is applied only to the files
 that need state or motion; sections without interaction stay server components.
 
-**Tailwind v4 is CSS-first.** Theme tokens live in `app/globals.css`
-(`@theme inline`, `:root`, `.dark`) alongside `@import "shadcn/tailwind.css"`.
-The legacy `tailwind.config.js` at the root defines a `horizon` palette but is
-**not loaded** — v4 only reads a config file via an `@config` directive, and
-`globals.css` has none. The `horizon-*` utilities it declares are unused in
-markup; don't reach for them, and don't assume edits to that file take effect.
+**Tailwind v4 is CSS-first** (currently 4.2.1). All theme tokens live in
+`app/globals.css` — a plain `@theme` block for the literal cyber values, a
+`@theme inline` block for the indirections onto `:root`, alongside
+`@import "shadcn/tailwind.css"`. There is **no `tailwind.config.{js,ts}`**, and
+adding one would do nothing: v4 only reads a config via an `@config` directive,
+which `globals.css` deliberately does not have. Add new tokens to `@theme`, not
+to a config file.
+
+Note `--radius` (0.75rem) drives the whole `--radius-sm…4xl` scale through
+`calc()`, so changing it rescales every radius on the site.
