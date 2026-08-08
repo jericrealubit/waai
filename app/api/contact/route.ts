@@ -84,7 +84,7 @@ export async function POST(request: Request) {
   }
 
   const { env } = getCloudflareContext();
-  const apiKey = env.RESEND_API_KEY ?? process.env.RESEND_API_KEY;
+const apiKey = (env as Record<string, string | undefined>).RESEND_API_KEY ?? process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("RESEND_API_KEY is not set");
     return NextResponse.json(
