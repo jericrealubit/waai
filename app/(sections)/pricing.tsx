@@ -29,6 +29,14 @@ export default function Pricing() {
             <p className="mt-2 text-xs font-medium leading-relaxed text-slate-500">
               {service.priceNote}
             </p>
+            {service.yearlyCost && (
+              <p className="mt-1 text-xs font-bold text-sky-600">
+                + ${service.yearlyCost.amount}/year{" "}
+                <span className="font-medium text-slate-500">
+                  {service.yearlyCost.note.replace(/^per year /, "")}
+                </span>
+              </p>
+            )}
 
             <ul className="mt-8 space-y-3">
               {service.includes.slice(0, 4).map((item) => (
