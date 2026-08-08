@@ -2,23 +2,18 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
-   * Static export. Every route in this app is Static or SSG — there are no API
-   * routes, no middleware and no server actions — so there is nothing that
-   * needs a server runtime. `next build` writes a plain HTML/asset tree to
-   * `out/`, which Cloudflare Pages serves directly.
-   *
-   * This replaces the Workers/OpenNext deploy path, which was failing because
-   * `wrangler versions upload` expects a wrangler.jsonc pointing at
-   * `.open-next/worker.js` — config that only ever existed on the unmerged
-   * `cloudflare/workers-autoconfig` branch.
+   * NOT a static export. The contact form needs a real POST handler
+   * (app/api/contact/route.ts, which calls out to Resend), and static export
+   * can't serve dynamic Route Handlers at all — every route would have to be
+   * fully static. Deploy target is the OpenNext Cloudflare Workers path:
+   * wrangler.jsonc already points at `.open-next/worker.js`, and the
+   * package.json `deploy`/`preview`/`upload` scripts already run
+   * `opennextjs-cloudflare build`, which expects a normal server build, not
+   * a static `out/` tree. (An earlier commit set `output: "export"` here to
+   * work around a Workers deploy failure; that config has since landed
+   * properly via wrangler.jsonc, so the static-export override was stale and
+   * actively broke the Workers path — removed.)
    */
-  output: "export",
-
-  images: {
-    // The export target has no image optimization server, so next/image must
-    // emit the source files as-is. Keep committed images pre-sized.
-    unoptimized: true,
-  },
 };
 
 export default nextConfig;

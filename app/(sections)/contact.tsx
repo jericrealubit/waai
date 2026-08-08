@@ -1,4 +1,76 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+
+const CONTACT_ITEMS = [
+  {
+    label: "Phone",
+    value: "+61 491 098 073",
+    href: "tel:+61491098073",
+    icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z",
+  },
+  {
+    label: "Email",
+    value: "jericrealubit@gmail.com",
+    href: "mailto:jericrealubit@gmail.com",
+    icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
+  },
+  {
+    label: "Location",
+    value: "Beeliar, WA 6164",
+    href: "#",
+    icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z",
+  },
+];
+
+const INITIAL_FORM = {
+  name: "",
+  businessName: "",
+  email: "",
+  interestedIn: "Restaurant Menu Website",
+  projectDetails: "",
+};
+
+type Status = "idle" | "submitting" | "success" | "error";
+
 export default function Contact() {
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus("submitting");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
+
+      if (!response.ok || !data?.ok) {
+        setStatus("error");
+        setErrorMessage(
+          data?.error ?? "Something went wrong sending that. Please try again.",
+        );
+        return;
+      }
+
+      setStatus("success");
+      setForm(INITIAL_FORM);
+    } catch {
+      setStatus("error");
+      setErrorMessage("Something went wrong sending that. Please try again.");
+    }
+  }
+
   return (
     <section
       id="contact"
@@ -24,26 +96,7 @@ export default function Contact() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8">
-              {[
-                {
-                  label: "Phone",
-                  value: "+61 491 098 073",
-                  href: "tel:+61491098073",
-                  icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z",
-                },
-                {
-                  label: "Email",
-                  value: "hello@waai.au",
-                  href: "mailto:hello@waai.au",
-                  icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
-                },
-                {
-                  label: "Location",
-                  value: "Waikiki, WA 6169",
-                  href: "#",
-                  icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z",
-                },
-              ].map((item, idx) => (
+              {CONTACT_ITEMS.map((item, idx) => (
                 <div
                   key={idx}
                   className="group flex items-start gap-5 p-4 rounded-2xl hover:bg-white hover:shadow-sm transition-all duration-300"
@@ -85,57 +138,188 @@ export default function Contact() {
             <div className="absolute inset-0 bg-sky-600/5 blur-[100px] -z-10 rounded-full" />
 
             <div className="bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] rounded-[2rem] p-8 md:p-12">
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              {status === "success" ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-sky-50 flex items-center justify-center text-sky-600 mb-6">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-900 mb-3">
+                    Message sent
+                  </h3>
+                  <p className="text-slate-600 max-w-xs mb-8">
+                    Thanks — we've got your details and will be in touch
+                    shortly.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("idle")}
+                    className="text-sm font-bold text-sky-600 hover:text-sky-700 transition-colors"
+                  >
+                    Send another message
+                  </button>
+                </div>
+              ) : (
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="contact-name"
+                        className="text-sm font-bold text-slate-700 ml-1"
+                      >
+                        Your Name
+                      </label>
+                      <input
+                        id="contact-name"
+                        type="text"
+                        required
+                        placeholder="e.g. John Doe"
+                        value={form.name}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, name: e.target.value }))
+                        }
+                        className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="contact-business"
+                        className="text-sm font-bold text-slate-700 ml-1"
+                      >
+                        Business Name
+                      </label>
+                      <input
+                        id="contact-business"
+                        type="text"
+                        placeholder="e.g. Waikiki Cafe"
+                        value={form.businessName}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            businessName: e.target.value,
+                          }))
+                        }
+                        className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">
-                      Your Name
+                    <label
+                      htmlFor="contact-email"
+                      className="text-sm font-bold text-slate-700 ml-1"
+                    >
+                      Work Email
                     </label>
                     <input
-                      type="text"
-                      placeholder="e.g. John Doe"
+                      id="contact-email"
+                      type="email"
+                      required
+                      placeholder="john@business.com.au"
+                      value={form.email}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, email: e.target.value }))
+                      }
                       className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
                     />
                   </div>
+
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">
-                      Business Name
+                    <label
+                      htmlFor="contact-interest"
+                      className="text-sm font-bold text-slate-700 ml-1"
+                    >
+                      Interested In
                     </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Waikiki Cafe"
-                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                    <div className="relative">
+                      <select
+                        id="contact-interest"
+                        value={form.interestedIn}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            interestedIn: e.target.value,
+                          }))
+                        }
+                        className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 appearance-none cursor-pointer focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
+                      >
+                        <option>Restaurant Menu Website</option>
+                        <option>Menu + Ordering System</option>
+                        <option>Tradie Website</option>
+                        <option>Manufacturing Log Automation</option>
+                        <option>E-commerce Store</option>
+                        <option>Custom Digital Solution</option>
+                      </select>
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="contact-details"
+                      className="text-sm font-bold text-slate-700 ml-1"
+                    >
+                      Project Details
+                    </label>
+                    <textarea
+                      id="contact-details"
+                      rows={4}
+                      required
+                      placeholder="Briefly describe your vision..."
+                      value={form.projectDetails}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          projectDetails: e.target.value,
+                        }))
+                      }
+                      className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all resize-none"
                     />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">
-                    Work Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="john@business.com.au"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all"
-                  />
-                </div>
+                  {status === "error" && (
+                    <p className="text-sm font-semibold text-red-600 bg-red-50 rounded-2xl px-5 py-3">
+                      {errorMessage}
+                    </p>
+                  )}
 
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">
-                    Interested In
-                  </label>
-                  <div className="relative">
-                    <select className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 appearance-none cursor-pointer focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all">
-                      <option>Restaurant Menu Website</option>
-                      <option>Menu + Ordering System</option>
-                      <option>E-commerce Store</option>
-                      <option>Monthly AI Automation</option>
-                      <option>Custom Digital Solution</option>
-                    </select>
-                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <button
+                    type="submit"
+                    disabled={status === "submitting"}
+                    className="w-full group bg-sky-600 hover:bg-sky-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+                  >
+                    {status === "submitting" ? "Sending..." : "Get My Free Plan"}
+                    {status !== "submitting" && (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
+                        className="h-5 w-5 group-hover:translate-x-1 transition-transform"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -144,45 +328,13 @@ export default function Contact() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
                         />
                       </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">
-                    Project Details
-                  </label>
-                  <textarea
-                    rows={4}
-                    placeholder="Briefly describe your vision..."
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 focus:bg-white transition-all resize-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full group bg-sky-600 hover:bg-sky-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                >
-                  Get My Free Plan
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </button>
-              </form>
+                    )}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

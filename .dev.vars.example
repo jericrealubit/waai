@@ -1,0 +1,12 @@
+# Copy this file to .dev.vars for local development (`.dev.vars` is
+# gitignored — never commit real keys).
+#
+# Get a key at https://resend.com/api-keys — the free tier (100 emails/day)
+# is enough for a contact form. No domain verification needed: the contact
+# route sends from Resend's shared onboarding@resend.dev address.
+#
+# For production, set this as a Worker secret instead of committing it
+# anywhere:
+#   npx wrangler secret put RESEND_API_KEY
+
+RESEND_API_KEY=re_your_api_key_here
