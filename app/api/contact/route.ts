@@ -4,7 +4,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 /**
  * Contact form submission handler.
  *
- * Sends the enquiry to jericrealubit@gmail.com via Resend's HTTP API — the
+ * Sends the enquiry to the RECIPIENT inbox via Resend's HTTP API — the
  * only viable option on Cloudflare Workers, which has no raw TCP sockets and
  * so can't do SMTP. Requires RESEND_API_KEY:
  *   - Local dev: set it in .dev.vars (see .dev.vars.example)
@@ -16,11 +16,18 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
  * would silently be undefined even with a correctly-set `.dev.vars`/secret.
  * See https://opennext.js.org/cloudflare/bindings.
  *
- * Sends from Resend's shared onboarding@resend.dev address rather than a
- * waai.au address, since that requires no domain verification — fine here
- * because every message goes to a single fixed inbox, not out to customers.
+ * Sends FROM hello@waai.au (the domain is DKIM/SPF-verified in Resend, so
+ * this authenticates properly) but delivers TO the Gmail address directly,
+ * NOT to hello@waai.au. That asymmetry is deliberate: hello@waai.au is
+ * forwarded to the same Gmail inbox via Cloudflare Email Routing, so
+ * addressing the notification to it would mean sending mail from an address
+ * to itself and back through a forwarder — which risks a routing loop and is
+ * a common spam signal. Sending straight to the real inbox avoids both.
  */
 
+/** Public-facing sender. Requires waai.au to stay verified in Resend. */
+const SENDER = "WAAI <hello@waai.au>";
+/** Real destination inbox — deliberately not hello@waai.au (see above). */
 const RECIPIENT = "jericrealubit@gmail.com";
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
@@ -104,7 +111,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "WAAI Contact Form <onboarding@resend.dev>",
+        from: SENDER,
         to: [RECIPIENT],
         reply_to: email,
         subject: `New enquiry from ${name}${businessName ? ` (${businessName})` : ""}`,
