@@ -23,7 +23,7 @@ export default function FeaturedWork() {
       <div className="mt-12 text-center">
         <Link
           href="/work"
-          className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+          className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
         >
           Browse all case studies
           <ArrowRight className="h-4 w-4" />

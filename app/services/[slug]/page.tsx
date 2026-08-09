@@ -55,7 +55,7 @@ export default async function ServiceDetailPage({
       <Section className="pb-12">
         <Link
           href="/services"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan-soft focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
         >
           <ArrowLeft className="h-4 w-4" />
           All services
@@ -77,7 +77,7 @@ export default async function ServiceDetailPage({
             <span className="text-sm text-muted-foreground">{service.priceNote}</span>
           </div>
           {service.yearlyCost && (
-            <p className="mt-2 text-sm font-bold text-cyber-cyan">
+            <p className="mt-2 text-sm font-bold text-cyber-cyan-soft">
               + ${service.yearlyCost.amount}/year{" "}
               <span className="font-medium text-muted-foreground">
                 {service.yearlyCost.note.replace(/^per year /, "")}
@@ -96,7 +96,7 @@ export default async function ServiceDetailPage({
             <ul className="space-y-4">
               {service.includes.map((item) => (
                 <li key={item} className="flex gap-3 text-sm text-muted-foreground">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyber-cyan" />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyber-cyan-soft" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -114,7 +114,7 @@ export default async function ServiceDetailPage({
             <ul className="space-y-4">
               {service.alsoAvailable.map((item) => (
                 <li key={item} className="flex gap-3 text-sm text-muted-foreground">
-                  <Plus className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+                  <Plus className="mt-0.5 h-4 w-4 shrink-0 text-foreground-subtle" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -159,7 +159,7 @@ export default async function ServiceDetailPage({
           </div>
           <Link
             href="/#contact"
-            className="shrink-0 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+            className="shrink-0 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
           >
             Start a project
           </Link>

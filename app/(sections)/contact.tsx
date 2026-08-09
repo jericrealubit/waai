@@ -83,11 +83,11 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-6 md:px-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="lg:pr-10">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan text-sm font-bold tracking-wide uppercase mb-6">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-cyber-cyan/10 border border-border-brand text-cyber-cyan-soft text-sm font-bold tracking-wide uppercase mb-6">
               Get in Touch
             </span>
             <h2 className="text-4xl md:text-5xl font-black mb-6 text-foreground leading-[1.1]">
-              Ready to <span className="text-cyber-cyan">Scale</span> Your
+              Ready to <span className="text-cyber-cyan-soft">Scale</span> Your
               Business?
             </h2>
             <p className="text-muted-foreground text-lg mb-10 leading-relaxed max-w-md">
@@ -101,7 +101,7 @@ export default function Contact() {
                   key={idx}
                   className="group flex items-start gap-5 p-4 rounded-2xl hover:bg-white/5 transition-all duration-300"
                 >
-                  <div className="w-12 h-12 shrink-0 bg-black/30 border border-cyber-cyan/30 rounded-xl flex items-center justify-center text-cyber-cyan group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 shrink-0 bg-black/30 border border-border rounded-xl flex items-center justify-center text-cyber-cyan-soft group-hover:scale-110 transition-transform">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -123,7 +123,7 @@ export default function Contact() {
                     </h4>
                     <a
                       href={item.href}
-                      className="text-slate-200 font-semibold text-lg hover:text-cyber-cyan transition-colors"
+                      className="text-foreground font-semibold text-lg hover:text-cyber-cyan-soft transition-colors"
                     >
                       {item.value}
                     </a>
@@ -137,10 +137,10 @@ export default function Contact() {
             {/* Form Shadow/Glow Effect */}
             <div className="absolute inset-0 bg-cyber-cyan/10 blur-[100px] -z-10 rounded-full" />
 
-            <div className="bg-[linear-gradient(145deg,#181d28,#0e121a)] border border-cyber-cyan/25 shadow-[0_20px_50px_rgb(0_0_0/0.8),inset_0_1px_1px_rgb(255_255_255/0.2)] rounded-[2rem] p-8 md:p-12">
+            <div className="bg-[linear-gradient(145deg,#181d28,#0e121a)] border border-border shadow-[0_20px_50px_rgb(0_0_0/0.8),inset_0_1px_1px_rgb(255_255_255/0.2)] rounded-[2rem] p-8 md:p-12">
               {status === "success" ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-16 h-16 rounded-full bg-cyber-cyan/10 flex items-center justify-center text-cyber-cyan mb-6">
+                  <div className="w-16 h-16 rounded-full bg-cyber-cyan/10 flex items-center justify-center text-cyber-cyan-soft mb-6">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-8 w-8"
@@ -166,7 +166,7 @@ export default function Contact() {
                   <button
                     type="button"
                     onClick={() => setStatus("idle")}
-                    className="text-sm font-bold text-cyber-cyan hover:text-cyan-300 transition-colors"
+                    className="text-sm font-bold text-cyber-cyan-soft hover:text-cyber-cyan-bright transition-colors"
                   >
                     Send another message
                   </button>
@@ -177,7 +177,7 @@ export default function Contact() {
                     <div className="space-y-2">
                       <label
                         htmlFor="contact-name"
-                        className="text-sm font-bold text-slate-300 ml-1"
+                        className="text-sm font-bold text-foreground ml-1"
                       >
                         Your Name
                       </label>
@@ -190,13 +190,13 @@ export default function Contact() {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, name: e.target.value }))
                         }
-                        className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
+                        className="field-input"
                       />
                     </div>
                     <div className="space-y-2">
                       <label
                         htmlFor="contact-business"
-                        className="text-sm font-bold text-slate-300 ml-1"
+                        className="text-sm font-bold text-foreground ml-1"
                       >
                         Business Name
                       </label>
@@ -211,7 +211,7 @@ export default function Contact() {
                             businessName: e.target.value,
                           }))
                         }
-                        className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
+                        className="field-input"
                       />
                     </div>
                   </div>
@@ -219,7 +219,7 @@ export default function Contact() {
                   <div className="space-y-2">
                     <label
                       htmlFor="contact-email"
-                      className="text-sm font-bold text-slate-300 ml-1"
+                      className="text-sm font-bold text-foreground ml-1"
                     >
                       Work Email
                     </label>
@@ -232,14 +232,14 @@ export default function Contact() {
                       onChange={(e) =>
                         setForm((f) => ({ ...f, email: e.target.value }))
                       }
-                      className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
+                      className="field-input"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <label
                       htmlFor="contact-interest"
-                      className="text-sm font-bold text-slate-300 ml-1"
+                      className="text-sm font-bold text-foreground ml-1"
                     >
                       Interested In
                     </label>
@@ -253,7 +253,7 @@ export default function Contact() {
                             interestedIn: e.target.value,
                           }))
                         }
-                        className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all"
+                        className="field-input cursor-pointer appearance-none"
                       >
                         <option>Restaurant Menu Website</option>
                         <option>Menu + Ordering System</option>
@@ -262,7 +262,7 @@ export default function Contact() {
                         <option>E-commerce Store</option>
                         <option>Custom Digital Solution</option>
                       </select>
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-foreground-subtle">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5"
@@ -284,7 +284,7 @@ export default function Contact() {
                   <div className="space-y-2">
                     <label
                       htmlFor="contact-details"
-                      className="text-sm font-bold text-slate-300 ml-1"
+                      className="text-sm font-bold text-foreground ml-1"
                     >
                       Project Details
                     </label>
@@ -300,7 +300,7 @@ export default function Contact() {
                           projectDetails: e.target.value,
                         }))
                       }
-                      className="w-full bg-black/30 border border-white/15 rounded-2xl px-5 py-4 text-foreground placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyber-cyan/25 focus:border-cyber-cyan focus:bg-black/50 transition-all resize-none"
+                      className="field-input resize-none"
                     />
                   </div>
 
@@ -313,7 +313,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={status === "submitting"}
-                    className="w-full group bg-cyber-cyan hover:bg-cyan-300 text-cyber-dark font-bold py-5 rounded-2xl shadow-neon-cyan hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+                    className="w-full group bg-cyber-cyan hover:bg-cyber-cyan-bright text-cyber-dark font-bold py-5 rounded-2xl shadow-neon-cyan hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
                   >
                     {status === "submitting" ? "Sending..." : "Get My Free Plan"}
                     {status !== "submitting" && (

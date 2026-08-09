@@ -26,11 +26,11 @@ export default function Pricing() {
             <p className="mt-4 text-3xl font-black tracking-tighter text-foreground">
               {formatFromPrice(service)}
             </p>
-            <p className="mt-2 text-xs font-medium leading-relaxed text-muted-foreground">
+            <p className="mt-2 text-sm font-medium leading-relaxed text-muted-foreground">
               {service.priceNote}
             </p>
             {service.yearlyCost && (
-              <p className="mt-1 text-xs font-bold text-cyber-cyan">
+              <p className="mt-1 text-sm font-bold text-cyber-cyan-soft">
                 + ${service.yearlyCost.amount}/year{" "}
                 <span className="font-medium text-muted-foreground">
                   {service.yearlyCost.note.replace(/^per year /, "")}
@@ -41,7 +41,7 @@ export default function Pricing() {
             <ul className="mt-8 space-y-3">
               {service.includes.slice(0, 4).map((item) => (
                 <li key={item} className="flex gap-2.5 text-sm text-muted-foreground">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyber-cyan" />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyber-cyan-soft" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -49,7 +49,7 @@ export default function Pricing() {
 
             <Link
               href={`/services/${service.slug}`}
-              className="mt-8 inline-flex items-center justify-center rounded-2xl border border-border bg-white/5 px-5 py-3 text-sm font-bold text-foreground transition-all hover:border-cyber-cyan/50 hover:bg-cyber-cyan/10 hover:text-cyan-300 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+              className="mt-8 inline-flex items-center justify-center rounded-2xl border border-border bg-white/5 px-5 py-3 text-sm font-bold text-foreground transition-all hover:border-border-brand hover:bg-cyber-cyan/10 hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
             >
               See what&apos;s included
             </Link>
@@ -61,7 +61,7 @@ export default function Pricing() {
         Ongoing care is separate — see the{" "}
         <Link
           href="/#growth"
-          className="font-bold text-cyber-cyan underline-offset-4 hover:underline"
+          className="font-bold text-cyber-cyan-soft underline-offset-4 hover:underline"
         >
           maintenance retainer
         </Link>{" "}

@@ -24,18 +24,25 @@ export default function Hero() {
           </div>
         </div>
 
-        <h2 className="mb-4 text-2xl font-extrabold tracking-wider text-cyber-cyan text-shadow-glow-cyan sm:text-3xl">
+        <h2 className="mb-4 text-2xl font-extrabold tracking-wider text-cyber-cyan-soft text-shadow-glow-cyan sm:text-3xl">
           WA AI Digital
         </h2>
 
         <Badge
           variant="outline"
-          className="mb-6 h-auto border-cyber-cyan/50 bg-cyber-cyan/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-cyber-cyan shadow-neon-cyan"
+          className="mb-6 h-auto border-border-brand bg-cyber-cyan/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-cyber-cyan-soft"
         >
           Based in Western Australia
         </Badge>
 
-        <h1 className="mb-6 text-3xl font-black leading-tight tracking-tight text-white text-shadow-glow-white sm:text-5xl">
+        {/* `text-shadow-glow-white` is deliberately gone. A 12px white blur
+            behind white glyphs on a near-black panel is halation by
+            construction — it is the exact optical artifact that makes dark
+            interfaces tiring, and it lands on the largest, most-read words on
+            the site. `text-foreground` rather than `text-white` for the same
+            reason: pure white here was 18.7:1, past the point where more
+            contrast stops helping and starts blooming. */}
+        <h1 className="mb-6 text-3xl font-black leading-tight tracking-tight text-foreground sm:text-5xl">
           Sites and systems that already work somewhere.
         </h1>
 
@@ -48,14 +55,14 @@ export default function Hero() {
         <div className="mx-auto flex w-full max-w-md flex-col gap-3">
           <Button
             asChild
-            className="h-auto w-full rounded-xl border border-cyber-cyan/40 bg-gradient-to-r from-slate-800 to-slate-900 py-4 font-semibold text-cyber-cyan shadow-neon-cyan transition duration-200 hover:border-cyber-cyan hover:bg-slate-800"
+            className="h-auto w-full rounded-xl border border-border-brand bg-gradient-to-r from-[#1a2133] to-[#111725] py-4 font-semibold text-cyber-cyan-soft shadow-neon-cyan transition duration-200 hover:border-cyber-cyan hover:bg-[#232c42]"
           >
             <Link href="/#contact">Start Your Project</Link>
           </Button>
           <Button
             asChild
             variant="outline"
-            className="h-auto w-full rounded-xl border-white/20 bg-transparent py-4 font-semibold text-slate-200 transition duration-200 hover:bg-white/5 hover:text-white"
+            className="h-auto w-full rounded-xl border-border-strong bg-transparent py-4 font-semibold text-foreground transition duration-200 hover:bg-white/5 hover:text-white"
           >
             <Link href="/work">See the work</Link>
           </Button>

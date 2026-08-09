@@ -92,21 +92,49 @@ but *not* `npm run preview` — preview is a real production build.
 The visual language is **dark "brushed metal + neon cyan"**. The site is
 dark-only: `:root` in `app/globals.css` holds the dark palette directly and
 `<html>` carries a permanent `dark` class, so there is no light mode and no
-theme toggle. Surfaces are dark metal panels — `linear-gradient(145deg,#181d28,#0e121a)`
-with a lit `border-cyber-cyan/25` edge — over the layout's PCB background, using
+theme toggle. Surfaces are dark metal panels — `linear-gradient(145deg,#1a2133,#111725)`
+with a neutral `border-border` hairline — over the layout's PCB background, using
 large custom radii (`rounded-[2rem]`, `rounded-[2.5rem]`).
 
-Reach for the tokens rather than raw colours:
+Reach for the tokens rather than raw colours. **Never use a `slate-*`/`gray-*`
+scale value** — the three-rung text ramp covers every case:
 
-- `bg-cyber-dark`, `text-cyber-cyan`, `bg-cyber-purple` (from the `@theme` block)
-- `shadow-neon-cyan`, `text-shadow-glow-cyan`, `text-shadow-glow-white`
-- `.glass-card` / `.glass-card-interactive` / `.section-label` for shared surfaces
-- semantic tokens (`text-foreground`, `text-muted-foreground`, `border-border`,
-  `bg-card`) so the shadcn primitives stay consistent
+| token                   | value     | use                          | on card    |
+| ----------------------- | --------- | ---------------------------- | ---------- |
+| `text-foreground`       | `#e8eef7` | headings, emphasis           | 13.8:1 · Lc −94 |
+| `text-muted-foreground` | `#c6d2e2` | body copy — the default      | 10.5:1 · Lc −76 |
+| `text-foreground-subtle`| `#9caac0` | metadata, placeholders, captions | 6.8:1 · Lc −53 |
+
+Cyan is split by **role**, because one value cannot be a fill, a link and a
+border at once:
+
+- `bg-cyber-cyan` `#00f2ff` — fills, the swan mark, focus rings. **Never body text.**
+- `text-cyber-cyan-soft` `#7ce4f2` — links, eyebrows, icons, metadata
+- `text-cyber-cyan-bright` `#a8eef8` — the hover state for both
+- `border-border` → `border-border-strong` → `border-border-brand` — edges get
+  the accent on **hover/focus**, not at rest
+- `.glass-card` / `.glass-card-interactive` / `.section-label` / `.field-input` /
+  `.focus-ring` for shared surfaces
 
 **Cyan is a light colour.** Anything on a `bg-cyber-cyan` fill needs
 `text-cyber-dark`, never `text-white` — white on `#00f2ff` is ~1.4:1 and fails
 contrast badly.
+
+**Two contrast rules that are easy to get wrong on this palette:**
+
+1. _Don't put glow behind glyphs._ A blurred halo around light text on a dark
+   panel is halation — the thing that makes dark UI tiring. `shadow-neon-cyan`
+   belongs on the mark and on fills; `text-shadow-glow-*` is now near-zero and
+   should stay that way.
+2. _WCAG 2 flatters light-on-dark._ Check APCA as well. `#94a3b8` body copy
+   scored 6.6:1 (a clean AA pass) while sitting at Lc −50 against a body-text
+   target of Lc 75 — passing and unreadable at the same time. Targets: body
+   `|Lc| ≥ 75`, large/secondary `≥ 60`, UI boundaries `≥ 3:1`, and a ceiling of
+   about `|Lc| 95` before light text starts to bloom.
+
+Form-control borders are the one place WCAG 1.4.11 genuinely bites: `--input`
+must clear 3:1 against **both** the field fill and the surface behind it. Use
+`.field-input`, which already does.
 
 Entrance animations use framer-motion `initial` / `whileInView` with
 `viewport={{ once: true }}` and a `delay: index * 0.1` stagger (see

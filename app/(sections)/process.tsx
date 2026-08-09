@@ -45,7 +45,7 @@ export default function Process() {
             transition={{ duration: 0.5, delay: index * 0.1 }}
             className="relative"
           >
-            <span className="mb-5 block text-5xl font-black tracking-tighter text-cyber-cyan/20">
+            <span className="mb-5 block text-5xl font-black tracking-tighter text-cyber-cyan-soft/20">
               {item.step}
             </span>
             <h3 className="mb-3 text-lg font-black tracking-tight text-foreground">

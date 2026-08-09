@@ -37,11 +37,11 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
     >
       <Link
         href={`/services/${service.slug}`}
-        className="group glass-card glass-card-interactive relative flex h-full flex-col overflow-hidden p-8 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+        className="group glass-card glass-card-interactive relative flex h-full flex-col overflow-hidden p-8 focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
       >
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyber-cyan/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-        <div className="relative mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyber-cyan/10 text-cyber-cyan transition-all duration-300 group-hover:scale-110 group-hover:bg-cyber-cyan/20">
+        <div className="relative mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyber-cyan/10 text-cyber-cyan-soft transition-all duration-300 group-hover:scale-110 group-hover:bg-cyber-cyan/20">
           <Icon className="h-6 w-6" />
         </div>
 
@@ -57,7 +57,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
             <span className="text-sm font-bold text-foreground">
               {formatFromPrice(service)}
             </span>
-            <span className="inline-flex items-center gap-1 text-sm font-bold text-cyber-cyan">
+            <span className="inline-flex items-center gap-1 text-sm font-bold text-cyber-cyan-soft">
               Explore
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>

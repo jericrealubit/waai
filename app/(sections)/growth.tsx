@@ -46,7 +46,7 @@ export default function Growth() {
         {features.map((feature) => (
           <div key={feature.title} className="glass-card p-8">
             <div className="mb-5 w-fit rounded-xl bg-cyber-cyan/10 p-3">
-              <feature.icon className="h-6 w-6 text-cyber-cyan" />
+              <feature.icon className="h-6 w-6 text-cyber-cyan-soft" />
             </div>
             <h3 className="mb-3 text-lg font-black tracking-tight text-foreground">
               {feature.title}

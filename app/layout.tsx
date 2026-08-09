@@ -73,19 +73,25 @@ export default function RootLayout({
           `bg-cyber-dark` alongside it is the flat fallback that keeps the page
           from flashing white before that gradient resolves. */}
       <body
-        className="bg-pcb-pattern relative min-h-screen bg-cyber-dark text-foreground antialiased selection:bg-cyber-cyan/30 selection:text-white"
+        className="bg-pcb-pattern relative min-h-screen bg-cyber-dark text-foreground antialiased selection:bg-cyber-cyan selection:text-cyber-dark"
         suppressHydrationWarning
       >
-        {/* --- Persistent Neon Horizon Background --- */}
+        {/* --- Persistent Neon Horizon Background ---
+            Opacities cut roughly in half (10% -> 5/6%, 5% -> 3%). These blobs
+            sit under the content, so wherever one drifts beneath a paragraph
+            it lifts the background luminance and lowers that paragraph's real
+            contrast ratio — the palette's measured numbers only hold if the
+            floor stays put. Halved, they still read as a lit horizon while
+            keeping every text pairing at its stated value. */}
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
           {/* Top Left: Cyan Glow */}
-          <div className="absolute -top-[10%] -left-[10%] w-[70%] h-[70%] bg-cyber-cyan/10 rounded-full blur-[120px]" />
+          <div className="absolute -top-[10%] -left-[10%] w-[70%] h-[70%] bg-cyber-cyan/6 rounded-full blur-[120px]" />
 
           {/* Middle Right: Purple Glow */}
-          <div className="absolute top-[30%] -right-[10%] w-[60%] h-[60%] bg-cyber-purple/10 rounded-full blur-[100px]" />
+          <div className="absolute top-[30%] -right-[10%] w-[60%] h-[60%] bg-cyber-purple/5 rounded-full blur-[100px]" />
 
           {/* Bottom Left: Faint Cyan Glow */}
-          <div className="absolute -bottom-[10%] left-[10%] w-[50%] h-[50%] bg-cyber-cyan/5 rounded-full blur-[120px]" />
+          <div className="absolute -bottom-[10%] left-[10%] w-[50%] h-[50%] bg-cyber-cyan/3 rounded-full blur-[120px]" />
         </div>
 
         {/* Replaced <Navbar /> with <Header /> */}

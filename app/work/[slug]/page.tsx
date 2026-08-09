@@ -59,7 +59,7 @@ export default async function CaseStudyPage({
       <Section className="pb-8">
         <Link
           href="/work"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan-soft focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
         >
           <ArrowLeft className="h-4 w-4" />
           All work
@@ -72,7 +72,7 @@ export default async function CaseStudyPage({
           <h1 className="mt-4 text-4xl font-black leading-[1.1] tracking-tight text-foreground md:text-6xl">
             {study.name}
           </h1>
-          <p className="mt-3 text-sm font-bold uppercase tracking-wider text-slate-500">
+          <p className="mt-3 text-sm font-bold uppercase tracking-wider text-foreground-subtle">
             {study.sector}
           </p>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
@@ -84,7 +84,7 @@ export default async function CaseStudyPage({
               href={study.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+              className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
             >
               <ExternalLink className="h-4 w-4" />
               Visit {study.liveLabel}
@@ -93,7 +93,7 @@ export default async function CaseStudyPage({
               href={study.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-white/5 px-6 py-3.5 text-sm font-bold text-foreground transition-all hover:border-cyber-cyan/50 hover:bg-cyber-cyan/10 hover:text-cyan-300 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-white/5 px-6 py-3.5 text-sm font-bold text-foreground transition-all hover:border-border-brand hover:bg-cyber-cyan/10 hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
             >
               <Github className="h-4 w-4" />
               View the repository
@@ -112,7 +112,7 @@ export default async function CaseStudyPage({
 
           {study.secondaryLink && (
             <div className="mt-8 border-t border-border pt-6">
-              <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <p className="mb-3 text-xs font-bold uppercase tracking-wider text-foreground-subtle">
                 {study.secondaryLink.label}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -120,7 +120,7 @@ export default async function CaseStudyPage({
                   href={study.secondaryLink.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
                 >
                   <ExternalLink className="h-4 w-4" />
                   Visit {study.secondaryLink.liveLabel}
@@ -129,7 +129,7 @@ export default async function CaseStudyPage({
                   href={study.secondaryLink.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-border bg-white/5 px-6 py-3.5 text-sm font-bold text-foreground transition-all hover:border-cyber-cyan/50 hover:bg-cyber-cyan/10 hover:text-cyan-300 focus-visible:ring-3 focus-visible:ring-cyber-cyan/50 focus-visible:outline-none"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-border bg-white/5 px-6 py-3.5 text-sm font-bold text-foreground transition-all hover:border-border-brand hover:bg-cyber-cyan/10 hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
                 >
                   <Github className="h-4 w-4" />
                   View the repository
@@ -184,7 +184,7 @@ export default async function CaseStudyPage({
             <ol className="mb-12 space-y-5">
               {study.approach.map((item, index) => (
                 <li key={item} className="flex gap-4">
-                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cyber-cyan/10 text-xs font-black text-cyber-cyan">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cyber-cyan/10 text-xs font-black text-cyber-cyan-soft">
                     {index + 1}
                   </span>
                   <p className="leading-relaxed text-muted-foreground">{item}</p>
@@ -199,7 +199,7 @@ export default async function CaseStudyPage({
               {study.highlights.map((item) => (
                 <li
                   key={item}
-                  className="border-l-2 border-cyber-cyan/30 pl-5 leading-relaxed text-muted-foreground"
+                  className="border-l-2 border-border pl-5 leading-relaxed text-muted-foreground"
                 >
                   {item}
                 </li>
@@ -217,7 +217,7 @@ export default async function CaseStudyPage({
                   <Badge
                     key={tech}
                     variant="secondary"
-                    className="bg-cyber-cyan/10 text-cyber-cyan"
+                    className="bg-cyber-cyan/10 text-cyber-cyan-soft"
                   >
                     {tech}
                   </Badge>
@@ -234,7 +234,7 @@ export default async function CaseStudyPage({
                   <dd className="mt-0.5">
                     <Link
                       href={`/services/${service.slug}`}
-                      className="text-cyber-cyan underline-offset-4 hover:underline"
+                      className="text-cyber-cyan-soft underline-offset-4 hover:underline"
                     >
                       {service.name}
                     </Link>
