@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/header"; // Corrected import
 import { Footer } from "@/components/footer";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -97,6 +98,19 @@ export default function RootLayout({
 
         <Footer />
       </body>
+
+      {/* GA4. Google's snippet says "paste on every page"; in the App Router
+          that means exactly once, here — every route renders through this
+          layout, so one placement covers /, /services/*, /work/* and /chat
+          while still emitting a single tag per page. Never add a second one
+          to an individual page.
+
+          NODE_ENV keeps `npm run dev` out of the property. Note it does NOT
+          exclude `npm run preview`, which is a real production build — filter
+          those in GA4 under Admin > Data Streams > Define internal traffic. */}
+      {process.env.NODE_ENV === "production" && (
+        <GoogleAnalytics gaId="G-QCJZ719Y5K" />
+      )}
     </html>
   );
 }

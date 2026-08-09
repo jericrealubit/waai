@@ -79,6 +79,14 @@ with `pt-24 md:pt-32` to clear the fixed header, `ScrollToTop`, and `Footer`.
 Anything added to layout must respect that stacking (`-z-10` background,
 `z-50` header).
 
+It also owns **the site's only analytics tag** — `<GoogleAnalytics>` from
+`@next/third-parties/google`, rendered as a sibling of `<body>`. The root layout
+is the single correct home for it: every route renders through here, so one
+placement covers the whole site and keeps exactly one tag per page. Never add a
+second `GoogleAnalytics` (or a raw gtag `<script>`) to an individual page. It's
+gated on `process.env.NODE_ENV === "production"`, which excludes `npm run dev`
+but *not* `npm run preview` — preview is a real production build.
+
 ## Styling conventions
 
 The visual language is **dark "brushed metal + neon cyan"**. The site is
