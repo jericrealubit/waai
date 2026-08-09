@@ -137,7 +137,7 @@ export default function Contact() {
             {/* Form Shadow/Glow Effect */}
             <div className="absolute inset-0 bg-cyber-cyan/10 blur-[100px] -z-10 rounded-full" />
 
-            <div className="bg-[linear-gradient(145deg,#181d28,#0e121a)] border border-border shadow-[0_20px_50px_rgb(0_0_0/0.8),inset_0_1px_1px_rgb(255_255_255/0.2)] rounded-[2rem] p-8 md:p-12">
+            <div className="bg-[linear-gradient(145deg,#181d28,#0e121a)] border border-border shadow-e1 rounded-[2rem] p-8 md:p-12">
               {status === "success" ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="w-16 h-16 rounded-full bg-cyber-cyan/10 flex items-center justify-center text-cyber-cyan-soft mb-6">
@@ -313,7 +313,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={status === "submitting"}
-                    className="w-full group bg-cyber-cyan hover:bg-cyber-cyan-bright text-cyber-dark font-bold py-5 rounded-2xl shadow-neon-cyan hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+                    className="w-full group bg-cyber-cyan hover:bg-cyber-cyan-bright text-cyber-dark font-bold py-5 rounded-2xl shadow-neon-cyan hover:shadow-neon-cyan-strong active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
                   >
                     {status === "submitting" ? "Sending..." : "Get My Free Plan"}
                     {status !== "submitting" && (

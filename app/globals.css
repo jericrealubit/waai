@@ -67,69 +67,133 @@
   --text-shadow-glow-cyan: 0 0 14px rgb(0 242 255 / 0.28);
   --text-shadow-glow-white: 0 0 1px rgb(255 255 255 / 0.12);
 
+  /* ── Elevation ──────────────────────────────────────────────────────────
+     A black shadow on a near-black page is invisible, which is why the old
+     `0 20px 50px rgb(0 0 0 / 0.8)` did nothing but cost paint time. On dark
+     surfaces height is read from the *lit top edge* — a bright inset hairline
+     where the light catches — with the shadow only anchoring the object to
+     the page. So every rung here is: specular edge + tight contact shadow +
+     wide ambient shadow, and the surface itself steps up a rung too.
+
+       shadow-e1  resting cards
+       shadow-e2  hovered cards, the floating header
+       shadow-e3  overlays — mobile menu, popovers               */
+  --shadow-e1: inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.5);
+  --shadow-e2: inset 0 1px 0 rgb(255 255 255 / 0.09),
+    0 2px 4px rgb(0 0 0 / 0.45), 0 16px 40px -12px rgb(0 0 0 / 0.6);
+  --shadow-e3: inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 4px 8px rgb(0 0 0 / 0.5), 0 28px 64px -16px rgb(0 0 0 / 0.7);
+
   /* Footer attribution flame + the two smoke puffs drifting off it. Registered
      as `--animate-*` tokens (with their keyframes inline, which is how v4 wants
      them) so they're ordinary utilities: `animate-cyber-fire`, and crucially
      `motion-safe:` works, letting the whole effect switch off for anyone with
      reduced motion set. The two smoke tokens differ only in start delay. */
-  --animate-cyber-fire: flame-flicker 1.4s infinite ease-in-out;
-  --animate-smoke-1: smoke-rise 2.6s infinite ease-out;
-  --animate-smoke-2: smoke-rise 2.6s infinite ease-out 0.85s;
-  --animate-smoke-3: smoke-rise 2.6s infinite ease-out 1.7s;
+  /* ── The flame blows the smoke ──────────────────────────────────────────
+     The whole badge runs on one beat so the two halves read as cause and
+     effect rather than two things animating nearby. Everything below is
+     derived from it:
 
-  /* Blinks as well as flickers — opacity swings hard between frames so the
-     flame visibly pulses rather than just wobbling in place. */
+       beat            1.8s    the flame ducks, then flares, once per beat
+       flare peak      13%     = 0.234s into the beat
+       puff launch     0.31s   ~80ms after the peak — the flame blows it out
+       puff flight     5.4s    = exactly 3 beats
+       puff delays     0.31s / 2.11s / 3.91s  — one beat apart
+
+     Because the flight time is a whole multiple of the beat, a puff leaves on
+     every flare forever without drifting: three are in the air at any moment,
+     staggered a beat apart.
+
+     The 80ms lag is the part that sells it. Launching *on* the peak reads as
+     two things happening at once; a lag of roughly 70–100ms reads as one
+     thing causing the other, and anything past ~150ms decouples again into
+     two unrelated events. An earlier pass had this at 6ms — less than a frame
+     at 60fps, so effectively simultaneous.
+
+     One animation, not two, and it owns opacity, transform and filter
+     together. An independent second animation on the transform would slide
+     out of phase and break the lock. */
+  --animate-cyber-fire: flame-flicker 1.8s infinite ease-in-out;
+  --animate-smoke-1: smoke-rise 5.4s infinite ease-out 0.31s;
+  --animate-smoke-2: smoke-rise 5.4s infinite ease-out 2.11s;
+  --animate-smoke-3: smoke-rise 5.4s infinite ease-out 3.91s;
+
+  /* One beat of the flame: duck, blow, settle.
+
+       0%   resting
+       6%   ducks — squashes down and dims, drawing breath
+      13%   THE BLOW: tallest, brightest, widest glow. The puff launches
+            0.24s in, one frame after this, so it leaves on the exhale
+      26%   recoiling from the flare
+      45%   a small secondary lick so it still reads as fire between beats
+     100%   back to resting, ready for the next beat
+
+     `transform-origin` is set to the bottom on the element (see
+     components/footer.tsx) so the flare grows upward out of the wick instead
+     of scaling about its middle. */
   @keyframes flame-flicker {
     0%,
     100% {
       opacity: 1;
-      transform: scale(1) rotate(-1deg);
+      transform: scaleY(1) scaleX(1) rotate(-1deg);
       filter: drop-shadow(0 0 8px rgb(0 242 255 / 0.95))
         drop-shadow(0 0 16px rgb(180 124 240 / 0.7));
     }
-    20% {
-      opacity: 0.45;
-      transform: scale(1.16) rotate(3deg);
-      filter: drop-shadow(0 0 16px rgb(0 242 255 / 1))
-        drop-shadow(0 0 26px rgb(0 242 255 / 0.9));
+    6% {
+      opacity: 0.55;
+      transform: scaleY(0.82) scaleX(1.1) rotate(1deg);
+      filter: drop-shadow(0 0 5px rgb(180 124 240 / 0.8));
     }
-    40% {
+    13% {
       opacity: 1;
-      transform: scale(0.9) rotate(-3deg);
-      filter: drop-shadow(0 0 6px rgb(180 124 240 / 0.9))
-        drop-shadow(0 0 12px rgb(0 242 255 / 0.7));
+      transform: scaleY(1.3) scaleX(0.92) rotate(-2deg);
+      filter: drop-shadow(0 0 18px rgb(0 242 255 / 1))
+        drop-shadow(0 0 34px rgb(0 242 255 / 0.9));
     }
-    60% {
-      opacity: 0.35;
-      transform: scale(1.2) rotate(2deg);
-      filter: drop-shadow(0 0 20px rgb(0 242 255 / 1))
-        drop-shadow(0 0 30px rgb(180 124 240 / 0.85));
+    26% {
+      opacity: 0.8;
+      transform: scaleY(0.95) scaleX(1.04) rotate(2deg);
+      filter: drop-shadow(0 0 10px rgb(0 242 255 / 0.9))
+        drop-shadow(0 0 18px rgb(180 124 240 / 0.7));
     }
-    80% {
-      opacity: 0.9;
-      transform: scale(1.05) rotate(-2deg);
-      filter: drop-shadow(0 0 12px rgb(0 242 255 / 1))
-        drop-shadow(0 0 22px rgb(180 124 240 / 0.75));
+    45% {
+      opacity: 0.95;
+      transform: scaleY(1.08) scaleX(0.98) rotate(-2deg);
+      filter: drop-shadow(0 0 12px rgb(0 242 255 / 0.95))
+        drop-shadow(0 0 20px rgb(180 124 240 / 0.6));
     }
   }
 
-  /* Travels ~40px now (was 16px) and holds a much higher peak opacity, so the
-     puffs actually read as smoke leaving the top of the badge. */
+  /* Reach raised to 72px (was 40px, originally 16px) so the puffs clear the
+     badge and drift well up into the footer rather than dissolving just above
+     the flame. The extra distance needs a longer cycle or the smoke looks
+     like it is being fired rather than rising, hence 3.4s below, and the
+     opacity now holds through the middle of the climb so the puff stays
+     visible for most of the journey instead of fading in the first third.
+     The parent span is `overflow-visible` — see components/footer.tsx. */
   @keyframes smoke-rise {
     0% {
       opacity: 0;
       transform: translateY(0) scale(0.5) rotate(0deg);
     }
-    25% {
-      opacity: 0.85;
+    /* Snaps to full in 0.32s — a puff that fades in over a second looks like
+       it condensed out of the air rather than being blown out of the flame. */
+    6% {
+      opacity: 0.95;
+      transform: translateY(-6px) scale(0.75) rotate(2deg);
+    }
+    30% {
+      opacity: 0.6;
+      transform: translateY(-28px) scale(1.3) rotate(7deg);
     }
     60% {
-      opacity: 0.5;
-      transform: translateY(-24px) scale(1.4) rotate(8deg);
+      opacity: 0.32;
+      transform: translateY(-50px) scale(1.9) rotate(12deg);
     }
     100% {
       opacity: 0;
-      transform: translateY(-40px) scale(2.2) rotate(16deg);
+      transform: translateY(-72px) scale(2.6) rotate(18deg);
     }
   }
 }
@@ -253,6 +317,35 @@
   --input: rgb(226 240 255 / 0.44);
   --input-bg: #0d1320;
   --ring: #00f2ff;
+
+  /* ── Glass ──────────────────────────────────────────────────────────────
+     The header is `fixed` over a page that scrolls near-white case-study
+     screenshots underneath it, so whatever shows through changes the
+     luminance behind the nav text. Worst case — pure white passing under the
+     panel — sets the floor:
+
+       70% fill -> nav 5.7:1, cyan link 4.5:1   (on the line)
+       80% fill -> nav 8.2:1, cyan link 6.5:1   <- floor
+       88% fill -> nav 10.8:1, cyan link 8.6:1
+
+     The gradient runs 0.86 -> 0.80, so even its most transparent edge sits
+     on the floor. Worth knowing: glass reads as glass because of the blur,
+     the saturation boost and the lit top edge — not because it is
+     see-through. Those three are free of contrast cost, which is why this
+     can look considerably glassier than the old flat 80% panel while
+     measuring better. */
+  --glass-fill: linear-gradient(
+    160deg,
+    rgb(30 38 58 / 0.86),
+    rgb(15 21 34 / 0.8)
+  );
+  --glass-fill-solid: #161d2d; /* the no-backdrop-filter fallback */
+  --glass-blur: blur(20px) saturate(160%);
+  --glass-border: rgb(226 240 255 / 0.14);
+  /* Two inset lines do the work: a bright one on top where light catches the
+     edge, a dark one underneath for thickness. */
+  --glass-edge: inset 0 1px 0 rgb(255 255 255 / 0.14),
+    inset 0 -1px 0 rgb(0 0 0 / 0.3);
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
@@ -293,14 +386,38 @@
     text-wrap: pretty;
   }
 
+  /* WCAG 1.4.1: a link inside a block of running text can't be signalled by
+     colour alone. Scoped to `p` on purpose — that catches prose links and
+     nothing else, so nav items, buttons and whole-card links stay clean
+     (those are identifiable by position and shape instead). The underline is
+     offset and thinned so it doesn't collide with descenders. */
+  p a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgb(124 228 242 / 0.45);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms;
+  }
+  p a:hover {
+    text-decoration-color: currentColor;
+  }
+
   /* Every entrance animation on the site comes from framer-motion `initial` /
      `whileInView`, none of which consult the OS setting. Zeroing durations
      globally is the one-line catch-all: the elements still land in their
-     final state, they just stop travelling. */
+     final state, they just stop travelling.
+
+     The footer flame and its smoke are the deliberate exception — see the
+     comment in components/footer.tsx. `:not(.motion-always)` carves them out
+     so the catch-all keeps covering the scroll-triggered animations (the ones
+     that actually cause trouble) without taking the build credit with it.
+     Note this is a considered override of the OS preference rather than an
+     oversight: it is a 16px decorative badge in the footer, not motion in the
+     reading path. */
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *:not(.motion-always),
+    *:not(.motion-always)::before,
+    *:not(.motion-always)::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -325,8 +442,6 @@
   }
 }
 
-/* The dark "PCB" field behind the whole page — a near-black base lit by a cyan
-   and a purple bloom in opposite corners. Applied to <body> in app/layout.tsx. */
 /* The dark "PCB" field behind the whole page — a near-black base lit by a cyan
    and a purple bloom in opposite corners. Applied to <body> in app/layout.tsx.
 
@@ -354,16 +469,113 @@
   .glass-card {
     @apply rounded-[2.5rem] border border-border
       bg-[linear-gradient(145deg,#1a2133,#111725)]
-      shadow-[0_18px_44px_rgb(0_0_0/0.55),inset_0_1px_0_rgb(226_240_255/0.07)]
-      transition-all duration-500;
+      shadow-e1 transition-all duration-500;
+  }
+
+  /* ── The glass material ─────────────────────────────────────────────────
+     Shared by the floating header, the mobile menu and the secondary
+     buttons, so all three read as the same substance at different
+     thicknesses. Three properties do the work:
+
+       backdrop-filter blur   melts what passes underneath
+       saturate(160%)         lets the cyan and purple blooms bleed through
+                              with their colour intact instead of going grey
+       the two inset lines    a lit top edge and a dark underside — this is
+                              what actually says "pane of glass" rather than
+                              "translucent rectangle"
+
+     `background-clip: padding-box` keeps the fill from bleeding under the
+     1px border, which otherwise muddies the rim on rounded corners.
+
+     Written out longhand rather than composed with `@apply`: in Tailwind v4
+     `@apply` only accepts real utilities, so applying one `@layer components`
+     class inside another fails to compile. */
+  .glass-nav,
+  .glass-panel {
+    border-radius: 2rem;
+    background: var(--glass-fill);
+    background-clip: padding-box;
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+  }
+  .glass-nav {
+    box-shadow: var(--glass-edge), var(--shadow-e2);
+  }
+  /* The mobile menu floats above the nav, so it goes one rung higher and one
+     notch more opaque — it covers body content rather than the page edge. */
+  .glass-panel {
+    background: linear-gradient(
+      160deg,
+      rgb(30 38 58 / 0.94),
+      rgb(15 21 34 / 0.9)
+    );
+    box-shadow: var(--glass-edge), var(--shadow-e3);
+  }
+
+  /* Secondary / ghost button. Thinner glass than the nav — it sits on cards
+     and on the page, never over arbitrary imagery, so the fill can be much
+     lighter without risking the label. Text stays `--foreground`, which
+     clears 10:1 on every surface this lands on. */
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl
+      px-6 py-3.5 text-sm font-bold text-foreground
+      transition-all duration-200;
+    background: rgb(226 240 255 / 0.07);
+    background-clip: padding-box;
+    border: 1px solid var(--border-strong);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 1px 2px rgb(0 0 0 / 0.35);
+  }
+  .btn-glass:hover {
+    background: rgb(226 240 255 / 0.12);
+    border-color: var(--border-brand);
+    color: var(--color-cyber-cyan-bright);
+  }
+  .btn-glass:active {
+    transform: scale(0.985);
+  }
+
+  /* Not every browser ships backdrop-filter (and Firefox users can still turn
+     it off). Without this the panels fall back to their raw alpha, which puts
+     unblurred page content directly behind the nav text. */
+  @supports not ((backdrop-filter: blur(1px)) or
+    (-webkit-backdrop-filter: blur(1px))) {
+    .glass-nav,
+    .glass-panel {
+      background: var(--glass-fill-solid);
+    }
+    .btn-glass {
+      background: #222a3d;
+    }
+  }
+
+  /* The OS-level "reduce transparency" switch exists because translucency
+     over moving content is genuinely hard to read for some people. Honour it
+     by serving the same layout in solid form — the specular edge stays, so
+     the components still look deliberate rather than unstyled. */
+  @media (prefers-reduced-transparency: reduce) {
+    .glass-nav,
+    .glass-panel {
+      background: var(--glass-fill-solid);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .btn-glass {
+      background: #222a3d;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
   }
 
   /* Hoverable variant — lifts and picks up a cyan edge. Opt in, because not
      every metal surface is a link. The accent now arrives on hover instead of
      sitting on every card at rest, which is what makes the state legible. */
   .glass-card-interactive {
-    @apply hover:-translate-y-2 hover:border-border-brand
-      hover:shadow-[0_36px_64px_-24px_rgb(0_242_255/0.18)];
+    @apply hover:-translate-y-2 hover:border-border-brand hover:shadow-e2;
   }
 
   /* The small uppercase eyebrow above a section heading. All-caps costs you

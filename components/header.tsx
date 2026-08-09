@@ -20,9 +20,9 @@ export function Header() {
 
   return (
     <header className="fixed top-0 w-full z-50 px-6 py-4 md:px-20">
-      <div className="max-w-7xl mx-auto flex items-center justify-between bg-[#0e121a]/80 backdrop-blur-xl border border-border px-6 py-3 md:px-8 rounded-[2rem] shadow-[0_8px_32px_-6px_rgb(0_0_0/0.7)]">
+      <div className="max-w-7xl mx-auto flex items-center justify-between glass-nav px-6 py-3 md:px-8">
         {/* Brand Section */}
-        <Link href="/" className="flex items-center gap-3 focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none rounded-xl">
+        <Link href="/" className="flex items-center gap-3 focus-ring rounded-xl">
           <Image
             src="/logo-swan.png"
             alt="WA AI Digital Logo"
@@ -42,7 +42,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-cyber-cyan-soft transition-colors focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none rounded"
+              className="hover:text-cyber-cyan-soft transition-colors focus-ring rounded"
             >
               {link.label}
             </Link>
@@ -53,15 +53,22 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Link
             href="/#contact"
-            className="hidden md:block bg-cyber-cyan hover:bg-cyber-cyan-bright text-cyber-dark px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-neon-cyan hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] transform hover:-translate-y-0.5 focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+            className="hidden md:block bg-cyber-cyan hover:bg-cyber-cyan-bright text-cyber-dark px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-neon-cyan hover:shadow-neon-cyan-strong transform hover:-translate-y-0.5 focus-ring"
           >
             Start Project
           </Link>
 
-          {/* Burger Menu Button */}
+          {/* Burger Menu Button — an icon-only control, so it needs a label of
+              its own, and `aria-expanded`/`aria-controls` to tie it to the
+              panel it toggles. Without those a screen reader announces it as
+              an unnamed button with no indication the menu opened. */}
           <button
+            type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-muted-foreground hover:bg-cyber-cyan/10 rounded-xl transition-colors z-50"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
+            className="lg:hidden p-2 text-foreground hover:bg-cyber-cyan/10 rounded-xl transition-colors z-50 focus-ring"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,17 +96,18 @@ export function Header() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 left-6 right-6 p-6 bg-[#0e121a]/95 backdrop-blur-2xl border border-border rounded-[2rem] shadow-2xl lg:hidden flex flex-col gap-4 text-center"
+            className="absolute top-24 left-6 right-6 p-6 glass-panel lg:hidden flex flex-col gap-4 text-center"
           >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="text-lg font-bold text-foreground py-2 hover:text-cyber-cyan-soft transition-colors border-b border-border last:border-0"
+                className="text-lg font-bold text-foreground py-2 hover:text-cyber-cyan-soft transition-colors border-b border-border last:border-0 focus-ring"
               >
                 {link.label}
               </Link>
@@ -107,7 +115,7 @@ export function Header() {
             <Link
               href="/#contact"
               onClick={() => setIsOpen(false)}
-              className="mt-2 bg-cyber-cyan text-cyber-dark py-4 rounded-2xl font-bold text-center shadow-neon-cyan"
+              className="mt-2 bg-cyber-cyan text-cyber-dark py-4 rounded-2xl font-bold text-center shadow-neon-cyan focus-ring"
             >
               Start Project
             </Link>

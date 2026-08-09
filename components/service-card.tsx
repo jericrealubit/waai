@@ -37,7 +37,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
     >
       <Link
         href={`/services/${service.slug}`}
-        className="group glass-card glass-card-interactive relative flex h-full flex-col overflow-hidden p-8 focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+        className="group glass-card glass-card-interactive relative flex h-full flex-col overflow-hidden p-8 focus-ring"
       >
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyber-cyan/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 

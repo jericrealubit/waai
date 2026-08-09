@@ -49,7 +49,7 @@ export default function Pricing() {
 
             <Link
               href={`/services/${service.slug}`}
-              className="mt-8 inline-flex items-center justify-center rounded-2xl border border-border bg-white/5 px-5 py-3 text-sm font-bold text-foreground transition-all hover:border-border-brand hover:bg-cyber-cyan/10 hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+              className="btn-glass mt-8 w-full px-5 py-3 focus-ring"
             >
               See what&apos;s included
             </Link>

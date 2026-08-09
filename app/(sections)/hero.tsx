@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   return (
@@ -52,20 +51,20 @@ export default function Hero() {
           a project you can open in a browser and read on GitHub.
         </p>
 
+        {/* Plain links rather than <Button variant="outline">. The shadcn
+            variants set `bg-background` / `dark:bg-input/30`, which are
+            utilities and therefore win the cascade over `.btn-glass`'s own
+            background — the glass fill would have been overwritten. */}
         <div className="mx-auto flex w-full max-w-md flex-col gap-3">
-          <Button
-            asChild
-            className="h-auto w-full rounded-xl border border-border-brand bg-gradient-to-r from-[#1a2133] to-[#111725] py-4 font-semibold text-cyber-cyan-soft shadow-neon-cyan transition duration-200 hover:border-cyber-cyan hover:bg-[#232c42]"
+          <Link
+            href="/#contact"
+            className="btn-glass w-full border-border-brand py-4 text-cyber-cyan-soft shadow-neon-cyan hover:border-cyber-cyan hover:text-cyber-cyan-bright focus-ring"
           >
-            <Link href="/#contact">Start Your Project</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="h-auto w-full rounded-xl border-border-strong bg-transparent py-4 font-semibold text-foreground transition duration-200 hover:bg-white/5 hover:text-white"
-          >
-            <Link href="/work">See the work</Link>
-          </Button>
+            Start Your Project
+          </Link>
+          <Link href="/work" className="btn-glass w-full py-4 focus-ring">
+            See the work
+          </Link>
         </div>
       </div>
     </section>

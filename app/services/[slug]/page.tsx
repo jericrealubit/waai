@@ -55,7 +55,7 @@ export default async function ServiceDetailPage({
       <Section className="pb-12">
         <Link
           href="/services"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan-soft focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan-soft focus-ring"
         >
           <ArrowLeft className="h-4 w-4" />
           All services
@@ -159,7 +159,7 @@ export default async function ServiceDetailPage({
           </div>
           <Link
             href="/#contact"
-            className="shrink-0 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+            className="shrink-0 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-neon-cyan-strong focus-ring"
           >
             Start a project
           </Link>

@@ -59,7 +59,7 @@ export default async function CaseStudyPage({
       <Section className="pb-8">
         <Link
           href="/work"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan-soft focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan-soft focus-ring"
         >
           <ArrowLeft className="h-4 w-4" />
           All work
@@ -84,7 +84,7 @@ export default async function CaseStudyPage({
               href={study.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+              className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-neon-cyan-strong focus-ring"
             >
               <ExternalLink className="h-4 w-4" />
               Visit {study.liveLabel}
@@ -93,7 +93,7 @@ export default async function CaseStudyPage({
               href={study.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-white/5 px-6 py-3.5 text-sm font-bold text-foreground transition-all hover:border-border-brand hover:bg-cyber-cyan/10 hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+              className="btn-glass focus-ring"
             >
               <Github className="h-4 w-4" />
               View the repository
@@ -120,7 +120,7 @@ export default async function CaseStudyPage({
                   href={study.secondaryLink.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-[0_0_30px_rgb(0_242_255/0.6)] focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-neon-cyan-strong focus-ring"
                 >
                   <ExternalLink className="h-4 w-4" />
                   Visit {study.secondaryLink.liveLabel}
@@ -129,7 +129,7 @@ export default async function CaseStudyPage({
                   href={study.secondaryLink.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-border bg-white/5 px-6 py-3.5 text-sm font-bold text-foreground transition-all hover:border-border-brand hover:bg-cyber-cyan/10 hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+                  className="btn-glass focus-ring"
                 >
                   <Github className="h-4 w-4" />
                   View the repository

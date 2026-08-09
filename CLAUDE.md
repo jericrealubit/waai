@@ -116,6 +116,28 @@ border at once:
 - `.glass-card` / `.glass-card-interactive` / `.section-label` / `.field-input` /
   `.focus-ring` for shared surfaces
 
+**Glass** (`.glass-nav`, `.glass-panel`, `.btn-glass`) is the material for
+anything that floats over scrolling content — the header, the mobile menu, the
+scroll-to-top button, secondary buttons. Three things make it read as glass:
+the backdrop blur, `saturate(160%)` so the cyan and purple blooms keep their
+colour instead of going grey, and the two inset lines (`--glass-edge`) that
+give it a lit top edge and a dark underside. None of those cost contrast, so
+reach for them before reaching for more transparency.
+
+The fill must not drop below **80%**. The header is `fixed` over case-study
+cards containing near-white screenshots; at 80% a white backdrop still leaves
+nav text at 8.2:1 and cyan links at 6.5:1, and at 70% cyan falls to 4.5:1.
+Both `@supports not (backdrop-filter)` and `prefers-reduced-transparency`
+fall back to `--glass-fill-solid`. The cyan CTA is deliberately **not** glass —
+a translucent fill would break its 13.9:1 label and flatten the action
+hierarchy.
+
+**Elevation is `shadow-e1` / `e2` / `e3`, never a hand-written `shadow-[…]`.**
+On a near-black page a black drop shadow is invisible — the old
+`0 20px 50px rgb(0 0 0 / 0.8)` rendered nothing. Height on dark reads from the
+lit top edge, so each rung is specular hairline + tight contact shadow + wide
+ambient, and the surface steps up a rung as well.
+
 **Cyan is a light colour.** Anything on a `bg-cyber-cyan` fill needs
 `text-cyber-dark`, never `text-white` — white on `#00f2ff` is ~1.4:1 and fails
 contrast badly.
@@ -140,6 +162,15 @@ Entrance animations use framer-motion `initial` / `whileInView` with
 `viewport={{ once: true }}` and a `delay: index * 0.1` stagger (see
 `components/ui/feature-card.tsx`). `"use client"` is applied only to the files
 that need state or motion; sections without interaction stay server components.
+
+A global `prefers-reduced-motion` rule in `globals.css` zeroes durations —
+framer-motion never consults the OS setting on its own, so that catch-all is
+what actually covers the scroll-triggered animations. The footer flame and its
+smoke opt out via **`.motion-always`**, which the rule excludes with
+`*:not(.motion-always)`. That exemption is deliberate (it predates the rule;
+see the comment in `components/footer.tsx`) — put `.motion-always` on the
+animated element itself, not an ancestor, since animation properties don't
+inherit.
 
 **Tailwind v4 is CSS-first** (currently 4.2.1). All theme tokens live in
 `app/globals.css` — a plain `@theme` block for the literal cyber values, a

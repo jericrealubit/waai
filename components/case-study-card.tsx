@@ -35,7 +35,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group glass-card relative isolate flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_48px_80px_-20px_rgb(0_242_255/0.25)]"
+      className="group glass-card relative isolate flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-e2"
     >
       <div className="relative aspect-video w-full overflow-hidden bg-black/40">
         {study.screenshot ? (
@@ -73,7 +73,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
         <h3 className="mb-3 text-xl font-black tracking-tight text-foreground">
           <Link
             href={`/work/${study.slug}`}
-            className="after:absolute after:inset-0 after:z-0 after:content-[''] hover:text-cyber-cyan-soft focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+            className="after:absolute after:inset-0 after:z-0 after:content-[''] hover:text-cyber-cyan-soft focus-ring"
           >
             {study.name}
           </Link>
@@ -99,7 +99,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
             href={study.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-cyber-cyan-soft hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-cyber-cyan-soft hover:text-cyber-cyan-bright focus-ring"
           >
             <ExternalLink className="h-4 w-4" />
             Live site
@@ -109,7 +109,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
             href={study.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground hover:text-white focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+            className="relative z-10 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground hover:text-white focus-ring"
           >
             <Github className="h-4 w-4" />
             GitHub
@@ -131,7 +131,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
               href={study.secondaryLink.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-cyber-cyan-soft hover:text-cyber-cyan-bright focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-cyber-cyan-soft hover:text-cyber-cyan-bright focus-ring"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Live site
@@ -141,7 +141,7 @@ export function CaseStudyCard({ study, index, maxBadges = 4 }: CaseStudyCardProp
               href={study.secondaryLink.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-white focus-visible:ring-3 focus-visible:ring-cyber-cyan/70 focus-visible:outline-none"
+              className="relative z-10 inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-white focus-ring"
             >
               <Github className="h-3.5 w-3.5" />
               GitHub

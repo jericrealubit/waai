@@ -105,19 +105,28 @@ export function Footer() {
               aria-hidden. They animate unconditionally by explicit choice —
               deliberately NOT behind `motion-safe:`, so they keep blinking even
               for visitors whose OS asks for reduced motion. */}
-          <div className="flex items-center gap-2 rounded-full border border-border bg-black/40 px-3.5 py-1.5 font-mono text-xs text-muted-foreground">
-            {/* `overflow-visible` matters: the smoke travels ~40px upward, well
-                past the badge's own box, and would otherwise be clipped. The
-                puffs sit at `bottom-3` — the flame's tip — so they rise clear of
-                it rather than being hidden behind the icon body. */}
+          <div className="relative flex items-center gap-2 overflow-visible rounded-full border border-border bg-black/40 px-3.5 py-1.5 font-mono text-xs text-muted-foreground">
+            {/* `overflow-visible` matters, and it has to hold all the way up the
+                chain: the smoke now travels 72px, far past both the badge's own
+                box and the pill's. The pill is `overflow-visible` too (it has a
+                rounded border, which is exactly the sort of thing that clips),
+                and the puffs sit at `bottom-3` — the flame's tip — so they rise
+                clear of it rather than out from behind the icon body.
+
+                `motion-always` is what exempts this from the global
+                prefers-reduced-motion rule in globals.css, preserving the
+                deliberate choice recorded above. */}
             <span
               aria-hidden="true"
-              className="relative flex h-4 w-4 shrink-0 items-end justify-center overflow-visible"
+              className="motion-always relative flex h-4 w-4 shrink-0 items-end justify-center overflow-visible"
             >
-              <span className="pointer-events-none absolute bottom-3 h-2 w-2 rounded-full bg-cyber-cyan/70 blur-[2px] animate-smoke-1" />
-              <span className="pointer-events-none absolute bottom-3 left-0 h-2.5 w-2.5 rounded-full bg-cyber-purple/60 blur-[3px] animate-smoke-2" />
-              <span className="pointer-events-none absolute bottom-3 right-0 h-1.5 w-1.5 rounded-full bg-cyber-cyan/60 blur-[2px] animate-smoke-3" />
-              <Flame className="h-4 w-4 text-cyber-cyan-soft animate-cyber-fire" />
+              <span className="motion-always pointer-events-none absolute bottom-3 h-2 w-2 rounded-full bg-cyber-cyan/70 blur-[2px] animate-smoke-1" />
+              <span className="motion-always pointer-events-none absolute bottom-3 left-0 h-2.5 w-2.5 rounded-full bg-cyber-purple/60 blur-[3px] animate-smoke-2" />
+              <span className="motion-always pointer-events-none absolute bottom-3 right-0 h-1.5 w-1.5 rounded-full bg-cyber-cyan/60 blur-[2px] animate-smoke-3" />
+              {/* `origin-bottom` so the flare stretches up out of the wick
+                  rather than scaling about the icon's centre — the flame has
+                  to look like it's pushing the puff upward. */}
+              <Flame className="motion-always h-4 w-4 origin-bottom text-cyber-cyan-soft animate-cyber-fire" />
             </span>
 
             <span className="text-foreground">Smoked &amp; Coded by:</span>

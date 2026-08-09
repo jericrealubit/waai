@@ -24,7 +24,7 @@ export function FeatureCard({
       transition={{ duration: 0.5, delay: index * 0.1 }}
       // Styling: Glass effect with white/60 opacity and heavy blur.
       // Hover: Shifts up slightly and adds a subtle horizon-sky glow.
-      className="group relative p-8 bg-[#111725]/85 backdrop-blur-xl border border-border rounded-[2.5rem] shadow-[0_20px_50px_rgb(0_0_0/0.8),inset_0_1px_1px_rgb(255_255_255/0.2)] hover:shadow-[0_48px_80px_-20px_rgb(0_242_255/0.25)] transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+      className="group relative p-8 bg-[linear-gradient(145deg,#1a2133,#111725)] border border-border rounded-[2.5rem] shadow-e1 hover:shadow-e2 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
     >
       {/* Decorative inner glow on hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
