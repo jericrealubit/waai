@@ -513,6 +513,63 @@
     box-shadow: var(--glass-edge), var(--shadow-e3);
   }
 
+  /* Primary action. Was retyped inline on the header CTA and again in every
+     section that needed a solid button, so the glow, the radius and the
+     hover lift had already drifted apart between them. Dark type on the raw
+     cyan fill is the one place `--color-cyber-cyan` is safe to use at full
+     chroma — 13.9:1, and the aberration problem only affects light-on-dark. */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl
+      bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark
+      shadow-neon-cyan transition-all duration-200
+      hover:-translate-y-0.5 hover:bg-cyber-cyan-bright
+      hover:shadow-neon-cyan-strong;
+  }
+  .btn-primary:active {
+    transform: scale(0.985);
+  }
+
+  /* ── Jump chips ─────────────────────────────────────────────────────────
+     In-page navigation for a long index, and the page's proof at the same
+     time: the count beside each label is derived from the case-study data at
+     render, so it cannot drift from what is actually on the page below. That
+     is the reason to prefer this over a decorative three-up stat row — it
+     tells a prospect how much work there is *and* takes them to it in one
+     tap, instead of decorating the hero with a number.
+
+     `py-2.5` + `text-sm` puts the hit area just over 40px; the flex gap in
+     Section keeps neighbouring chips from failing the 24px target spacing. */
+  .chip-link {
+    @apply inline-flex items-center gap-2 rounded-full border
+      px-4 py-2.5 text-sm font-bold text-foreground
+      transition-colors duration-200;
+    background: rgb(226 240 255 / 0.05);
+    background-clip: padding-box;
+    border-color: var(--border-strong);
+  }
+  .chip-link:hover {
+    background: rgb(226 240 255 / 0.09);
+    border-color: var(--border-brand);
+    color: var(--color-cyber-cyan-bright);
+  }
+  .chip-count {
+    @apply rounded-full bg-cyber-cyan/15 px-2 py-0.5
+      text-xs font-black tabular-nums text-cyber-cyan-soft;
+  }
+
+  /* Every group heading on an index page is a scroll target for the chips
+     above. Without a scroll margin, `scroll-smooth` lands the heading
+     underneath the fixed header and the prospect sees a wall of cards with
+     no idea which section they are in. */
+  .scroll-target {
+    scroll-margin-top: 7rem;
+  }
+  @media (min-width: 768px) {
+    .scroll-target {
+      scroll-margin-top: 9rem;
+    }
+  }
+
   /* Secondary / ghost button. Thinner glass than the nav — it sits on cards
      and on the page, never over arbitrary imagery, so the fill can be much
      lighter without risking the label. Text stays `--foreground`, which
@@ -609,3 +666,4 @@
       focus-visible:ring-offset-background;
   }
 }
+

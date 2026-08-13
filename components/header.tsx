@@ -53,7 +53,7 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Link
             href="/#contact"
-            className="hidden md:block bg-cyber-cyan hover:bg-cyber-cyan-bright text-cyber-dark px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-neon-cyan hover:shadow-neon-cyan-strong transform hover:-translate-y-0.5 focus-ring"
+            className="hidden md:inline-flex btn-primary focus-ring"
           >
             Start Project
           </Link>
@@ -115,7 +115,7 @@ export function Header() {
             <Link
               href="/#contact"
               onClick={() => setIsOpen(false)}
-              className="mt-2 bg-cyber-cyan text-cyber-dark py-4 rounded-2xl font-bold text-center shadow-neon-cyan focus-ring"
+              className="btn-primary focus-ring w-full mt-2"
             >
               Start Project
             </Link>

@@ -84,7 +84,7 @@ export default async function CaseStudyPage({
               href={study.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-neon-cyan-strong focus-ring"
+              className="btn-primary focus-ring"
             >
               <ExternalLink className="h-4 w-4" />
               Visit {study.liveLabel}
@@ -120,7 +120,7 @@ export default async function CaseStudyPage({
                   href={study.secondaryLink.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-neon-cyan-strong focus-ring"
+                  className="btn-primary focus-ring"
                 >
                   <ExternalLink className="h-4 w-4" />
                   Visit {study.secondaryLink.liveLabel}

@@ -159,7 +159,7 @@ export default async function ServiceDetailPage({
           </div>
           <Link
             href="/#contact"
-            className="shrink-0 rounded-2xl bg-cyber-cyan px-8 py-4 text-sm font-bold text-cyber-dark shadow-neon-cyan transition-all hover:-translate-y-0.5 hover:bg-cyber-cyan-bright hover:shadow-neon-cyan-strong focus-ring"
+            className="btn-primary focus-ring shrink-0"
           >
             Start a project
           </Link>

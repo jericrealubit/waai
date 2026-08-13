@@ -1,0 +1,321 @@
+diff --git a/app/globals.css b/app/globals.css
+index bc427db..a61ceda 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -513,6 +513,63 @@
+     box-shadow: var(--glass-edge), var(--shadow-e3);
+   }
+ 
++  /* Primary action. Was retyped inline on the header CTA and again in every
++     section that needed a solid button, so the glow, the radius and the
++     hover lift had already drifted apart between them. Dark type on the raw
++     cyan fill is the one place `--color-cyber-cyan` is safe to use at full
++     chroma — 13.9:1, and the aberration problem only affects light-on-dark. */
++  .btn-primary {
++    @apply inline-flex items-center justify-center gap-2 rounded-2xl
++      bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark
++      shadow-neon-cyan transition-all duration-200
++      hover:-translate-y-0.5 hover:bg-cyber-cyan-bright
++      hover:shadow-neon-cyan-strong;
++  }
++  .btn-primary:active {
++    transform: scale(0.985);
++  }
++
++  /* ── Jump chips ─────────────────────────────────────────────────────────
++     In-page navigation for a long index, and the page's proof at the same
++     time: the count beside each label is derived from the case-study data at
++     render, so it cannot drift from what is actually on the page below. That
++     is the reason to prefer this over a decorative three-up stat row — it
++     tells a prospect how much work there is *and* takes them to it in one
++     tap, instead of decorating the hero with a number.
++
++     `py-2.5` + `text-sm` puts the hit area just over 40px; the flex gap in
++     Section keeps neighbouring chips from failing the 24px target spacing. */
++  .chip-link {
++    @apply inline-flex items-center gap-2 rounded-full border
++      px-4 py-2.5 text-sm font-bold text-foreground
++      transition-colors duration-200;
++    background: rgb(226 240 255 / 0.05);
++    background-clip: padding-box;
++    border-color: var(--border-strong);
++  }
++  .chip-link:hover {
++    background: rgb(226 240 255 / 0.09);
++    border-color: var(--border-brand);
++    color: var(--color-cyber-cyan-bright);
++  }
++  .chip-count {
++    @apply rounded-full bg-cyber-cyan/15 px-2 py-0.5
++      text-xs font-black tabular-nums text-cyber-cyan-soft;
++  }
++
++  /* Every group heading on an index page is a scroll target for the chips
++     above. Without a scroll margin, `scroll-smooth` lands the heading
++     underneath the fixed header and the prospect sees a wall of cards with
++     no idea which section they are in. */
++  .scroll-target {
++    scroll-margin-top: 7rem;
++  }
++  @media (min-width: 768px) {
++    .scroll-target {
++      scroll-margin-top: 9rem;
++    }
++  }
++
+   /* Secondary / ghost button. Thinner glass than the nav — it sits on cards
+      and on the page, never over arbitrary imagery, so the fill can be much
+      lighter without risking the label. Text stays `--foreground`, which
+@@ -609,3 +666,4 @@
+       focus-visible:ring-offset-background;
+   }
+ }
++
+diff --git a/app/work/page.tsx b/app/work/page.tsx
+index d59afac..12b124c 100644
+--- a/app/work/page.tsx
++++ b/app/work/page.tsx
+@@ -1,4 +1,6 @@
+ import type { Metadata } from "next";
++import Link from "next/link";
++import { ArrowRight } from "lucide-react";
+ 
+ import { CaseStudyCard } from "@/components/case-study-card";
+ import { Section } from "@/components/ui/section";
+@@ -21,34 +23,98 @@ export const metadata: Metadata = {
+ };
+ 
+ export default function WorkIndexPage() {
++  /* Grouped once, up front, so the jump chips and the sections below are
++     driven by the same array. Counting in two places is how a nav that says
++     "3" ends up sitting above two cards. */
++  const groups = SERVICES.map((service) => ({
++    service,
++    studies: CASE_STUDIES.filter((study) => study.service === service.slug),
++  })).filter((group) => group.studies.length > 0);
++
+   return (
+     <>
+       <Section
++        size="page"
++        headingLevel={1}
+         label="Our work"
+         heading="Everything we've shipped"
+-        description="Grouped by service line. Every project links to the live site and to the repository behind it."
+-        className="pb-8"
++        description="Every project below opens the live site and the code behind it. No mockups, no stock screenshots — go and click around the real thing."
++        actions={groups.map(({ service, studies }) => (
++          <a
++            key={service.slug}
++            href={`#${service.slug}`}
++            className="chip-link focus-ring"
++          >
++            {service.shortName}
++            <span className="chip-count">{studies.length}</span>
++          </a>
++        ))}
+       />
+ 
+-      {SERVICES.map((service) => {
+-        const studies = CASE_STUDIES.filter(
+-          (study) => study.service === service.slug,
+-        );
+-        if (studies.length === 0) return null;
+-
+-        return (
+-          <Section key={service.slug} id={service.slug} className="py-12">
+-            <h2 className="mb-8 text-2xl font-black tracking-tight text-foreground">
++      {groups.map(({ service, studies }) => (
++        <Section
++          key={service.slug}
++          id={service.slug}
++          size="tight"
++          className="scroll-target"
++        >
++          {/* The rule and the count are load-bearing, not trim: on a long
++              index the eye needs a hard edge to know a new group started,
++              and the count sets an expectation before the cards load in. */}
++          <div className="mb-8 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-border pb-4">
++            <h2 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
+               {service.name}
+             </h2>
+-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+-              {studies.map((study, index) => (
+-                <CaseStudyCard key={study.slug} study={study} index={index} />
+-              ))}
+-            </div>
+-          </Section>
+-        );
+-      })}
++            <span className="text-xs font-bold uppercase tracking-wider text-foreground-subtle">
++              {studies.length} {studies.length === 1 ? "build" : "builds"}
++            </span>
++            <Link
++              href={`/services/${service.slug}`}
++              className="focus-ring inline-flex w-full md:ml-auto md:w-auto items-center gap-1.5 rounded text-sm font-bold text-cyber-cyan-soft hover:text-cyber-cyan-bright"
++            >
++              What&apos;s included
++              <ArrowRight className="h-4 w-4" />
++            </Link>
++          </div>
++
++          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
++            {studies.map((study, index) => (
++              <CaseStudyCard key={study.slug} study={study} index={index} />
++            ))}
++          </div>
++        </Section>
++      ))}
++
++      {/* A prospect who scrolls the whole index has already decided. Ending on
++          the last card and dropping them into the footer wastes that. */}
++      <Section size="tight" className="pb-24">
++        <div className="glass-card px-7 py-10 text-left md:px-14 md:py-14 md:text-center">
++          <h2 className="text-2xl font-black tracking-tight text-foreground md:text-4xl">
++            Want one of these for your business?
++          </h2>
++          <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto md:text-lg">
++            Tell us what you&apos;re trying to fix — quotes going unanswered,
++            phone orders eating your evenings, paper job sheets piling up. We
++            will tell you what it takes and what it costs before you commit to
++            anything.
++          </p>
++          <div className="mt-8 flex flex-wrap gap-3 md:justify-center">
++            <Link
++              href="/#contact"
++              className="btn-primary focus-ring w-full sm:w-auto"
++            >
++              Start a project
++              <ArrowRight className="h-4 w-4" />
++            </Link>
++            <a
++              href="tel:+61491098073"
++              className="btn-glass focus-ring w-full sm:w-auto"
++            >
++              Call 0491 098 073
++            </a>
++          </div>
++        </div>
++      </Section>
+     </>
+   );
+ }
+diff --git a/components/ui/section.tsx b/components/ui/section.tsx
+index 5442847..db836a0 100644
+--- a/components/ui/section.tsx
++++ b/components/ui/section.tsx
+@@ -1,12 +1,38 @@
+ import { cn } from "@/lib/utils";
+ 
++/**
++ * Vertical rhythm rungs.
++ *
++ * `page` exists because `main` in app/layout.tsx already clears the fixed
++ * header with its own `pt-24`. A section that then adds `py-24` on top stacks
++ * ~190px of empty page above the first word — on a phone that is the entire
++ * first screen spent on nothing, which is the worst possible use of it on an
++ * evidence page a prospect has just landed on.
++ */
++type SectionSize = "page" | "default" | "tight";
++
++const SIZE: Record<SectionSize, string> = {
++  page: "pt-2 pb-10 md:pt-6 md:pb-14",
++  default: "py-20 md:py-24",
++  tight: "py-10 md:py-14",
++};
++
+ interface SectionProps extends React.ComponentProps<"section"> {
+   /** Renders the eyebrow / heading / description block above the children. */
+   label?: string;
+   heading?: React.ReactNode;
+   description?: React.ReactNode;
+-  /** Centres the heading block. Defaults to true. */
++  /** Buttons, jump links or proof rendered under the description. */
++  actions?: React.ReactNode;
++  /** Centres the heading block from `md` up. Defaults to true. */
+   centered?: boolean;
++  size?: SectionSize;
++  /**
++   * The generated heading is an `h2` by default. A page whose main title comes
++   * from a Section — /work, /services — must pass 1, or the document has no
++   * `h1` at all.
++   */
++  headingLevel?: 1 | 2;
+ }
+ 
+ /**
+@@ -18,38 +44,66 @@ export function Section({
+   label,
+   heading,
+   description,
++  actions,
+   centered = true,
++  size = "default",
++  headingLevel = 2,
+   className,
+   children,
+   ...props
+ }: SectionProps) {
++  const Heading = headingLevel === 1 ? "h1" : "h2";
++
+   return (
+-    <section className={cn("px-6 py-24 md:px-20", className)} {...props}>
++    <section className={cn("px-6 md:px-20", SIZE[size], className)} {...props}>
+       <div className="mx-auto max-w-7xl">
+-        {(label || heading || description) && (
++        {(label || heading || description || actions) && (
+           <div
+             className={cn(
+-              "mb-16",
+-              centered && "text-center",
++              /* No gap when the block *is* the section — on /work the hero
++                 has no children, and a trailing 56px margin only widened the
++                 hole between the jump chips and the first group. */
++              children && "mb-10 md:mb-14",
++              /* Centred ragged text is fine for a two-word eyebrow and a short
++                 headline, but a 20-word lede wraps to four lines on a 390px
++                 screen and every one of them starts in a different place — the
++                 eye has to hunt for the next line. Left on mobile also lines
++                 the block up with the cards and group headings below it, which
++                 are left-aligned regardless. Centring resumes at `md`, where
++                 the lede fits in two lines. */
++              centered && "text-left md:text-center",
+               !centered && "max-w-2xl",
+             )}
+           >
+             {label && <span className="section-label">{label}</span>}
+             {heading && (
+-              <h2 className="mt-4 text-3xl font-black tracking-tight text-foreground md:text-5xl">
++              <Heading className="mt-4 text-3xl font-black tracking-tight text-foreground md:text-5xl">
+                 {heading}
+-              </h2>
++              </Heading>
+             )}
+             {description && (
++              /* Measure is capped in `ch`, not `rem`. max-w-2xl at 18px is
++                 ~78 characters a line, past the top of the 45–75 comfortable
++                 band; the eye loses the return sweep and re-reads lines. */
+               <p
+                 className={cn(
+-                  "mt-4 text-lg leading-relaxed text-muted-foreground",
+-                  centered && "mx-auto max-w-2xl",
++                  "mt-4 max-w-[58ch] text-base leading-[1.65] text-muted-foreground md:text-lg",
++                  centered && "md:mx-auto",
+                 )}
+               >
+                 {description}
+               </p>
+             )}
++            {actions && (
++              <div
++                className={cn(
++                  "mt-8 flex flex-wrap gap-2.5",
++                  centered && "md:justify-center",
++                )}
++              >
++                {actions}
++              </div>
++            )}
+           </div>
+         )}
+         {children}
