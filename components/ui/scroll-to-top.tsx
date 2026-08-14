@@ -37,10 +37,9 @@ export function ScrollToTop() {
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           onClick={scrollToTop}
           aria-label="Scroll to top"
-          // Same glass as the header — it floats over the same scrolling
-          // content, so it should be the same material. `rounded-full`
-          // overrides the 2rem radius `.glass-nav` sets.
-          className="glass-nav focus-ring group fixed bottom-8 right-8 z-50 rounded-full p-4 text-foreground transition-all hover:text-cyber-cyan-soft"
+          // A round ink-framed paper button — a hi-vis "tool" that floats over
+          // the scrolling sheet and picks up the accent on hover.
+          className="focus-ring group fixed bottom-8 right-8 z-50 rounded-full border-2 border-bitumen bg-paper p-4 text-foreground shadow-e2 transition-colors hover:border-hivis hover:text-hivis-text"
         >
           <ChevronUp
             size={24}

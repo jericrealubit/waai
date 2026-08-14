@@ -21,7 +21,17 @@
  * Every line also carries a flat $50/yr `yearlyCost` (hosting, domain and
  * maintenance) — undercuts the $120–$600/yr competitors charge for hosting
  * alone, let alone maintenance on top.
+ *
+ * PUBLIC: these comparisons are surfaced on the rate card (`marketBenchmark`
+ * per service, and the hosting figure in app/(sections)/pricing.tsx). They are
+ * a point-in-time claim, dated on the page via `BENCHMARK_AS_OF` below. If you
+ * revise any figure here, bump `BENCHMARK_AS_OF` in the same edit so the public
+ * date can't drift from the numbers.
  */
+
+/** When the Perth-market figures above were last benchmarked. Rendered on the
+ *  rate card so the comparison reads as an honest point-in-time claim. */
+export const BENCHMARK_AS_OF = "August 2026";
 
 export type ServiceSlug =
   | "tradie-websites"
@@ -48,6 +58,13 @@ export interface Service {
   /** Optional upper bound — when set, displayed as a "$fromPrice–$toPrice" range instead of "From $fromPrice". */
   toPrice?: number;
   priceNote: string;
+  /**
+   * What a comparable Perth agency / developer quotes for the same scope —
+   * shown as the muted "vs market" line on the rate card so the saving is
+   * visible. Every figure is from the verified NOTE ON PRICING benchmarks at
+   * the top of this file (Aug 2026); keep them in sync.
+   */
+  marketBenchmark: string;
   /** Optional flat annual cost shown alongside the build price (e.g. hosting/domain/maintenance bundled in). */
   yearlyCost?: {
     amount: number;
@@ -74,6 +91,7 @@ export const SERVICES: Service[] = [
     fromPrice: 499,
     toPrice: 899,
     priceNote: "for a multi-page site with service pages and local SEO",
+    marketBenchmark: "$1,295+ template, $3,000+ custom",
     yearlyCost: {
       amount: 50,
       note: "per year for hosting, domain and maintenance",
@@ -106,6 +124,7 @@ export const SERVICES: Service[] = [
     fromPrice: 699,
     toPrice: 999,
     priceNote: "for a menu, cart and live kitchen dashboard",
+    marketBenchmark: "$27–99/week — $1,400–5,150/yr, forever",
     yearlyCost: {
       amount: 50,
       note: "per year for hosting, domain and maintenance",
@@ -139,6 +158,7 @@ export const SERVICES: Service[] = [
     toPrice: 4999,
     priceNote:
       "for a single-workflow digital log — multi-workflow builds are quoted separately",
+    marketBenchmark: "$15,000–30,000+ from established Perth firms",
     yearlyCost: {
       amount: 50,
       note: "per year for hosting, domain and maintenance",
@@ -171,6 +191,7 @@ export const SERVICES: Service[] = [
     fromPrice: 1999,
     toPrice: 4999,
     priceNote: "for a storefront and admin panel on a shared catalogue",
+    marketBenchmark: "$1,500–5,000 for a basic Shopify setup",
     yearlyCost: {
       amount: 50,
       note: "per year for hosting, domain and maintenance",

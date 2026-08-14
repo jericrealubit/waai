@@ -37,27 +37,25 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
     >
       <Link
         href={`/services/${service.slug}`}
-        className="group glass-card glass-card-interactive relative flex h-full flex-col overflow-hidden p-8 focus-ring"
+        className="group glass-card glass-card-interactive relative flex h-full flex-col p-8 focus-ring"
       >
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyber-cyan/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-        <div className="relative mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyber-cyan/10 text-cyber-cyan-soft transition-all duration-300 group-hover:scale-110 group-hover:bg-cyber-cyan/20">
+        <div className="mb-8 flex h-14 w-14 items-center justify-center bg-hivis/10 text-hivis transition-transform duration-300 group-hover:scale-110">
           <Icon className="h-6 w-6" />
         </div>
 
-        <div className="relative flex flex-1 flex-col">
-          <h3 className="mb-4 text-xl font-black tracking-tight text-foreground">
+        <div className="flex flex-1 flex-col">
+          <h3 className="mb-4 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
             {service.name}
           </h3>
-          <p className="mb-8 text-sm font-medium leading-relaxed text-muted-foreground">
+          <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
             {service.valueProp}
           </p>
 
           <div className="mt-auto flex items-center justify-between">
-            <span className="text-sm font-bold text-foreground">
+            <span className="font-mono text-sm font-bold tabular-nums text-foreground">
               {formatFromPrice(service)}
             </span>
-            <span className="inline-flex items-center gap-1 text-sm font-bold text-cyber-cyan-soft">
+            <span className="inline-flex items-center gap-1 font-mono text-xs font-bold uppercase tracking-wide text-source transition-colors group-hover:text-hivis-text">
               Explore
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>

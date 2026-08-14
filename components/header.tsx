@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { ThemeToggle } from "@/components/theme-toggle";
+
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,30 +21,32 @@ export function Header() {
   ];
 
   return (
-    <header className="fixed top-0 w-full z-50 px-6 py-4 md:px-20">
-      <div className="max-w-7xl mx-auto flex items-center justify-between glass-nav px-6 py-3 md:px-8">
-        {/* Brand Section */}
-        <Link href="/" className="flex items-center gap-3 focus-ring rounded-xl">
+    // A full-width worksite bar under a strong ruled edge (`.glass-nav`), not a
+    // floating glass pill. `fixed`, so main clears it with pt-24 in the layout.
+    <header className="glass-nav fixed top-0 z-50 w-full">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-20">
+        {/* Brand */}
+        <Link href="/" className="flex items-center gap-3 focus-ring">
           <Image
-            src="/logo-swan.png"
-            alt="WA AI Digital Logo"
-            width={40}
-            height={40}
+            src="/logo-mark.png"
+            alt="WA AI Digital — field-verified emblem"
+            width={48}
+            height={48}
             priority
-            className="h-9 w-9 rounded-full md:h-10 md:w-10"
+            className="h-10 w-10 md:h-12 md:w-12"
           />
-          <span className="font-black text-xl tracking-tighter text-foreground">
-            WA AI <span className="text-cyber-cyan-soft">Digital</span>
+          <span className="font-display text-xl font-extrabold uppercase tracking-wide text-foreground md:text-2xl">
+            WA AI <span className="text-hivis">Digital</span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex gap-8 text-[13px] font-bold uppercase tracking-wider text-foreground">
+        <nav className="hidden gap-7 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-cyber-cyan-soft transition-colors focus-ring rounded"
+              className="focus-ring border-b-2 border-transparent pb-0.5 font-mono text-xs font-bold uppercase tracking-wider text-steel transition-colors hover:border-hivis hover:text-foreground"
             >
               {link.label}
             </Link>
@@ -50,7 +54,9 @@ export function Header() {
         </nav>
 
         {/* Action Section */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+
           <Link
             href="/#contact"
             className="hidden md:inline-flex btn-primary focus-ring"
@@ -68,7 +74,7 @@ export function Header() {
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
-            className="lg:hidden p-2 text-foreground hover:bg-cyber-cyan/10 rounded-xl transition-colors z-50 focus-ring"
+            className="focus-ring z-50 p-2 text-foreground transition-colors hover:bg-hivis/10 lg:hidden"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -100,14 +106,14 @@ export function Header() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 left-6 right-6 p-6 glass-panel lg:hidden flex flex-col gap-4 text-center"
+            className="glass-panel absolute left-6 right-6 top-20 flex flex-col gap-4 p-6 lg:hidden"
           >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="text-lg font-bold text-foreground py-2 hover:text-cyber-cyan-soft transition-colors border-b border-border last:border-0 focus-ring"
+                className="focus-ring border-b border-border py-2 font-mono text-base font-bold uppercase tracking-wide text-foreground transition-colors last:border-0 hover:text-hivis-text"
               >
                 {link.label}
               </Link>
@@ -115,7 +121,7 @@ export function Header() {
             <Link
               href="/#contact"
               onClick={() => setIsOpen(false)}
-              className="btn-primary focus-ring w-full mt-2"
+              className="btn-primary focus-ring mt-2 w-full"
             >
               Start Project
             </Link>

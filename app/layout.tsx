@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Saira_Condensed } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header"; // Corrected import
 import { Footer } from "@/components/footer";
@@ -14,6 +14,14 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Site Notice display face — a condensed industrial grotesque for headlines,
+// section headings and worksite labels. Heavy weights only; used uppercase.
+const sairaCondensed = Saira_Condensed({
+  variable: "--font-saira",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -67,34 +75,25 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark scroll-smooth ${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+      className={`scroll-smooth ${geistSans.variable} ${geistMono.variable} ${sairaCondensed.variable}`}
     >
-      {/* `bg-pcb-pattern` paints the dark base plus its two corner blooms; the
-          `bg-cyber-dark` alongside it is the flat fallback that keeps the page
-          from flashing white before that gradient resolves. */}
+      {/* `bg-worksite` paints the concrete ground and the faint blueprint grid
+          over it (a top-masked fade, see globals.css). The site follows the
+          visitor's OS theme — no `dark` class, no flash-of-wrong-theme to guard
+          against, since the concrete/night-shift tokens both live in CSS. */}
       <body
-        className="bg-pcb-pattern relative min-h-screen bg-cyber-dark text-foreground antialiased selection:bg-cyber-cyan selection:text-cyber-dark"
+        className="bg-worksite relative min-h-screen text-foreground antialiased selection:bg-hivis selection:text-hivis-ink"
         suppressHydrationWarning
       >
-        {/* --- Persistent Neon Horizon Background ---
-            Opacities cut roughly in half (10% -> 5/6%, 5% -> 3%). These blobs
-            sit under the content, so wherever one drifts beneath a paragraph
-            it lifts the background luminance and lowers that paragraph's real
-            contrast ratio — the palette's measured numbers only hold if the
-            floor stays put. Halved, they still read as a lit horizon while
-            keeping every text pairing at its stated value. */}
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          {/* Top Left: Cyan Glow */}
-          <div className="absolute -top-[10%] -left-[10%] w-[70%] h-[70%] bg-cyber-cyan/6 rounded-full blur-[120px]" />
-
-          {/* Middle Right: Purple Glow */}
-          <div className="absolute top-[30%] -right-[10%] w-[60%] h-[60%] bg-cyber-purple/5 rounded-full blur-[100px]" />
-
-          {/* Bottom Left: Faint Cyan Glow */}
-          <div className="absolute -bottom-[10%] left-[10%] w-[50%] h-[50%] bg-cyber-cyan/3 rounded-full blur-[120px]" />
-        </div>
-
-        {/* Replaced <Navbar /> with <Header /> */}
+        {/* Sets the theme before first paint (stored choice, else OS) so there
+            is no flash of the wrong theme. Must run before any styled content.
+            The toggle (components/theme-toggle.tsx) updates the same attribute. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
         <Header />
 
         {/* Added pt-24 to ensure content doesn't start under the fixed floating header */}

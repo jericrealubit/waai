@@ -45,10 +45,10 @@ export default function Growth() {
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {features.map((feature) => (
           <div key={feature.title} className="glass-card p-8">
-            <div className="mb-5 w-fit rounded-xl bg-cyber-cyan/10 p-3">
-              <feature.icon className="h-6 w-6 text-cyber-cyan-soft" />
+            <div className="mb-5 flex h-12 w-12 items-center justify-center bg-hivis/10 text-hivis">
+              <feature.icon className="h-6 w-6" />
             </div>
-            <h3 className="mb-3 text-lg font-black tracking-tight text-foreground">
+            <h3 className="mb-3 font-display text-xl font-extrabold uppercase tracking-tight text-foreground">
               {feature.title}
             </h3>
             <p className="text-sm leading-relaxed text-muted-foreground">

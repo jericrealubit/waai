@@ -55,7 +55,7 @@ export default async function ServiceDetailPage({
       <Section className="pb-12">
         <Link
           href="/services"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground transition-colors hover:text-cyber-cyan-soft focus-ring"
+          className="focus-ring mb-8 inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground-subtle transition-colors hover:text-hivis-text"
         >
           <ArrowLeft className="h-4 w-4" />
           All services
@@ -63,7 +63,7 @@ export default async function ServiceDetailPage({
 
         <div className="max-w-3xl">
           <span className="section-label">{service.shortName}</span>
-          <h1 className="mt-4 text-4xl font-black leading-[1.1] tracking-tight text-foreground md:text-6xl">
+          <h1 className="mt-3 font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground md:text-7xl">
             {service.name}
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
@@ -71,13 +71,13 @@ export default async function ServiceDetailPage({
           </p>
 
           <div className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <span className="text-2xl font-black tracking-tight text-foreground">
+            <span className="font-mono text-2xl font-bold tabular-nums text-foreground">
               {formatFromPrice(service)}
             </span>
             <span className="text-sm text-muted-foreground">{service.priceNote}</span>
           </div>
           {service.yearlyCost && (
-            <p className="mt-2 text-sm font-bold text-cyber-cyan-soft">
+            <p className="mt-2 font-mono text-sm font-bold text-hivis-text">
               + ${service.yearlyCost.amount}/year{" "}
               <span className="font-medium text-muted-foreground">
                 {service.yearlyCost.note.replace(/^per year /, "")}
@@ -90,13 +90,13 @@ export default async function ServiceDetailPage({
       <Section className="py-12">
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-6 text-xl font-black tracking-tight text-foreground">
+            <h2 className="mb-6 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
               What a build includes
             </h2>
             <ul className="space-y-4">
               {service.includes.map((item) => (
                 <li key={item} className="flex gap-3 text-sm text-muted-foreground">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyber-cyan-soft" />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-hivis" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -104,7 +104,7 @@ export default async function ServiceDetailPage({
           </div>
 
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-2 text-xl font-black tracking-tight text-foreground">
+            <h2 className="mb-2 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
               Also available
             </h2>
             <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
@@ -120,8 +120,8 @@ export default async function ServiceDetailPage({
               ))}
             </ul>
 
-            <div className="mt-8 border-t border-border pt-6">
-              <h3 className="mb-2 text-sm font-black tracking-tight text-foreground">
+            <div className="mt-8 border-t border-line pt-6">
+              <h3 className="mb-2 font-mono text-xs font-bold uppercase tracking-widest text-foreground">
                 Best for
               </h3>
               <p className="text-sm leading-relaxed text-muted-foreground">
@@ -137,7 +137,7 @@ export default async function ServiceDetailPage({
           label="Proof"
           heading={studies.length === 1 ? "The case study" : "The case studies"}
           description="Live sites and public repositories, not mockups."
-          className="bg-white/[0.02]"
+          className="bg-cement/30"
         >
           <div className="grid gap-8 md:grid-cols-2">
             {studies.map((study, index) => (
@@ -150,7 +150,7 @@ export default async function ServiceDetailPage({
       <Section className="py-12">
         <div className="glass-card flex flex-col items-start gap-6 p-10 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-2xl font-black tracking-tight text-foreground">
+            <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
               Want one of these?
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">

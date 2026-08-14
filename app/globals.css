@@ -2,183 +2,76 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* Theme resolves from an explicit `data-theme` on <html> — set by the toggle
+   (components/theme-toggle.tsx) and by the pre-paint script in app/layout.tsx —
+   and falls back to the OS via the media query below when no choice has been
+   made. The shadcn `dark:` variant keys off the same attribute; because the
+   pre-paint script always stamps `data-theme` when JS is available, `dark:`
+   tracks the resolved theme. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* Cyber / neon brand tokens. Kept in a plain `@theme` (not `@theme inline`)
-   because these are literal values, not indirections through another variable.
-   Declaring the glows here rather than as hand-written classes means they
-   compose like any other utility — `shadow-neon-cyan`, `text-shadow-glow-cyan`,
-   `text-cyber-cyan-soft`, `hover:text-cyber-cyan-bright`.
+/* ── SITE NOTICE ────────────────────────────────────────────────────────────
+   A Western Australian worksite spec-sheet: warm concrete + ink, one hi-vis
+   signal (the live product / primary action) and one cobalt signal (source /
+   links). Every brand colour is an *indirection* onto a :root variable so the
+   whole palette flips with the OS between the light "daylight" ground and the
+   dark "night-shift" ground — see :root and the prefers-color-scheme block.
 
-   Tuned for legibility on dark: every text pairing below is annotated with its
-   WCAG 2 ratio and its APCA Lc. Both are quoted because WCAG 2's formula
-   systematically *overstates* light-on-dark contrast — several pairings here
-   passed AA comfortably while still being genuinely hard to read, and APCA is
-   what caught them. Rules of thumb used throughout:
-
-     body text        APCA |Lc| >= 75      (WCAG >= 4.5:1)
-     large / non-body APCA |Lc| >= 60
-     UI boundaries    WCAG >= 3:1          (1.4.11)
-     ceiling          APCA |Lc| ~ 95       past this, light-on-dark blooms  */
+   Contrast is annotated per pairing. WCAG 2 overstates dark-on-light far less
+   than it overstates light-on-dark, but APCA is still quoted on the light
+   theme's text ramp because that ramp is where legibility is won or lost.
+   Targets: body |Lc| >= 75, large/secondary >= 60, UI boundaries WCAG >= 3:1. */
 @theme {
-  /* ── Surfaces ───────────────────────────────────────────────────────────
-     The base is deliberately NOT pure black. Near-black (#080c14, L* 3.6)
-     maximises the luminance ratio against light text, which is what produces
-     halation — the smeared halo that makes dark UI tiring, especially with
-     astigmatism. It also makes elevation impossible to express, because a
-     black shadow on a black page is invisible. Lifting the base to L* ~6 and
-     stepping surfaces *up* for elevation costs nothing visually and does most
-     of the eye-strain work on its own. */
-  --color-cyber-dark: #0a0e17;
-  --color-surface-1: #111725; /* cards, popovers */
-  --color-surface-2: #1a2133; /* raised card face / gradient top */
-  --color-surface-3: #232c42; /* inputs, chips, muted fills */
-
-  /* ── Brand ──────────────────────────────────────────────────────────────
-     One colour previously did five jobs — button fill, link text, border,
-     icon, glow — and no single value is right for all five. `cyber-cyan` is
-     max-chroma cyan sitting on the sRGB gamut edge: perfect as a *fill* with
-     dark type on it (13.9:1), but as small *text* on black that saturation
-     causes longitudinal chromatic aberration — the eye cannot bring a
-     saturated cyan edge and a black edge into focus at the same depth, so it
-     shimmers. `-soft` keeps the same hue and lightness with ~40% less chroma,
-     so it still reads as the brand while resolving cleanly at 14px.
-
-       cyber-cyan        fills, the mark, focus rings   (never as body text)
-       cyber-cyan-soft   links, labels, icons, metadata
-       cyber-cyan-bright hover state for both           */
-  --color-cyber-cyan: #00f2ff;
-  --color-cyber-cyan-soft: #7ce4f2; /* 10.9:1 on card · APCA Lc -79 */
-  --color-cyber-cyan-bright: #a8eef8; /* 12.4:1 on card · APCA Lc -87 */
-
-  /* Was #9d4edd — 4.26:1 on the page, a contrast failure anywhere it carried
-     text. Same hue, lifted into passing range. */
-  --color-cyber-purple: #b47cf0;
-
-  /* ── Glow ───────────────────────────────────────────────────────────────
-     Glow is decoration, not typography. A blurred halo *behind glyphs* is
-     literally the artifact good dark-mode design tries to avoid, so the white
-     text-glow is gone and the cyan one is now weak enough to read as a sheen
-     rather than a bloom. Reserve it for the brand mark and never put it on a
-     paragraph. */
-  --shadow-neon-cyan: 0 0 16px rgb(0 242 255 / 0.22),
-    inset 0 0 8px rgb(0 242 255 / 0.1);
-  --shadow-neon-cyan-strong: 0 0 24px rgb(0 242 255 / 0.38);
-  --text-shadow-glow-cyan: 0 0 14px rgb(0 242 255 / 0.28);
-  --text-shadow-glow-white: 0 0 1px rgb(255 255 255 / 0.12);
-
-  /* ── Elevation ──────────────────────────────────────────────────────────
-     A black shadow on a near-black page is invisible, which is why the old
-     `0 20px 50px rgb(0 0 0 / 0.8)` did nothing but cost paint time. On dark
-     surfaces height is read from the *lit top edge* — a bright inset hairline
-     where the light catches — with the shadow only anchoring the object to
-     the page. So every rung here is: specular edge + tight contact shadow +
-     wide ambient shadow, and the surface itself steps up a rung too.
-
-       shadow-e1  resting cards
-       shadow-e2  hovered cards, the floating header
-       shadow-e3  overlays — mobile menu, popovers               */
-  --shadow-e1: inset 0 1px 0 rgb(255 255 255 / 0.06),
-    0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.5);
-  --shadow-e2: inset 0 1px 0 rgb(255 255 255 / 0.09),
-    0 2px 4px rgb(0 0 0 / 0.45), 0 16px 40px -12px rgb(0 0 0 / 0.6);
-  --shadow-e3: inset 0 1px 0 rgb(255 255 255 / 0.12),
-    0 4px 8px rgb(0 0 0 / 0.5), 0 28px 64px -16px rgb(0 0 0 / 0.7);
-
-  /* Footer attribution flame + the two smoke puffs drifting off it. Registered
-     as `--animate-*` tokens (with their keyframes inline, which is how v4 wants
-     them) so they're ordinary utilities: `animate-cyber-fire`, and crucially
-     `motion-safe:` works, letting the whole effect switch off for anyone with
-     reduced motion set. The two smoke tokens differ only in start delay. */
-  /* ── The flame blows the smoke ──────────────────────────────────────────
-     The whole badge runs on one beat so the two halves read as cause and
-     effect rather than two things animating nearby. Everything below is
-     derived from it:
-
-       beat            1.8s    the flame ducks, then flares, once per beat
-       flare peak      13%     = 0.234s into the beat
-       puff launch     0.31s   ~80ms after the peak — the flame blows it out
-       puff flight     5.4s    = exactly 3 beats
-       puff delays     0.31s / 2.11s / 3.91s  — one beat apart
-
-     Because the flight time is a whole multiple of the beat, a puff leaves on
-     every flare forever without drifting: three are in the air at any moment,
-     staggered a beat apart.
-
-     The 80ms lag is the part that sells it. Launching *on* the peak reads as
-     two things happening at once; a lag of roughly 70–100ms reads as one
-     thing causing the other, and anything past ~150ms decouples again into
-     two unrelated events. An earlier pass had this at 6ms — less than a frame
-     at 60fps, so effectively simultaneous.
-
-     One animation, not two, and it owns opacity, transform and filter
-     together. An independent second animation on the transform would slide
-     out of phase and break the lock. */
-  --animate-cyber-fire: flame-flicker 1.8s infinite ease-in-out;
+  /* Footer attribution flame + the two smoke puffs. Timing is deliberately
+     untouched from the original: one 1.8s beat, an ~80ms lag between the flare
+     and the puff launch so the flame reads as *blowing* the smoke, puff flight
+     of exactly three beats so a puff leaves on every flare without drifting.
+     Only the flame's glow colour changed — cyan/purple -> hi-vis/amber — so the
+     mark now belongs to the worksite palette. The puff *fill* colours live on
+     the elements in components/footer.tsx. */
+  --animate-flame: flame-flicker 1.8s infinite ease-in-out;
   --animate-smoke-1: smoke-rise 5.4s infinite ease-out 0.31s;
   --animate-smoke-2: smoke-rise 5.4s infinite ease-out 2.11s;
   --animate-smoke-3: smoke-rise 5.4s infinite ease-out 3.91s;
 
-  /* One beat of the flame: duck, blow, settle.
-
-       0%   resting
-       6%   ducks — squashes down and dims, drawing breath
-      13%   THE BLOW: tallest, brightest, widest glow. The puff launches
-            0.24s in, one frame after this, so it leaves on the exhale
-      26%   recoiling from the flare
-      45%   a small secondary lick so it still reads as fire between beats
-     100%   back to resting, ready for the next beat
-
-     `transform-origin` is set to the bottom on the element (see
-     components/footer.tsx) so the flare grows upward out of the wick instead
-     of scaling about its middle. */
   @keyframes flame-flicker {
     0%,
     100% {
       opacity: 1;
       transform: scaleY(1) scaleX(1) rotate(-1deg);
-      filter: drop-shadow(0 0 8px rgb(0 242 255 / 0.95))
-        drop-shadow(0 0 16px rgb(180 124 240 / 0.7));
+      filter: drop-shadow(0 0 8px rgb(232 66 10 / 0.95))
+        drop-shadow(0 0 16px rgb(255 150 40 / 0.7));
     }
     6% {
       opacity: 0.55;
       transform: scaleY(0.82) scaleX(1.1) rotate(1deg);
-      filter: drop-shadow(0 0 5px rgb(180 124 240 / 0.8));
+      filter: drop-shadow(0 0 5px rgb(255 150 40 / 0.8));
     }
     13% {
       opacity: 1;
       transform: scaleY(1.3) scaleX(0.92) rotate(-2deg);
-      filter: drop-shadow(0 0 18px rgb(0 242 255 / 1))
-        drop-shadow(0 0 34px rgb(0 242 255 / 0.9));
+      filter: drop-shadow(0 0 18px rgb(232 66 10 / 1))
+        drop-shadow(0 0 34px rgb(255 120 30 / 0.9));
     }
     26% {
       opacity: 0.8;
       transform: scaleY(0.95) scaleX(1.04) rotate(2deg);
-      filter: drop-shadow(0 0 10px rgb(0 242 255 / 0.9))
-        drop-shadow(0 0 18px rgb(180 124 240 / 0.7));
+      filter: drop-shadow(0 0 10px rgb(232 66 10 / 0.9))
+        drop-shadow(0 0 18px rgb(255 150 40 / 0.7));
     }
     45% {
       opacity: 0.95;
       transform: scaleY(1.08) scaleX(0.98) rotate(-2deg);
-      filter: drop-shadow(0 0 12px rgb(0 242 255 / 0.95))
-        drop-shadow(0 0 20px rgb(180 124 240 / 0.6));
+      filter: drop-shadow(0 0 12px rgb(232 66 10 / 0.95))
+        drop-shadow(0 0 20px rgb(255 150 40 / 0.6));
     }
   }
 
-  /* Reach raised to 72px (was 40px, originally 16px) so the puffs clear the
-     badge and drift well up into the footer rather than dissolving just above
-     the flame. The extra distance needs a longer cycle or the smoke looks
-     like it is being fired rather than rising, hence 3.4s below, and the
-     opacity now holds through the middle of the climb so the puff stays
-     visible for most of the journey instead of fading in the first third.
-     The parent span is `overflow-visible` — see components/footer.tsx. */
   @keyframes smoke-rise {
     0% {
       opacity: 0;
       transform: translateY(0) scale(0.5) rotate(0deg);
     }
-    /* Snaps to full in 0.32s — a puff that fades in over a second looks like
-       it condensed out of the air rather than being blown out of the flame. */
     6% {
       opacity: 0.95;
       transform: translateY(-6px) scale(0.75) rotate(2deg);
@@ -199,23 +92,40 @@
 }
 
 @theme inline {
+  /* ── Site Notice brand palette (indirections; values in :root) ──────────── */
+  --color-concrete: var(--concrete);
+  --color-paper: var(--paper);
+  --color-cement: var(--cement);
+  --color-bitumen: var(--bitumen);
+  --color-steel: var(--steel);
+  --color-hivis: var(--hivis);
+  --color-hivis-ink: var(--hivis-ink);
+  --color-hivis-text: var(--hivis-text);
+  --color-source: var(--source);
+  --color-smoke: var(--smoke);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  /* Elevation — theme-aware (offset hard ink shadow on light; contact shadow +
+     lit top edge on dark, where an offset ink shadow is invisible). */
+  --shadow-e1: var(--elev-1);
+  --shadow-e2: var(--elev-2);
+  --shadow-e3: var(--elev-3);
+
+  /* ── shadcn semantic tokens (indirections; values in :root) ─────────────── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* Third rung of the text ramp. Everything that used `text-slate-500`
-     (#64748b — 3.5:1 on a card, a straight AA failure) points here instead. */
   --color-foreground-subtle: var(--foreground-subtle);
-  /* Registered as colours so the two extra edge weights are ordinary
-     utilities — `border-border-strong`, `border-border-brand`,
-     `ring-border-brand` — rather than arbitrary `border-[color:var(…)]`
-     escapes scattered through the JSX. */
   --color-border-strong: var(--border-strong);
   --color-border-brand: var(--border-brand);
   --color-input-bg: var(--input-bg);
-  /* These map onto the next/font variables set on <html> in app/layout.tsx.
-     --font-sans previously pointed at itself, which never resolved, so the
-     whole site fell back to the browser default serif. */
+
+  /* Display: Saira Condensed (worksite signage). Body: Geist. Data/spec: Geist
+     Mono. The three variables are set on <html> in app/layout.tsx by next/font. */
+  --font-display: var(--font-saira);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -245,6 +155,9 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* Squared corners — Site Notice frames are hard-cornered; chips opt back into
+     `rounded-full` explicitly. --radius drives the whole scale via calc(). */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -254,112 +167,212 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* The site is dark-only, so the cyber palette lives directly in `:root` and
-   there is no separate `.dark` override to keep in sync. `<html>` still carries
-   the `dark` class (see app/layout.tsx) so the `dark:` variants baked into the
-   shadcn primitives resolve against the same values. */
+/* ── LIGHT — "daylight" (default) ──────────────────────────────────────────── */
 :root {
-  /* Makes native UI — <select> dropdowns, scrollbars, date pickers — render
-     dark. Without this the contact form's dropdown is dark text on a white
-     popup in some browsers. */
+  color-scheme: light;
+
+  /* Surfaces — warm mineral, deliberately greyer/cooler than a cream (#F4F1EA)
+     to read as concrete, not paper stock. */
+  --concrete: #e7e2d8; /* page ground */
+  --paper: #efebe2; /* cards, panels, title-blocks */
+  --cement: #dcd5c7; /* secondary fills */
+
+  /* Text ramp on concrete. Body copy is near-ink by design; `steel` is
+     metadata only (raw steel as body is APCA-borderline — the inverse of the
+     old #94a3b8 trap). */
+  --bitumen: #1a1813; /* headings, emphasis      · 14.6:1 · Lc  99 */
+  --foreground: #1a1813;
+  --muted-foreground: #3a362e; /* body copy       ·  9.2:1 · Lc  85 */
+  --foreground-subtle: #5e5b51; /* meta, caption  ·  4.8:1 · Lc  62 */
+  --steel: #5e5b51;
+
+  /* Signals. Hi-vis is the live product + primary action; never small text on
+     light (use --hivis-text). Source carries links. */
+  --hivis: #e8420a; /* fill / large accent */
+  --hivis-ink: #1a1813; /* text on a hi-vis fill · 4.4:1 bold */
+  --hivis-text: #b8330a; /* hi-vis as small text  · 4.8:1 */
+  --source: #1e3aa8; /* links                 · 7.4:1 */
+  --smoke: #8f8676; /* footer puffs — darker than concrete so they read */
+
+  --line: #c4bba8; /* hairline dividers */
+  --line-strong: #a79d88; /* stronger internal edges */
+  --border: #c4bba8;
+  --border-strong: #a79d88;
+  --border-brand: var(--hivis);
+
+  /* Offset hard ink shadow — height on a light ground reads as a cast shadow
+     down-right, like a card lifted off a drawing sheet. */
+  --elev-1: 3px 3px 0 rgb(26 24 19 / 0.07);
+  --elev-2: 5px 5px 0 rgb(26 24 19 / 0.11);
+  --elev-3: 8px 8px 0 rgb(26 24 19 / 0.15);
+
+  /* Form controls. --input must clear 3:1 against BOTH the field fill and the
+     surface behind it (WCAG 1.4.11). #6b6456 = 3.4:1 on paper, 3.2:1 on
+     concrete. */
+  --input: #6b6456;
+  --input-bg: #f3efe7;
+  --ring: var(--source);
+
+  --card: #efebe2;
+  --card-foreground: #1a1813;
+  --popover: #efebe2;
+  --popover-foreground: #1a1813;
+  --primary: #e8420a;
+  --primary-foreground: #1a1813;
+  --secondary: #dcd5c7;
+  --secondary-foreground: #1a1813;
+  --muted: #dcd5c7;
+  --accent: #1e3aa8;
+  --accent-foreground: #efebe2;
+  --destructive: oklch(0.55 0.2 27);
+
+  --background: #e7e2d8;
+  --radius: 0.2rem;
+
+  --chart-1: #e8420a;
+  --chart-2: #1e3aa8;
+  --chart-3: #a79d88;
+  --chart-4: #5e5b51;
+  --chart-5: #b8330a;
+
+  --sidebar: #efebe2;
+  --sidebar-foreground: #1a1813;
+  --sidebar-primary: #e8420a;
+  --sidebar-primary-foreground: #1a1813;
+  --sidebar-accent: #dcd5c7;
+  --sidebar-accent-foreground: #1a1813;
+  --sidebar-border: #c4bba8;
+  --sidebar-ring: #1e3aa8;
+}
+
+/* ── DARK — "night shift" (OS dark) ─────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  /* OS fallback — applies only when no explicit choice has been made. The
+     pre-paint script sets a `data-theme` whenever JS runs, so in practice this
+     block serves no-JS visitors; JS visitors are handled by the attribute
+     blocks (:root and :root[data-theme="dark"]). */
+  :root:not([data-theme]) {
+    color-scheme: dark;
+
+    --concrete: #16140f; /* warm near-black steel */
+    --paper: #1c1a14;
+    --cement: #221f18;
+
+    --bitumen: #ece6d8; /* headings          · 13.9:1 · Lc -96 */
+    --foreground: #ece6d8;
+    --muted-foreground: #c9c2b2; /* body     · 10.4:1 · Lc -82 */
+    --foreground-subtle: #a39d8e; /* meta    ·  6.4:1 · Lc -62 */
+    --steel: #a39d8e;
+
+    --hivis: #ff5a1e; /* brighter on dark */
+    --hivis-ink: #16140f; /* text on hi-vis fill · 5.5:1 */
+    --hivis-text: #ff824f; /* hi-vis small text   · 6.6:1 */
+    --source: #6e86ff; /* links               · 6.0:1 */
+    --smoke: #b8b2a2; /* light warm smoke on the dark ground */
+
+    --line: #35312a;
+    --line-strong: #524c3f;
+    --border: #35312a;
+    --border-strong: #524c3f;
+    --border-brand: var(--hivis);
+
+    /* Offset ink shadow vanishes on near-black; height reads from a lit top
+       edge + a soft contact shadow instead. */
+    --elev-1: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 2px 6px rgb(0 0 0 / 0.5);
+    --elev-2: inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 6px 18px -6px rgb(0 0 0 / 0.6);
+    --elev-3: inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 12px 30px -10px rgb(0 0 0 / 0.7);
+
+    --input: #6e685b; /* 4.0:1 on paper, 4.3:1 on concrete */
+    --input-bg: #12100b;
+    --ring: var(--source);
+
+    --card: #1c1a14;
+    --card-foreground: #ece6d8;
+    --popover: #1c1a14;
+    --popover-foreground: #ece6d8;
+    --primary: #ff5a1e;
+    --primary-foreground: #16140f;
+    --secondary: #221f18;
+    --secondary-foreground: #ece6d8;
+    --muted: #221f18;
+    --accent: #6e86ff;
+    --accent-foreground: #16140f;
+
+    --background: #16140f;
+
+    --sidebar: #1c1a14;
+    --sidebar-foreground: #ece6d8;
+    --sidebar-primary: #ff5a1e;
+    --sidebar-primary-foreground: #16140f;
+    --sidebar-accent: #221f18;
+    --sidebar-accent-foreground: #ece6d8;
+    --sidebar-border: #35312a;
+    --sidebar-ring: #6e86ff;
+  }
+}
+
+/* Explicit dark choice (the toggle, or a stored preference applied pre-paint).
+   Higher specificity than the OS `:root` above, so it wins in both directions.
+   MIRROR of the @media dark block — keep the two in sync if the palette moves. */
+:root[data-theme="dark"] {
   color-scheme: dark;
 
-  --background: #0a0e17;
+  --concrete: #16140f;
+  --paper: #1c1a14;
+  --cement: #221f18;
 
-  /* ── Text ramp ──────────────────────────────────────────────────────────
-     Three rungs, each with a job. Note the top rung came *down*: #f8fafc on
-     #080c14 was 18.7:1 (APCA Lc -104), which is past the point where extra
-     contrast stops helping and starts glowing. Around Lc -95 is the comfort
-     ceiling for light-on-dark.
+  --bitumen: #ece6d8;
+  --foreground: #ece6d8;
+  --muted-foreground: #c9c2b2;
+  --foreground-subtle: #a39d8e;
+  --steel: #a39d8e;
 
-     The middle rung came *up*, and that is the important one — it carries
-     essentially every paragraph on the site. #94a3b8 passed WCAG 2 at 6.6:1,
-     but WCAG 2's formula systematically overstates light-on-dark legibility;
-     APCA scored it Lc -50 against a body-text target of Lc 75. That gap is
-     exactly the "technically passes, still hard to read" feeling.
+  --hivis: #ff5a1e;
+  --hivis-ink: #16140f;
+  --hivis-text: #ff824f;
+  --source: #6e86ff;
+  --smoke: #b8b2a2;
 
-       foreground         #e8eef7  13.8:1 on card · Lc -94   headings
-       muted-foreground   #c6d2e2  10.5:1 on card · Lc -76   body copy
-       foreground-subtle  #9caac0   6.8:1 on card · Lc -53   meta, placeholder */
-  --foreground: #e8eef7;
-  --muted-foreground: #c6d2e2;
-  --foreground-subtle: #9caac0;
+  --line: #35312a;
+  --line-strong: #524c3f;
+  --border: #35312a;
+  --border-strong: #524c3f;
+  --border-brand: var(--hivis);
 
-  --card: #111725;
-  --card-foreground: #e8eef7;
-  --popover: #1a2133;
-  --popover-foreground: #e8eef7;
-  --primary: #00f2ff;
-  --primary-foreground: #0a0e17;
-  --secondary: #1a2133;
-  --secondary-foreground: #e8eef7;
-  --muted: #232c42;
-  --accent: #b47cf0;
-  --accent-foreground: #0a0e17;
-  --destructive: oklch(0.704 0.191 22.216);
+  --elev-1: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 2px 6px rgb(0 0 0 / 0.5);
+  --elev-2: inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 6px 18px -6px rgb(0 0 0 / 0.6);
+  --elev-3: inset 0 1px 0 rgb(255 255 255 / 0.1),
+    0 12px 30px -10px rgb(0 0 0 / 0.7);
 
-  /* Was rgb(0 242 255 / 0.25), applied to `*` in the base layer — so every
-     bordered element on the site was 25% cyan, resolving to a muddy #145566
-     that sits at 1.9:1 against the card. Simultaneously too colourful (it
-     teal-washed the whole page) and too weak (the boundary wasn't
-     perceivable). A neutral cool-white hairline separates surfaces without
-     tinting them, and frees the accent to actually mean something — hover,
-     focus, active. */
-  --border: rgb(226 240 255 / 0.12);
-  --border-strong: rgb(226 240 255 / 0.2);
-  --border-brand: rgb(0 242 255 / 0.45);
+  --input: #6e685b;
+  --input-bg: #12100b;
+  --ring: var(--source);
 
-  /* Form-field borders are the one border WCAG 1.4.11 genuinely governs:
-     they must hit 3:1 against both the field fill and the surface behind it,
-     because the border is the only thing that says "this is a control".
-     The old white/15 managed 1.4:1. 44% of the cool white clears both sides
-     — 3.93:1 against the field, 3.40:1 against the card behind it. */
-  --input: rgb(226 240 255 / 0.44);
-  --input-bg: #0d1320;
-  --ring: #00f2ff;
+  --card: #1c1a14;
+  --card-foreground: #ece6d8;
+  --popover: #1c1a14;
+  --popover-foreground: #ece6d8;
+  --primary: #ff5a1e;
+  --primary-foreground: #16140f;
+  --secondary: #221f18;
+  --secondary-foreground: #ece6d8;
+  --muted: #221f18;
+  --accent: #6e86ff;
+  --accent-foreground: #16140f;
 
-  /* ── Glass ──────────────────────────────────────────────────────────────
-     The header is `fixed` over a page that scrolls near-white case-study
-     screenshots underneath it, so whatever shows through changes the
-     luminance behind the nav text. Worst case — pure white passing under the
-     panel — sets the floor:
+  --background: #16140f;
 
-       70% fill -> nav 5.7:1, cyan link 4.5:1   (on the line)
-       80% fill -> nav 8.2:1, cyan link 6.5:1   <- floor
-       88% fill -> nav 10.8:1, cyan link 8.6:1
-
-     The gradient runs 0.86 -> 0.80, so even its most transparent edge sits
-     on the floor. Worth knowing: glass reads as glass because of the blur,
-     the saturation boost and the lit top edge — not because it is
-     see-through. Those three are free of contrast cost, which is why this
-     can look considerably glassier than the old flat 80% panel while
-     measuring better. */
-  --glass-fill: linear-gradient(
-    160deg,
-    rgb(30 38 58 / 0.86),
-    rgb(15 21 34 / 0.8)
-  );
-  --glass-fill-solid: #161d2d; /* the no-backdrop-filter fallback */
-  --glass-blur: blur(20px) saturate(160%);
-  --glass-border: rgb(226 240 255 / 0.14);
-  /* Two inset lines do the work: a bright one on top where light catches the
-     edge, a dark one underneath for thickness. */
-  --glass-edge: inset 0 1px 0 rgb(255 255 255 / 0.14),
-    inset 0 -1px 0 rgb(0 0 0 / 0.3);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.75rem;
-  --sidebar: #111725;
-  --sidebar-foreground: #e8eef7;
-  --sidebar-primary: #00f2ff;
-  --sidebar-primary-foreground: #0a0e17;
-  --sidebar-accent: #1a2133;
-  --sidebar-accent-foreground: #e8eef7;
-  --sidebar-border: rgb(226 240 255 / 0.12);
-  --sidebar-ring: #00f2ff;
+  --sidebar: #1c1a14;
+  --sidebar-foreground: #ece6d8;
+  --sidebar-primary: #ff5a1e;
+  --sidebar-primary-foreground: #16140f;
+  --sidebar-accent: #221f18;
+  --sidebar-accent-foreground: #ece6d8;
+  --sidebar-border: #35312a;
+  --sidebar-ring: #6e86ff;
 }
 
 @layer base {
@@ -373,10 +386,6 @@
     @apply font-sans;
   }
 
-  /* Headlines set ragged-right at three or four words a line are harder to
-     scan than the contrast numbers suggest. `balance` evens the last line of
-     a heading, `pretty` kills orphans in paragraphs. Both are progressive —
-     browsers without support just ignore them. */
   h1,
   h2,
   h3 {
@@ -386,15 +395,14 @@
     text-wrap: pretty;
   }
 
-  /* WCAG 1.4.1: a link inside a block of running text can't be signalled by
-     colour alone. Scoped to `p` on purpose — that catches prose links and
-     nothing else, so nav items, buttons and whole-card links stay clean
-     (those are identifiable by position and shape instead). The underline is
-     offset and thinned so it doesn't collide with descenders. */
+  /* WCAG 1.4.1: a link in running prose can't be signalled by colour alone.
+     Scoped to `p` so nav items, buttons and card links (identifiable by shape
+     and position) stay clean. Underline in the source cobalt, offset off the
+     descenders. */
   p a {
     text-decoration: underline;
     text-decoration-thickness: 1px;
-    text-decoration-color: rgb(124 228 242 / 0.45);
+    text-decoration-color: color-mix(in srgb, var(--source) 55%, transparent);
     text-underline-offset: 3px;
     transition: text-decoration-color 150ms;
   }
@@ -402,18 +410,11 @@
     text-decoration-color: currentColor;
   }
 
-  /* Every entrance animation on the site comes from framer-motion `initial` /
-     `whileInView`, none of which consult the OS setting. Zeroing durations
-     globally is the one-line catch-all: the elements still land in their
-     final state, they just stop travelling.
-
-     The footer flame and its smoke are the deliberate exception — see the
-     comment in components/footer.tsx. `:not(.motion-always)` carves them out
-     so the catch-all keeps covering the scroll-triggered animations (the ones
-     that actually cause trouble) without taking the build credit with it.
-     Note this is a considered override of the OS preference rather than an
-     oversight: it is a 16px decorative badge in the footer, not motion in the
-     reading path. */
+  /* Every scroll-triggered entrance uses framer-motion `whileInView`, none of
+     which consult the OS setting; zeroing durations globally is the catch-all.
+     The footer flame + smoke are the deliberate exception — `.motion-always`
+     carves them out (a 16px decorative badge in the footer, not motion in the
+     reading path). Do not remove the carve-out. */
   @media (prefers-reduced-motion: reduce) {
     *:not(.motion-always),
     *:not(.motion-always)::before,
@@ -425,142 +426,136 @@
     }
   }
 
-  /* Honour the OS "increase contrast" switch: push the ramp to its ceiling,
-     make hairlines real lines, and drop the glow entirely. */
+  /* Honour the OS "increase contrast" switch in both themes: push the ramp to
+     its ceiling and make hairlines real lines. */
   @media (prefers-contrast: more) {
     :root {
-      --foreground: #ffffff;
-      --muted-foreground: #dee6f2;
-      --foreground-subtle: #b8c4d6;
-      --border: rgb(226 240 255 / 0.28);
-      --border-strong: rgb(226 240 255 / 0.42);
-      --input: rgb(226 240 255 / 0.6);
+      --muted-foreground: var(--bitumen);
+      --foreground-subtle: #45423a;
+      --line: #8f8676;
+      --line-strong: #6b6456;
     }
-    * {
-      text-shadow: none !important;
+  }
+  @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+    :root {
+      --foreground-subtle: #cfc9ba;
+      --line: #6e685b;
+      --line-strong: #8a8474;
     }
   }
 }
 
-/* The dark "PCB" field behind the whole page — a near-black base lit by a cyan
-   and a purple bloom in opposite corners. Applied to <body> in app/layout.tsx.
-
-   The blooms are halved. Every contrast figure quoted in this file assumes a
-   known background; a bloom drifting under a paragraph raises the luminance
-   beneath it and quietly *lowers* the real ratio, so the measured numbers were
-   a best case rather than a guarantee. At 4% the corners still read as lit
-   without moving the floor under the type. */
-.bg-pcb-pattern {
-  background-color: #0a0e17;
+/* The faint blueprint grid over the concrete ground — the drawing sheet.
+   Applied to <body> in app/layout.tsx. Masked to a top fade so it never
+   competes with content lower on the page. */
+.bg-worksite {
+  background-color: var(--concrete);
+}
+.bg-worksite::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
   background-image:
-    radial-gradient(circle at 20% 20%, rgb(0 242 255 / 0.04) 0%, transparent 40%),
-    radial-gradient(
-      circle at 80% 80%,
-      rgb(180 124 240 / 0.04) 0%,
-      transparent 40%
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--line) 55%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--line) 55%, transparent) 1px,
+      transparent 1px
     );
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 28%, transparent 76%);
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 28%, transparent 76%);
+  opacity: 0.6;
 }
 
 @layer components {
-  /* The brushed-metal surface used across cards, the header and the
-     scroll-to-top button. Still called `.glass-card` because six-plus files
-     reference it by that name; only the treatment changed, from a translucent
-     white pane to a dark metal panel with a lit cyan edge. */
+  /* ── Spec panel ─────────────────────────────────────────────────────────
+     The worksite's flat panel: a paper face inside a strong ink frame, lifting
+     on a hard offset shadow. Still called `.glass-card` because many files
+     reference it by name; only the material changed (from dark metal to
+     concrete stock). */
   .glass-card {
-    @apply rounded-[2.5rem] border border-border
-      bg-[linear-gradient(145deg,#1a2133,#111725)]
-      shadow-e1 transition-all duration-500;
+    @apply border-2 border-bitumen bg-paper shadow-e1 transition-all duration-300;
+    border-radius: var(--radius);
+  }
+  .glass-card-interactive {
+    @apply hover:-translate-y-1 hover:shadow-e2;
   }
 
-  /* ── The glass material ─────────────────────────────────────────────────
-     Shared by the floating header, the mobile menu and the secondary
-     buttons, so all three read as the same substance at different
-     thicknesses. Three properties do the work:
-
-       backdrop-filter blur   melts what passes underneath
-       saturate(160%)         lets the cyan and purple blooms bleed through
-                              with their colour intact instead of going grey
-       the two inset lines    a lit top edge and a dark underside — this is
-                              what actually says "pane of glass" rather than
-                              "translucent rectangle"
-
-     `background-clip: padding-box` keeps the fill from bleeding under the
-     1px border, which otherwise muddies the rim on rounded corners.
-
-     Written out longhand rather than composed with `@apply`: in Tailwind v4
-     `@apply` only accepts real utilities, so applying one `@layer components`
-     class inside another fails to compile. */
-  .glass-nav,
-  .glass-panel {
-    border-radius: 2rem;
-    background: var(--glass-fill);
-    background-clip: padding-box;
-    border: 1px solid var(--glass-border);
-    -webkit-backdrop-filter: var(--glass-blur);
-    backdrop-filter: var(--glass-blur);
-  }
+  /* Header bar + mobile menu. Not floating glass any more — a solid concrete
+     bar under a strong ruled edge, which is what a site notice hangs from.
+     A light backdrop blur keeps content legible where it scrolls beneath. */
   .glass-nav {
-    box-shadow: var(--glass-edge), var(--shadow-e2);
+    background: color-mix(in srgb, var(--concrete) 90%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-bottom: 1.5px solid var(--bitumen);
   }
-  /* The mobile menu floats above the nav, so it goes one rung higher and one
-     notch more opaque — it covers body content rather than the page edge. */
   .glass-panel {
-    background: linear-gradient(
-      160deg,
-      rgb(30 38 58 / 0.94),
-      rgb(15 21 34 / 0.9)
-    );
-    box-shadow: var(--glass-edge), var(--shadow-e3);
+    background: var(--paper);
+    border: 2px solid var(--bitumen);
+    box-shadow: var(--elev-3);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-nav {
+      background: var(--concrete);
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass-nav {
+      background: var(--concrete);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
   }
 
-  /* Primary action. Was retyped inline on the header CTA and again in every
-     section that needed a solid button, so the glow, the radius and the
-     hover lift had already drifted apart between them. Dark type on the raw
-     cyan fill is the one place `--color-cyber-cyan` is safe to use at full
-     chroma — 13.9:1, and the aberration problem only affects light-on-dark. */
+  /* Primary action — the hi-vis fill with dark type. Square, with a hard hover
+     lift. Dark ink on hi-vis is the one place the raw signal is safe as a
+     background (4.4:1 bold). */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl
-      bg-cyber-cyan px-6 py-3.5 text-sm font-bold text-cyber-dark
-      shadow-neon-cyan transition-all duration-200
-      hover:-translate-y-0.5 hover:bg-cyber-cyan-bright
-      hover:shadow-neon-cyan-strong;
+    @apply inline-flex items-center justify-center gap-2 border-2 border-hivis
+      bg-hivis px-6 py-3 font-mono text-sm font-bold uppercase tracking-wide
+      text-hivis-ink transition-transform duration-150 hover:-translate-y-0.5;
+    border-radius: var(--radius);
   }
   .btn-primary:active {
     transform: scale(0.985);
   }
 
-  /* ── Jump chips ─────────────────────────────────────────────────────────
-     In-page navigation for a long index, and the page's proof at the same
-     time: the count beside each label is derived from the case-study data at
-     render, so it cannot drift from what is actually on the page below. That
-     is the reason to prefer this over a decorative three-up stat row — it
-     tells a prospect how much work there is *and* takes them to it in one
-     tap, instead of decorating the hero with a number.
-
-     `py-2.5` + `text-sm` puts the hit area just over 40px; the flex gap in
-     Section keeps neighbouring chips from failing the 24px target spacing. */
-  .chip-link {
-    @apply inline-flex items-center gap-2 rounded-full border
-      px-4 py-2.5 text-sm font-bold text-foreground
-      transition-colors duration-200;
-    background: rgb(226 240 255 / 0.05);
-    background-clip: padding-box;
-    border-color: var(--border-strong);
+  /* Secondary / ghost — transparent with a strong ink edge that picks up hi-vis
+     on hover. Replaces the old glass button; keeps the `.btn-glass` name. */
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-bitumen
+      bg-transparent px-6 py-3 font-mono text-sm font-bold uppercase tracking-wide
+      text-foreground transition-all duration-150
+      hover:-translate-y-0.5 hover:border-hivis;
+    border-radius: var(--radius);
   }
-  .chip-link:hover {
-    background: rgb(226 240 255 / 0.09);
-    border-color: var(--border-brand);
-    color: var(--color-cyber-cyan-bright);
+  .btn-glass:active {
+    transform: scale(0.985);
+  }
+
+  /* ── Jump chips — in-page nav that doubles as proof (count derived from the
+     case-study data at render). Pills, deliberately, against the square frames
+     around them. */
+  .chip-link {
+    @apply inline-flex items-center gap-2 rounded-full border-2 border-line-strong
+      bg-paper px-4 py-2.5 font-mono text-sm font-bold uppercase tracking-wide
+      text-foreground transition-colors duration-200
+      hover:border-hivis hover:text-hivis-text;
   }
   .chip-count {
-    @apply rounded-full bg-cyber-cyan/15 px-2 py-0.5
-      text-xs font-black tabular-nums text-cyber-cyan-soft;
+    @apply rounded-full bg-hivis/15 px-2 py-0.5 text-xs font-black tabular-nums text-hivis-text;
   }
 
-  /* Every group heading on an index page is a scroll target for the chips
-     above. Without a scroll margin, `scroll-smooth` lands the heading
-     underneath the fixed header and the prospect sees a wall of cards with
-     no idea which section they are in. */
+  /* Group headings on an index page are scroll targets for the chips; clear the
+     fixed header so they don't land underneath it. */
   .scroll-target {
     scroll-margin-top: 7rem;
   }
@@ -570,100 +565,64 @@
     }
   }
 
-  /* Secondary / ghost button. Thinner glass than the nav — it sits on cards
-     and on the page, never over arbitrary imagery, so the fill can be much
-     lighter without risking the label. Text stays `--foreground`, which
-     clears 10:1 on every surface this lands on. */
-  .btn-glass {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl
-      px-6 py-3.5 text-sm font-bold text-foreground
-      transition-all duration-200;
-    background: rgb(226 240 255 / 0.07);
-    background-clip: padding-box;
-    border: 1px solid var(--border-strong);
-    -webkit-backdrop-filter: blur(12px) saturate(140%);
-    backdrop-filter: blur(12px) saturate(140%);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.1),
-      0 1px 2px rgb(0 0 0 / 0.35);
-  }
-  .btn-glass:hover {
-    background: rgb(226 240 255 / 0.12);
-    border-color: var(--border-brand);
-    color: var(--color-cyber-cyan-bright);
-  }
-  .btn-glass:active {
-    transform: scale(0.985);
-  }
-
-  /* Not every browser ships backdrop-filter (and Firefox users can still turn
-     it off). Without this the panels fall back to their raw alpha, which puts
-     unblurred page content directly behind the nav text. */
-  @supports not ((backdrop-filter: blur(1px)) or
-    (-webkit-backdrop-filter: blur(1px))) {
-    .glass-nav,
-    .glass-panel {
-      background: var(--glass-fill-solid);
-    }
-    .btn-glass {
-      background: #222a3d;
-    }
-  }
-
-  /* The OS-level "reduce transparency" switch exists because translucency
-     over moving content is genuinely hard to read for some people. Honour it
-     by serving the same layout in solid form — the specular edge stays, so
-     the components still look deliberate rather than unstyled. */
-  @media (prefers-reduced-transparency: reduce) {
-    .glass-nav,
-    .glass-panel {
-      background: var(--glass-fill-solid);
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-    }
-    .btn-glass {
-      background: #222a3d;
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-    }
-  }
-
-  /* Hoverable variant — lifts and picks up a cyan edge. Opt in, because not
-     every metal surface is a link. The accent now arrives on hover instead of
-     sitting on every card at rest, which is what makes the state legible. */
-  .glass-card-interactive {
-    @apply hover:-translate-y-2 hover:border-border-brand hover:shadow-e2;
-  }
-
-  /* The small uppercase eyebrow above a section heading. All-caps costs you
-     word-shape recognition, so it is the last place to also spend contrast:
-     12px floor (never the 10–11px used elsewhere) and the soft cyan at
-     10.3:1 on the pill rather than raw #00f2ff shimmering at 12px. */
+  /* Section eyebrow — a mono site-notice label, not a pill. */
   .section-label {
-    @apply inline-block rounded-full border border-border-brand
-      bg-cyber-cyan/10 px-4 py-1.5
-      text-xs font-bold uppercase tracking-wider text-cyber-cyan-soft;
+    @apply inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-hivis-text;
   }
 
-  /* Shared treatment for every text control in the contact form. Pulled out
-     of the JSX so the 3:1 field border and the focus ring stay in one place
-     instead of being re-typed on five inputs. */
+  /* ── Verification stamp — the signature mark: live + source, field-verified.
+     A crisp inspection stamp (double-stroke, slight rotation), never grunged. */
+  .stamp {
+    @apply inline-block border-2 px-4 py-2 text-center font-mono uppercase;
+    border-color: var(--hivis);
+    color: var(--hivis);
+    background: color-mix(in srgb, var(--hivis) 7%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hivis) 45%, transparent);
+    transform: rotate(-4deg);
+  }
+
+  /* ── Hazard rule — the one signature accent stripe. Use exactly once. */
+  .hazard-rule {
+    height: 12px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--hivis) 0 18px,
+      var(--bitumen) 18px 36px
+    );
+    border-top: 1.5px solid var(--bitumen);
+    border-bottom: 1.5px solid var(--bitumen);
+  }
+
+  /* ── Live / source tags on a spec card. `live` = the running product
+     (hi-vis fill), `src` = the open source (cobalt outline). */
+  .tag-live {
+    @apply inline-flex items-center gap-1.5 border-2 border-hivis bg-hivis px-2.5
+      py-1 font-mono text-xs font-bold text-hivis-ink transition-transform
+      hover:-translate-y-0.5;
+    border-radius: var(--radius);
+  }
+  .tag-src {
+    @apply inline-flex items-center gap-1.5 border-2 border-source bg-transparent
+      px-2.5 py-1 font-mono text-xs font-bold text-source transition-transform
+      hover:-translate-y-0.5;
+    border-radius: var(--radius);
+  }
+
+  /* Shared treatment for every text control in the contact form: the 3:1 field
+     border and the source focus ring live here, not re-typed on each input. */
   .field-input {
-    @apply w-full rounded-2xl border border-input
-      bg-input-bg px-5 py-4
-      text-foreground placeholder:text-foreground-subtle
-      transition-all
-      focus:border-cyber-cyan focus:bg-[#0f1626] focus:outline-none
-      focus:ring-4 focus:ring-cyber-cyan/60;
+    @apply w-full border-2 border-input bg-input-bg px-5 py-3.5 text-foreground
+      placeholder:text-foreground-subtle transition-all
+      focus:border-source focus:outline-none focus:ring-4;
+    border-radius: var(--radius);
+    --tw-ring-color: color-mix(in srgb, var(--source) 45%, transparent);
   }
 
-  /* One visible focus treatment for everything keyboard-reachable. A 50%-alpha
-     ring over a dark surface resolves to roughly 4:1; at 70% it is unambiguous,
-     and the offset keeps it off the glyphs. */
+  /* One visible focus treatment for everything keyboard-reachable — a source
+     ring, offset off the glyphs. */
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-3
-      focus-visible:ring-cyber-cyan/70 focus-visible:ring-offset-2
+    @apply focus-visible:outline-none focus-visible:ring-2
+      focus-visible:ring-source focus-visible:ring-offset-2
       focus-visible:ring-offset-background;
   }
 }
-

@@ -77,7 +77,7 @@ export function Section({
           >
             {label && <span className="section-label">{label}</span>}
             {heading && (
-              <Heading className="mt-4 text-3xl font-black tracking-tight text-foreground md:text-5xl">
+              <Heading className="mt-3 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
                 {heading}
               </Heading>
             )}

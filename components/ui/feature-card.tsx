@@ -22,23 +22,18 @@ export function FeatureCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      // Styling: Glass effect with white/60 opacity and heavy blur.
-      // Hover: Shifts up slightly and adds a subtle horizon-sky glow.
-      className="group relative p-8 bg-[linear-gradient(145deg,#1a2133,#111725)] border border-border rounded-[2.5rem] shadow-e1 hover:shadow-e2 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+      // Site Notice spec panel — concrete stock in an ink frame, hi-vis icon.
+      className="group glass-card glass-card-interactive p-8"
     >
-      {/* Decorative inner glow on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-      {/* Icon Container: Uses a soft sky-blue tint */}
-      <div className="relative w-14 h-14 bg-cyber-cyan/10 rounded-2xl flex items-center justify-center text-cyber-cyan-soft mb-8 group-hover:scale-110 group-hover:bg-cyber-cyan/20 transition-all duration-300">
+      <div className="mb-8 flex h-14 w-14 items-center justify-center bg-hivis/10 text-hivis transition-transform duration-300 group-hover:scale-110">
         {icon}
       </div>
 
-      <div className="relative">
-        <h3 className="text-xl font-black text-foreground mb-4 tracking-tight">
+      <div>
+        <h3 className="mb-4 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
           {title}
         </h3>
-        <p className="text-muted-foreground leading-relaxed text-sm font-medium">
+        <p className="text-sm leading-relaxed text-muted-foreground">
           {description}
         </p>
       </div>

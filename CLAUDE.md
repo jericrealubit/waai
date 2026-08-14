@@ -73,11 +73,15 @@ Chainlit RAG chatbot
 `z-index: 99999` with inline styles so it covers the root layout's header, footer
 and padding. There is no chat backend in this repo.
 
-**`app/layout.tsx`** owns the persistent visual chrome: three fixed, blurred
-gradient "glow" blobs behind everything (`-z-10`), the floating `Header`, `main`
-with `pt-24 md:pt-32` to clear the fixed header, `ScrollToTop`, and `Footer`.
-Anything added to layout must respect that stacking (`-z-10` background,
-`z-50` header).
+**`app/layout.tsx`** owns the persistent visual chrome: the concrete ground and
+its faint blueprint grid (`.bg-worksite` — a top-masked fixed `::before` on the
+body), the fixed `Header` bar, `main` with `pt-24 md:pt-32` to clear it,
+`ScrollToTop`, and `Footer`. The site follows the visitor's OS theme — `<html>`
+carries **no `dark` class**; the light and dark palettes both live in
+`globals.css`, so there is no flash-of-wrong-theme to guard against. Anything
+added to layout must respect the stacking (`z-50` header). It also loads the
+three next/font faces onto `<html>` (`--font-geist-sans`, `--font-geist-mono`,
+`--font-saira`).
 
 It also owns **the site's only analytics tag** — `<GoogleAnalytics>` from
 `@next/third-parties/google`, rendered as a sibling of `<body>`. The root layout
@@ -89,96 +93,114 @@ but *not* `npm run preview` — preview is a real production build.
 
 ## Styling conventions
 
-The visual language is **dark "brushed metal + neon cyan"**. The site is
-dark-only: `:root` in `app/globals.css` holds the dark palette directly and
-`<html>` carries a permanent `dark` class, so there is no light mode and no
-theme toggle. Surfaces are dark metal panels — `linear-gradient(145deg,#1a2133,#111725)`
-with a neutral `border-border` hairline — over the layout's PCB background, using
-large custom radii (`rounded-[2rem]`, `rounded-[2.5rem]`).
+The visual language is **"Site Notice" — a Western Australian worksite
+spec-sheet**: warm concrete + ink, one hi-vis signal and one cobalt signal,
+engineering title-blocks, plate-framed captures, and a field-verification stamp.
+The identity is grounded in the clients' world (tradies, a smokehouse, a rubber
+press floor), deliberately *not* the old dark-cyber look.
 
-Reach for the tokens rather than raw colours. **Never use a `slate-*`/`gray-*`
-scale value** — the three-rung text ramp covers every case:
+**Themes: light default, dark toggle, OS fallback.** The active theme is a
+`data-theme` attribute on `<html>`. A pre-paint script in `app/layout.tsx` sets
+it before first paint (stored choice, else OS) so there's no flash, and
+`components/theme-toggle.tsx` (in the header) flips + persists it to
+`localStorage`; with no stored choice it keeps following the OS live. In
+`app/globals.css`: `:root` holds the **light** ("daylight") palette;
+`@media (prefers-color-scheme: dark) :root:not([data-theme])` is the OS/no-JS
+**dark** ("night-shift") fallback; and `:root[data-theme="dark"]` is the explicit
+dark choice (**mirror of the media block — keep the two dark blocks in sync**).
+Every brand colour is an *indirection* (`--color-hivis: var(--hivis)` in `@theme
+inline`, value resolved per theme) so the whole palette flips together. The
+shadcn `dark:` variant keys off the attribute
+(`@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *))`),
+which tracks the resolved theme because the script always stamps `data-theme`.
+Any new colour must be added to **both** dark blocks as well as `:root` — never a
+bare hex in a component.
 
-| token                   | value     | use                          | on card    |
-| ----------------------- | --------- | ---------------------------- | ---------- |
-| `text-foreground`       | `#e8eef7` | headings, emphasis           | 13.8:1 · Lc −94 |
-| `text-muted-foreground` | `#c6d2e2` | body copy — the default      | 10.5:1 · Lc −76 |
-| `text-foreground-subtle`| `#9caac0` | metadata, placeholders, captions | 6.8:1 · Lc −53 |
+Reach for the tokens, never a raw `slate-*`/`gray-*`/`white`/`black`. The text
+ramp — **body copy is near-ink; `steel` (`text-foreground-subtle`) is metadata
+only** (raw steel as body is APCA-borderline, the inverse of the old `#94a3b8`
+trap):
 
-Cyan is split by **role**, because one value cannot be a fill, a link and a
-border at once:
+| token                    | light / dark      | use                              |
+| ------------------------ | ----------------- | -------------------------------- |
+| `text-foreground`        | `#1a1813` / `#ece6d8` | headings, emphasis (`--bitumen`) |
+| `text-muted-foreground`  | `#3a362e` / `#c9c2b2` | body copy — the default          |
+| `text-foreground-subtle` | `#5e5b51` / `#a39d8e` | metadata, captions, placeholders (`--steel`) |
 
-- `bg-cyber-cyan` `#00f2ff` — fills, the swan mark, focus rings. **Never body text.**
-- `text-cyber-cyan-soft` `#7ce4f2` — links, eyebrows, icons, metadata
-- `text-cyber-cyan-bright` `#a8eef8` — the hover state for both
-- `border-border` → `border-border-strong` → `border-border-brand` — edges get
-  the accent on **hover/focus**, not at rest
-- `.glass-card` / `.glass-card-interactive` / `.section-label` / `.field-input` /
-  `.focus-ring` for shared surfaces
+Two signals, each with a **role** and a **meaning** — hi-vis = the live product /
+the primary action; cobalt = the open source:
 
-**Glass** (`.glass-nav`, `.glass-panel`, `.btn-glass`) is the material for
-anything that floats over scrolling content — the header, the mobile menu, the
-scroll-to-top button, secondary buttons. Three things make it read as glass:
-the backdrop blur, `saturate(160%)` so the cyan and purple blooms keep their
-colour instead of going grey, and the two inset lines (`--glass-edge`) that
-give it a lit top edge and a dark underside. None of those cost contrast, so
-reach for them before reaching for more transparency.
+- `bg-hivis` `#e8420a` / `#ff5a1e` — fills, primary CTAs, the flame. **Never
+  small text on light** (~3:1) — use `text-hivis-text` for that.
+- `text-hivis-text` `#b8330a` / `#ff824f` — hi-vis as small text, and the hover
+  state for links.
+- `text-source` `#1e3aa8` / `#6e86ff` — links, "Source" tags. Prose links inside
+  `<p>` also carry a source underline (a `@layer base` rule).
+- Text on a `bg-hivis` fill is `text-hivis-ink` (dark), never white.
 
-The fill must not drop below **80%**. The header is `fixed` over case-study
-cards containing near-white screenshots; at 80% a white backdrop still leaves
-nav text at 8.2:1 and cyan links at 6.5:1, and at 70% cyan falls to 4.5:1.
-Both `@supports not (backdrop-filter)` and `prefers-reduced-transparency`
-fall back to `--glass-fill-solid`. The cyan CTA is deliberately **not** glass —
-a translucent fill would break its 13.9:1 label and flatten the action
-hierarchy.
+Surfaces are **flat concrete stock in strong ink frames**, hard-cornered
+(`--radius` is `0.2rem`; chips opt back into `rounded-full`). Reuse the component
+classes rather than re-typing them:
 
-**Elevation is `shadow-e1` / `e2` / `e3`, never a hand-written `shadow-[…]`.**
-On a near-black page a black drop shadow is invisible — the old
-`0 20px 50px rgb(0 0 0 / 0.8)` rendered nothing. Height on dark reads from the
-lit top edge, so each rung is specular hairline + tight contact shadow + wide
-ambient, and the surface steps up a rung as well.
+- `.glass-card` / `.glass-card-interactive` — the spec panel (paper face,
+  `border-2 border-bitumen`, offset shadow, hover lift). Name kept for history;
+  material changed.
+- `.glass-nav` / `.glass-panel` — the header bar (solid concrete under a strong
+  ruled edge) and the mobile menu. Not floating glass any more.
+- `.btn-primary` (hi-vis fill) / `.btn-glass` (ghost: ink edge, hi-vis on hover).
+- `.tag-live` (hi-vis fill) / `.tag-src` (cobalt outline) — the live+source pair
+  on a spec card. `.chip-link` / `.chip-count` — the `/work` jump chips.
+- `.stamp` — the field-verification signature. `.hazard-rule` — the diagonal
+  stripe; **use exactly once** (the hero baseline).
+- `.field-input` (form controls, 3:1 border + source focus ring), `.focus-ring`
+  (source ring), `.section-label` (the mono eyebrow).
 
-**Cyan is a light colour.** Anything on a `bg-cyber-cyan` fill needs
-`text-cyber-dark`, never `text-white` — white on `#00f2ff` is ~1.4:1 and fails
-contrast badly.
+**Type is three faces.** `font-display` = **Saira Condensed** (worksite signage —
+headings, labels, the wordmark; always `uppercase`, heavy weight). `font-sans` =
+Geist (body). `font-mono` = Geist Mono — the *datasheet voice*: URLs, stacks,
+prices, plate labels, eyebrows, counts. Use mono for data, not prose.
 
-**Two contrast rules that are easy to get wrong on this palette:**
+**Elevation is `shadow-e1` / `e2` / `e3`, never a hand-written `shadow-[…]`.** It
+is theme-aware: an offset hard ink shadow down-right on the light ground (a card
+lifted off a drawing sheet), and a lit top edge + soft contact shadow on the dark
+ground (where an offset ink shadow is invisible).
 
-1. _Don't put glow behind glyphs._ A blurred halo around light text on a dark
-   panel is halation — the thing that makes dark UI tiring. `shadow-neon-cyan`
-   belongs on the mark and on fills; `text-shadow-glow-*` is now near-zero and
-   should stay that way.
-2. _WCAG 2 flatters light-on-dark._ Check APCA as well. `#94a3b8` body copy
-   scored 6.6:1 (a clean AA pass) while sitting at Lc −50 against a body-text
-   target of Lc 75 — passing and unreadable at the same time. Targets: body
-   `|Lc| ≥ 75`, large/secondary `≥ 60`, UI boundaries `≥ 3:1`, and a ceiling of
-   about `|Lc| 95` before light text starts to bloom.
+**Contrast — WCAG *and* APCA, both themes.** Targets: body `|Lc| ≥ 75`,
+large/secondary `≥ 60`, UI boundaries `≥ 3:1`. Two that bite here:
 
-Form-control borders are the one place WCAG 1.4.11 genuinely bites: `--input`
-must clear 3:1 against **both** the field fill and the surface behind it. Use
-`.field-input`, which already does.
+1. _Hi-vis is a mid colour._ It is safe as a **fill** with dark ink on it, and as
+   **large** display text, but never as small body text on the light ground. That
+   is what `text-hivis-text` (a darkened orange, 4.8:1 on concrete) is for.
+2. _Form-control borders (WCAG 1.4.11)._ `--input` must clear 3:1 against **both**
+   the field fill and the surface behind it, in both themes. `.field-input`
+   already does; reuse it.
 
 Entrance animations use framer-motion `initial` / `whileInView` with
-`viewport={{ once: true }}` and a `delay: index * 0.1` stagger (see
-`components/ui/feature-card.tsx`). `"use client"` is applied only to the files
-that need state or motion; sections without interaction stay server components.
+`viewport={{ once: true }}` and a `delay: index * 0.1` stagger. `"use client"` is
+applied only to files that need state or motion; sections without interaction
+stay server components. A global `prefers-reduced-motion` rule in `globals.css`
+zeroes durations (framer-motion never consults the OS setting on its own, so that
+catch-all covers the scroll-triggered animations).
 
-A global `prefers-reduced-motion` rule in `globals.css` zeroes durations —
-framer-motion never consults the OS setting on its own, so that catch-all is
-what actually covers the scroll-triggered animations. The footer flame and its
-smoke opt out via **`.motion-always`**, which the rule excludes with
-`*:not(.motion-always)`. That exemption is deliberate (it predates the rule;
-see the comment in `components/footer.tsx`) — put `.motion-always` on the
-animated element itself, not an ancestor, since animation properties don't
-inherit.
+**The footer signature — "Smoked & Coded by: jeric".** A flame + three smoke
+puffs in `components/footer.tsx`, driven by the `flame-flicker` / `smoke-rise`
+keyframes and `--animate-flame` / `--animate-smoke-{1,2,3}` in `globals.css`. Its
+timing is meticulously tuned (one 1.8s beat; an ~80ms lag so the flame reads as
+*blowing* the smoke; puff flight of exactly three beats) — **recolour it, never
+retime it.** The flame is hi-vis and its glow is hardcoded orange/amber in the
+keyframe (works on both grounds); the puff *fills* are `bg-smoke` (theme-aware)
+plus one `bg-hivis` ember, set on the elements. It runs even under reduced
+motion via **`.motion-always`**, which the catch-all excludes with
+`*:not(.motion-always)` — put `.motion-always` on the animated element itself,
+not an ancestor, since animation properties don't inherit.
 
 **Tailwind v4 is CSS-first** (currently 4.2.1). All theme tokens live in
-`app/globals.css` — a plain `@theme` block for the literal cyber values, a
-`@theme inline` block for the indirections onto `:root`, alongside
-`@import "shadcn/tailwind.css"`. There is **no `tailwind.config.{js,ts}`**, and
-adding one would do nothing: v4 only reads a config via an `@config` directive,
-which `globals.css` deliberately does not have. Add new tokens to `@theme`, not
-to a config file.
+`app/globals.css` — a plain `@theme` block for literal values (the flame/smoke
+animations + keyframes), a `@theme inline` block for the indirections onto
+`:root`, alongside `@import "shadcn/tailwind.css"`. There is **no
+`tailwind.config.{js,ts}`**, and adding one would do nothing: v4 only reads a
+config via an `@config` directive, which `globals.css` deliberately does not
+have. Add new tokens to `@theme` (literal) or `@theme inline` + `:root` (themed).
 
-Note `--radius` (0.75rem) drives the whole `--radius-sm…4xl` scale through
-`calc()`, so changing it rescales every radius on the site.
+Note `--radius` (0.2rem, squared) drives the whole `--radius-sm…4xl` scale
+through `calc()`, so changing it rescales every radius on the site.

@@ -12,7 +12,7 @@ export default function FeaturedWork() {
       label="Our work"
       heading="Real projects, live and open"
       description="Each of these is running in production. Every card links to the site itself and to the repository behind it — nothing here is a mockup."
-      className="bg-white/[0.02]"
+      className="bg-cement/30"
     >
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {CASE_STUDIES.map((study, index) => (
