@@ -72,39 +72,33 @@ export default function Contact() {
   }
 
   return (
-    <section
-      id="contact"
-      className="py-24 relative overflow-hidden"
-    >
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-cyber-dark to-transparent" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-cyber-cyan/20 rounded-full blur-3xl opacity-30 -z-10" />
-
-      <div className="max-w-7xl mx-auto px-6 md:px-20 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section id="contact" className="px-6 py-20 md:px-20 md:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="lg:pr-10">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-cyber-cyan/10 border border-border-brand text-cyber-cyan-soft text-sm font-bold tracking-wide uppercase mb-6">
-              Get in Touch
+            <span className="section-label mb-5">
+              Site office — open for briefs
             </span>
-            <h2 className="text-4xl md:text-5xl font-black mb-6 text-foreground leading-[1.1]">
-              Ready to <span className="text-cyber-cyan-soft">Scale</span> Your
-              Business?
+            <h2 className="mb-5 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
+              Tell us what needs building.
             </h2>
-            <p className="text-muted-foreground text-lg mb-10 leading-relaxed max-w-md">
-              Whether you need a simple menu or a full AI-integrated ordering
-              system, we provide clear plans and local WA expertise.
+            <p className="mb-10 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
+              Quotes going unanswered, phone orders eating your evenings, paper
+              job sheets piling up. Tell us the business and we&apos;ll tell you
+              what it takes — and what it costs — before you commit to anything.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
               {CONTACT_ITEMS.map((item, idx) => (
-                <div
+                <a
                   key={idx}
-                  className="group flex items-start gap-5 p-4 rounded-2xl hover:bg-white/5 transition-all duration-300"
+                  href={item.href}
+                  className="focus-ring group flex items-center gap-4 border-2 border-line-strong bg-paper p-4 transition-colors hover:border-hivis"
                 >
-                  <div className="w-12 h-12 shrink-0 bg-black/30 border border-border rounded-xl flex items-center justify-center text-cyber-cyan-soft group-hover:scale-110 transition-transform">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center bg-hivis/10 text-hivis">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
+                      className="h-5 w-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -118,208 +112,147 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-bold text-foreground text-sm uppercase tracking-tighter opacity-50">
+                    <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground-subtle">
                       {item.label}
                     </h4>
-                    <a
-                      href={item.href}
-                      className="text-foreground font-semibold text-lg hover:text-cyber-cyan-soft transition-colors"
-                    >
+                    <span className="font-mono text-base font-bold text-foreground transition-colors group-hover:text-hivis-text">
                       {item.value}
-                    </a>
+                    </span>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
 
-          <div className="relative">
-            {/* Form Shadow/Glow Effect */}
-            <div className="absolute inset-0 bg-cyber-cyan/10 blur-[100px] -z-10 rounded-full" />
-
-            <div className="bg-[linear-gradient(145deg,#181d28,#0e121a)] border border-border shadow-e1 rounded-[2rem] p-8 md:p-12">
-              {status === "success" ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-16 h-16 rounded-full bg-cyber-cyan/10 flex items-center justify-center text-cyber-cyan-soft mb-6">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-8 w-8"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-black text-foreground mb-3">
-                    Message sent
-                  </h3>
-                  <p className="text-muted-foreground max-w-xs mb-8">
-                    Thanks — we've got your details and will be in touch
-                    shortly.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setStatus("idle")}
-                    className="text-sm font-bold text-cyber-cyan-soft hover:text-cyber-cyan-bright transition-colors"
+          <div className="glass-card p-7 md:p-10">
+            {status === "success" ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="mb-6 flex h-16 w-16 items-center justify-center bg-hivis/10 text-hivis">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    Send another message
-                  </button>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
                 </div>
-              ) : (
-                <form className="space-y-6" onSubmit={handleSubmit}>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="contact-name"
-                        className="text-sm font-bold text-foreground ml-1"
-                      >
-                        Your Name
-                      </label>
-                      <input
-                        id="contact-name"
-                        type="text"
-                        required
-                        placeholder="e.g. John Doe"
-                        value={form.name}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, name: e.target.value }))
-                        }
-                        className="field-input"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="contact-business"
-                        className="text-sm font-bold text-foreground ml-1"
-                      >
-                        Business Name
-                      </label>
-                      <input
-                        id="contact-business"
-                        type="text"
-                        placeholder="e.g. Waikiki Cafe"
-                        value={form.businessName}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            businessName: e.target.value,
-                          }))
-                        }
-                        className="field-input"
-                      />
-                    </div>
-                  </div>
-
+                <h3 className="mb-3 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+                  Message sent
+                </h3>
+                <p className="mb-8 max-w-xs text-muted-foreground">
+                  Thanks — we&apos;ve got your details and will be in touch
+                  shortly.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setStatus("idle")}
+                  className="font-mono text-sm font-bold uppercase tracking-wide text-source transition-colors hover:text-hivis-text"
+                >
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
                     <label
-                      htmlFor="contact-email"
-                      className="text-sm font-bold text-foreground ml-1"
+                      htmlFor="contact-name"
+                      className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
                     >
-                      Work Email
+                      Your Name
                     </label>
                     <input
-                      id="contact-email"
-                      type="email"
+                      id="contact-name"
+                      type="text"
                       required
-                      placeholder="john@business.com.au"
-                      value={form.email}
+                      placeholder="e.g. John Doe"
+                      value={form.name}
                       onChange={(e) =>
-                        setForm((f) => ({ ...f, email: e.target.value }))
+                        setForm((f) => ({ ...f, name: e.target.value }))
                       }
                       className="field-input"
                     />
                   </div>
-
                   <div className="space-y-2">
                     <label
-                      htmlFor="contact-interest"
-                      className="text-sm font-bold text-foreground ml-1"
+                      htmlFor="contact-business"
+                      className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
                     >
-                      Interested In
+                      Business Name
                     </label>
-                    <div className="relative">
-                      <select
-                        id="contact-interest"
-                        value={form.interestedIn}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            interestedIn: e.target.value,
-                          }))
-                        }
-                        className="field-input cursor-pointer appearance-none"
-                      >
-                        <option>Restaurant Menu Website</option>
-                        <option>Menu + Ordering System</option>
-                        <option>Tradie Website</option>
-                        <option>Manufacturing Log Automation</option>
-                        <option>E-commerce Store</option>
-                        <option>Custom Digital Solution</option>
-                      </select>
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-foreground-subtle">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="contact-details"
-                      className="text-sm font-bold text-foreground ml-1"
-                    >
-                      Project Details
-                    </label>
-                    <textarea
-                      id="contact-details"
-                      rows={4}
-                      required
-                      placeholder="Briefly describe your vision..."
-                      value={form.projectDetails}
+                    <input
+                      id="contact-business"
+                      type="text"
+                      placeholder="e.g. Perth Cafe"
+                      value={form.businessName}
                       onChange={(e) =>
                         setForm((f) => ({
                           ...f,
-                          projectDetails: e.target.value,
+                          businessName: e.target.value,
                         }))
                       }
-                      className="field-input resize-none"
+                      className="field-input"
                     />
                   </div>
+                </div>
 
-                  {status === "error" && (
-                    <p className="text-sm font-semibold text-red-300 bg-red-950/50 border border-red-500/40 rounded-2xl px-5 py-3">
-                      {errorMessage}
-                    </p>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={status === "submitting"}
-                    className="w-full group bg-cyber-cyan hover:bg-cyber-cyan-bright text-cyber-dark font-bold py-5 rounded-2xl shadow-neon-cyan hover:shadow-neon-cyan-strong active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+                <div className="space-y-2">
+                  <label
+                    htmlFor="contact-email"
+                    className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
                   >
-                    {status === "submitting" ? "Sending..." : "Get My Free Plan"}
-                    {status !== "submitting" && (
+                    Work Email
+                  </label>
+                  <input
+                    id="contact-email"
+                    type="email"
+                    required
+                    placeholder="john@business.com.au"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, email: e.target.value }))
+                    }
+                    className="field-input"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="contact-interest"
+                    className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
+                  >
+                    Interested In
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="contact-interest"
+                      value={form.interestedIn}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          interestedIn: e.target.value,
+                        }))
+                      }
+                      className="field-input cursor-pointer appearance-none"
+                    >
+                      <option>Restaurant Menu Website</option>
+                      <option>Menu + Ordering System</option>
+                      <option>Tradie Website</option>
+                      <option>Manufacturing Log Automation</option>
+                      <option>E-commerce Store</option>
+                      <option>Custom Digital Solution</option>
+                    </select>
+                    <div className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-foreground-subtle">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 group-hover:translate-x-1 transition-transform"
+                        className="h-5 w-5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -328,14 +261,67 @@ export default function Contact() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          d="M19 9l-7 7-7-7"
                         />
                       </svg>
-                    )}
-                  </button>
-                </form>
-              )}
-            </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="contact-details"
+                    className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
+                  >
+                    Project Details
+                  </label>
+                  <textarea
+                    id="contact-details"
+                    rows={4}
+                    required
+                    placeholder="Briefly describe your vision..."
+                    value={form.projectDetails}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        projectDetails: e.target.value,
+                      }))
+                    }
+                    className="field-input resize-none"
+                  />
+                </div>
+
+                {status === "error" && (
+                  <p className="border-2 border-red-500/50 bg-red-500/10 px-5 py-3 font-mono text-sm font-semibold text-red-700 dark:text-red-300">
+                    {errorMessage}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === "submitting"}
+                  className="btn-primary focus-ring w-full py-4 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {status === "submitting" ? "Sending..." : "Get My Free Plan"}
+                  {status !== "submitting" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>

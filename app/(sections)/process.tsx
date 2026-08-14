@@ -32,10 +32,10 @@ export default function Process() {
     <Section
       id="process"
       label="How we work"
-      heading="Four steps, no mystery"
-      description="The same sequence on a four-page brochure site and on a factory-floor logging system."
+      heading="The build sequence"
+      description="The same four steps on a four-page brochure site and on a factory-floor logging system."
     >
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 border-2 border-bitumen bg-paper md:grid-cols-2">
         {STEPS.map((item, index) => (
           <motion.div
             key={item.step}
@@ -43,15 +43,17 @@ export default function Process() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="relative"
+            className="border-b border-line px-6 py-7 last:border-b-0 md:odd:border-r md:odd:border-line md:[&:nth-child(3)]:border-b-0 md:[&:nth-child(4)]:border-b-0"
           >
-            <span className="mb-5 block text-5xl font-black tracking-tighter text-cyber-cyan-soft/20">
-              {item.step}
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-hivis-text">
+              Step {item.step}
             </span>
-            <h3 className="mb-3 text-lg font-black tracking-tight text-foreground">
+            <h3 className="mb-2.5 mt-2 font-display text-2xl font-extrabold uppercase leading-none tracking-tight text-foreground">
               {item.title}
             </h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+            <p className="max-w-[46ch] text-sm leading-relaxed text-muted-foreground">
+              {item.body}
+            </p>
           </motion.div>
         ))}
       </div>
