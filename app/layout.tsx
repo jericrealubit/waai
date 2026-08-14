@@ -36,8 +36,8 @@ export const metadata: Metadata = {
     "Digital Growth",
     "Website Maintenance",
   ],
-  // Generated from public/logo-swan.png — see public/favicon*.png,
-  // apple-touch-icon.png and android-chrome-*.png.
+  // Generated from a simplified crop of public/logo-mark.png — see
+  // public/favicon*.png, apple-touch-icon.png and android-chrome-*.png.
   icons: {
     icon: [
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
