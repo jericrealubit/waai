@@ -7,6 +7,9 @@
  *
  *  - Jun's Maintenance quote form validates but only logs to console. There is
  *    no email backend. Never claim it delivers leads anywhere.
+ *  - JRM Top Build's quote form (`submitQuote` server action) validates with
+ *    Zod and only console.logs the enquiry — same situation as Jun's
+ *    Maintenance, no email provider configured. Never claim it delivers leads.
  *  - HVT Prestige's gallery page is unpopulated placeholder tiles. Don't cite it.
  *  - BBQ Heaven is PICKUP ONLY with NO online payment, and is vanilla ES6 —
  *    not Next.js. Its README says Netlify; it is actually on Cloudflare Pages.
@@ -164,6 +167,50 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Static export",
       "Cloudflare Pages",
       "GitHub Actions",
+    ],
+  },
+  {
+    slug: "jrm-top-build",
+    name: "JRM Top Build",
+    client: "JRM Top Build Ltd",
+    sector: "Renovations & building · Christchurch NZ",
+    service: "tradie-websites",
+    liveUrl: "https://jrmtopbuild.nz/",
+    repoUrl: "https://github.com/jericrealubit/jrmtopbuild",
+    liveLabel: "jrmtopbuild.nz",
+    gated: false,
+    screenshot: {
+      src: "/work/jrm-top-build.webp",
+      alt: "JRM Top Build homepage hero with 'Get a Free Quote' and 'Call' calls to action over a decking and pergola project photo",
+      caption: "Homepage hero with dual quote and call CTAs",
+    },
+    outcome:
+      "Five dedicated service pages, a console-logged quote form and a GeneralContractor structured-data profile carrying the business's NZBN for a Christchurch building trade.",
+    summary:
+      "A lead-generation site for a Christchurch renovation and building company, built around the five trades it actually sells and the local search terms each one gets found by.",
+    problem:
+      "A general building company sells five distinct jobs — renovations, pergolas, decking, floor planks, bathrooms — and a one-page site flattens all of them into a single URL that can't rank for any single service near Christchurch.",
+    approach: [
+      "Split the offering into five dedicated service pages — renovations & alterations, pergolas, decking, floor planks, and bathroom renovations — each carrying its own summary, included-deliverables list, four-step process and FAQ.",
+      "Built the quote form on Next.js Server Actions with Zod validation, matching the dual-CTA pattern of 'Get a Free Quote' and 'Call' rather than forcing every enquiry through one channel.",
+      "Modelled twelve Christchurch and Canterbury suburbs with Hornby flagged as the business's base, feeding the service-area page and the structured-data address.",
+      "Shipped schema.org GeneralContractor structured data carrying the business's NZBN and a nested Offer/Service entry per service line, not a generic LocalBusiness block.",
+      "Kept services, suburbs, testimonials and business identity in typed content files (lib/services.ts, lib/suburbs.ts, lib/testimonials.ts, lib/site-config.ts), so content changes stay data edits.",
+    ],
+    highlights: [
+      "Dual 'Get a Free Quote' and 'Call' CTAs in the hero, because trade enquiries split between a form and a phone call and the site shouldn't force a choice.",
+      "GeneralContractor schema.org markup carrying the NZBN and a per-service Offer entry — richer local-SEO structured data than a flat LocalBusiness block.",
+      "The quote form validates and logs every enquiry server-side today; wiring in real email delivery is a config change, not a rebuild, since the insertion point is already there.",
+    ],
+    stack: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind v4",
+      "shadcn/ui",
+      "Zod",
+      "Server Actions",
+      "Cloudflare Workers",
     ],
   },
   {
