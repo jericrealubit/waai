@@ -4,11 +4,11 @@
  * NOTE ON PRICING: figures were benchmarked against active Perth providers
  * (Aug 2026) — see waai-redesign notes. All four lines are priced below
  * their nearest comparable:
- *   - Tradie Websites: $499–$899 vs. $1,295+ for a template build,
+ *   - Tradie Websites: $599–$1,999 vs. $1,295+ for a template build,
  *     $3,000+ for a custom one. Backed by a $50/yr hosting+domain+
  *     maintenance bundle that undercuts the $120–$600/yr competitors
  *     charge for hosting alone.
- *   - Restaurant & Food Cart Ordering: $699–$999 one-time vs. SaaS
+ *   - Restaurant & Food Cart Ordering: $799–$2,999 one-time vs. SaaS
  *     ordering platforms charging $27–$99/week (i.e. $1,400–$5,150/yr)
  *     forever, with no lock-in.
  *   - Ecommerce Websites: $1,999–$4,999 vs. $1,500–$5,000 for a basic
@@ -88,8 +88,8 @@ export const SERVICES: Service[] = [
       "Lead-generating sites for trades — service pages, quote capture, and local search that puts you in front of nearby jobs.",
     intro:
       "Trade customers search by job and by suburb. We build a page per service so each one can rank on its own, wire up whichever conversion path suits your trade — a quote form or a tap-to-call number — and ship structured local SEO so you show up in the map pack.",
-    fromPrice: 499,
-    toPrice: 899,
+    fromPrice: 599,
+    toPrice: 1999,
     priceNote: "for a multi-page site with service pages and local SEO",
     marketBenchmark: "$1,295+ template, $3,000+ custom",
     yearlyCost: {
@@ -121,8 +121,8 @@ export const SERVICES: Service[] = [
       "A menu people can actually order from — filterable, cart-based, with orders landing live on a kitchen dashboard.",
     intro:
       "A photo of your menu is not a menu. We build a filterable, searchable menu with item variants and dietary badges, a cart that survives a page refresh, and a staff dashboard where orders appear the moment they're placed — no phone, no third-party commission.",
-    fromPrice: 699,
-    toPrice: 999,
+    fromPrice: 799,
+    toPrice: 2999,
     priceNote: "for a menu, cart and live kitchen dashboard",
     marketBenchmark: "$27–99/week — $1,400–5,150/yr, forever",
     yearlyCost: {
@@ -223,7 +223,7 @@ export function getService(slug: string): Service | undefined {
 }
 
 /**
- * Formats the price for display, e.g. "From $899", "$499–$899" when a
+ * Formats the price for display, e.g. "From $4,999", "$599–$1,999" when a
  * `toPrice` range is set, or "Custom quote" when `fromPrice` is null.
  */
 export function formatFromPrice(service: Service): string {
