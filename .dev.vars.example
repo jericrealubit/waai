@@ -1,12 +1,22 @@
 # Copy this file to .dev.vars for local development (`.dev.vars` is
 # gitignored — never commit real keys).
 #
-# Get a key at https://resend.com/api-keys — the free tier (100 emails/day)
-# is enough for a contact form. The contact route sends from hello@waai.au,
-# so waai.au must stay verified (DKIM + SPF) in the Resend dashboard.
+# Get a key at https://resend.com/api-keys — the free tier (100 emails/day,
+# 3,000/month) is enough for a contact form. The contact route sends from
+# hello@waai.au, so waai.au must stay verified (DKIM + SPF) in the Resend
+# dashboard.
 #
-# For production, set this as a Worker secret instead of committing it
+# For production, set these as Worker secrets instead of committing them
 # anywhere:
 #   npx wrangler secret put RESEND_API_KEY
 
 RESEND_API_KEY=re_your_api_key_here
+
+# Optional — the contact form's two addresses. Both fall back to sensible
+# defaults in app/api/contact/route.ts, so leave them unset unless the mail
+# setup changes. Override BOTH together, never just one: the sender and the
+# recipient must stay distinct or the notification is mail from an address to
+# itself, through a forwarder. See docs/EMAIL.md.
+#
+# CONTACT_FROM="WA AI Digital <forms@waai.au>"   # must be a Resend-verified domain
+# CONTACT_TO=hello@waai.au                       # where enquiries are delivered
