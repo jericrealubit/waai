@@ -67,6 +67,16 @@ reason behind it. The one thing that bites: on the OpenNext Cloudflare adapter,
 them from `getCloudflareContext().env`. Local dev needs `.dev.vars` (copy
 `.dev.vars.example`); production needs `wrangler secret put RESEND_API_KEY`.
 
+Sender and recipient are read off the same `env` object (`CONTACT_FROM` /
+`CONTACT_TO`, each falling back to a constant), so changing where enquiries land
+is a secret, not a code edit — but they must be overridden **as a pair**, since
+the whole point of the asymmetry is that the two addresses differ.
+**`docs/EMAIL.md`** is the operational runbook for `hello@waai.au`: Cloudflare
+Email Routing forwards and does not store (there is no Cloudflare mailbox, on
+any plan), Gmail's third-party "Send mail as" is being retired in January 2027,
+and sending therefore goes through Resend's SMTP relay from a normal mail
+client. Read it before changing anything about how mail is addressed.
+
 **`app/chat/page.tsx`** is a full-viewport `<iframe>` onto an externally hosted
 Chainlit RAG chatbot
 (`jericrealubit-ragchatbot.hf.space`), deliberately positioned `fixed` at

@@ -171,6 +171,14 @@ Resend) but delivered **to** the owner's inbox directly, not back to
 Routing — addressing it there would loop through the forwarder and read as
 spam.
 
+Both addresses are overridable with the `CONTACT_FROM` and `CONTACT_TO` vars, so
+the route needs no edit when the mail setup changes — but override **both**
+together, so sender and recipient stay distinct. See
+[`docs/EMAIL.md`](docs/EMAIL.md) for the whole picture: what Cloudflare Email
+Routing can and can't do (it forwards; it is not a mailbox), how to send *as*
+`hello@waai.au` now that Gmail is retiring third-party "Send mail as", and the
+upgrade paths to a real mailbox.
+
 > [!WARNING]
 > On the OpenNext Cloudflare adapter, `.dev.vars` and Worker secrets are **not**
 > bridged onto `process.env`. Read them from `getCloudflareContext().env` —

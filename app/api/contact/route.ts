@@ -4,9 +4,9 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 /**
  * Contact form submission handler.
  *
- * Sends the enquiry to the RECIPIENT inbox via Resend's HTTP API — the
- * only viable option on Cloudflare Workers, which has no raw TCP sockets and
- * so can't do SMTP. Requires RESEND_API_KEY:
+ * Sends the enquiry via Resend's HTTP API — the only viable option on
+ * Cloudflare Workers, which has no raw TCP sockets and so can't do SMTP.
+ * Requires RESEND_API_KEY:
  *   - Local dev: set it in .dev.vars (see .dev.vars.example)
  *   - Production: `wrangler secret put RESEND_API_KEY`
  *
@@ -16,20 +16,24 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
  * would silently be undefined even with a correctly-set `.dev.vars`/secret.
  * See https://opennext.js.org/cloudflare/bindings.
  *
- * Sends FROM hello@waai.au (the domain is DKIM/SPF-verified in Resend, so
- * this authenticates properly) but delivers TO the Gmail address directly,
- * NOT to hello@waai.au. That asymmetry is deliberate: hello@waai.au is
- * forwarded to the same Gmail inbox via Cloudflare Email Routing, so
- * addressing the notification to it would mean sending mail from an address
- * to itself and back through a forwarder — which risks a routing loop and is
- * a common spam signal. Sending straight to the real inbox avoids both.
+ * Both addresses are read from the same env object (CONTACT_FROM/CONTACT_TO)
+ * so the mail setup can change without touching this file. The defaults send
+ * FROM hello@waai.au — the domain is DKIM/SPF-verified in Resend, so this
+ * authenticates properly — but deliver TO the owner's inbox directly, NOT to
+ * hello@waai.au. That asymmetry is deliberate: hello@waai.au is forwarded to
+ * that same inbox by Cloudflare Email Routing, so addressing the notification
+ * to it would mean sending mail from an address to itself and back through a
+ * forwarder — a routing-loop risk and a common spam signal.
+ *
+ * To file enquiries under the business address instead, override BOTH so the
+ * two stay distinct (e.g. forms@waai.au → hello@waai.au). See docs/EMAIL.md.
  */
 
-/** Public-facing sender. Requires waai.au to stay verified in Resend. */
-const SENDER = "WAAI <hello@waai.au>";
-/** Real destination inbox — deliberately not hello@waai.au (see above). */
-const RECIPIENT = "jericrealubit@gmail.com";
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
+/** Public-facing sender. Must be on a Resend-verified domain. */
+const DEFAULT_SENDER = "WAAI <hello@waai.au>";
+/** Destination inbox — deliberately not the sender address (see above). */
+const DEFAULT_RECIPIENT = "jericrealubit@gmail.com";
 
 interface ContactPayload {
   name: string;
@@ -84,7 +88,9 @@ export async function POST(request: Request) {
   }
 
   const { env } = getCloudflareContext();
-const apiKey = (env as Record<string, string | undefined>).RESEND_API_KEY ?? process.env.RESEND_API_KEY;
+  const vars = env as Record<string, string | undefined>;
+
+  const apiKey = vars.RESEND_API_KEY ?? process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("RESEND_API_KEY is not set");
     return NextResponse.json(
@@ -92,6 +98,9 @@ const apiKey = (env as Record<string, string | undefined>).RESEND_API_KEY ?? pro
       { status: 500 },
     );
   }
+
+  const sender = vars.CONTACT_FROM?.trim() || DEFAULT_SENDER;
+  const recipient = vars.CONTACT_TO?.trim() || DEFAULT_RECIPIENT;
 
   const html = `
     <h2>New enquiry from waai.au</h2>
@@ -111,8 +120,8 @@ const apiKey = (env as Record<string, string | undefined>).RESEND_API_KEY ?? pro
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: SENDER,
-        to: [RECIPIENT],
+        from: sender,
+        to: [recipient],
         reply_to: email,
         subject: `New enquiry from ${name}${businessName ? ` (${businessName})` : ""}`,
         html,
