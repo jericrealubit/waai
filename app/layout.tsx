@@ -9,6 +9,7 @@ import { AttributionCapture } from "@/components/analytics/tracked-link";
 import { JsonLd } from "@/components/json-ld";
 import { MotionProvider } from "@/components/motion-provider";
 import { organizationLd } from "@/lib/jsonld";
+import { OG_DEFAULT } from "@/lib/og";
 import { SITE } from "@/lib/site";
 
 const geistSans = Geist({
@@ -63,11 +64,10 @@ export const metadata: Metadata = {
     description: "Innovating the West with Custom Web & AI Systems.",
     url: SITE.url,
     siteName: SITE.name,
-    // No `images` key here on purpose. It used to point at /og-image.png, a
-    // file that was never added, so every share rendered a broken card. The
-    // image now comes from app/opengraph-image.tsx — the file convention,
-    // which is inherited by every route that doesn't override it. Re-adding an
-    // `images` array here would override that convention and undo the fix.
+    // This used to point at /og-image.png, a file that was never added, so
+    // every share rendered a broken card. See lib/og.ts for why the cards are
+    // committed PNGs rather than generated per request.
+    images: [{ url: OG_DEFAULT, width: 1200, height: 630 }],
     locale: SITE.locale,
     type: "website",
   },
@@ -75,6 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "WA AI Digital",
     description: "Innovating the West with Custom Web & AI Systems.",
+    images: [OG_DEFAULT],
   },
   robots: {
     index: true,

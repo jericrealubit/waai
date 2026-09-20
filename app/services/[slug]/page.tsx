@@ -8,6 +8,7 @@ import { FaqList } from "@/components/faq";
 import { JsonLd } from "@/components/json-ld";
 import { Section } from "@/components/ui/section";
 import { breadcrumbLd, faqLd, serviceLd } from "@/lib/jsonld";
+import { ogForService } from "@/lib/og";
 import { pageMetadata } from "@/lib/seo";
 import { getCaseStudiesForService } from "@/lib/content/case-studies";
 import { getFaqsForService } from "@/lib/content/faqs";
@@ -37,6 +38,7 @@ export async function generateMetadata({
     title: service.name,
     description: service.valueProp,
     path: `/services/${service.slug}`,
+    image: ogForService(service.slug),
   });
 }
 

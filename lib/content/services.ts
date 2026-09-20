@@ -83,6 +83,15 @@ export interface Service {
    * price is what `formatFromPrice` surfaces as the headline "From $X".
    */
   tiers: PriceTier[];
+  /**
+   * Optional extras a client can add to any tier, priced as one-off amounts.
+   * Drives the add-on step of the quote docket at /quote.
+   *
+   * The monthly equivalent is always DERIVED from the resulting total by
+   * `deriveMonthly` in lib/pricing.ts — never stored here — so an add-on
+   * cannot introduce a monthly figure that disagrees with the rate card.
+   */
+  addOns?: { id: string; label: string; price: number; note: string }[];
   priceNote: string;
   /**
    * What this build displaces — a statement about the alternative's model,

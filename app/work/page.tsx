@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 import { CaseStudyCard } from "@/components/case-study-card";
 import { Section } from "@/components/ui/section";
+import { OG_IMAGES } from "@/lib/og";
 import { pageMetadata } from "@/lib/seo";
 import { CASE_STUDIES } from "@/lib/content/case-studies";
 import { SERVICES } from "@/lib/content/services";
@@ -13,6 +14,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Six shipped projects across tradie websites, restaurant ordering, manufacturing log automation and ecommerce — each with a live site and a public repository.",
   path: "/work",
+  image: OG_IMAGES.work,
   ogDescription:
     "Six shipped projects, each with a live site and a public GitHub repository.",
 });

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, Github, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, Github, Lock } from "lucide-react";
 
 import { JsonLd } from "@/components/json-ld";
 import { TestimonialCard } from "@/components/testimonial";
@@ -293,6 +293,34 @@ export default async function CaseStudyPage({
               </div>
             </div>
           </aside>
+        </div>
+      </Section>
+
+      {/* A CTA tied to THIS story rather than a generic one. A reader who has
+          just worked through a build in their own trade is the most qualified
+          visitor the site gets, and the next step should name what they
+          just read. */}
+      <Section size="tight">
+        <div className="glass-card px-7 py-10 text-left md:px-14 md:py-12 md:text-center">
+          <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
+            Want one like this?
+          </h2>
+          <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto">
+            Price a {service.shortName.toLowerCase()} build yourself — four
+            questions, the fixed price on screen before you give us anything.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 md:justify-center">
+            <Link href="/quote" className="btn-primary focus-ring w-full sm:w-auto">
+              Get a price
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href={`/services/${service.slug}`}
+              className="btn-glass focus-ring w-full sm:w-auto"
+            >
+              What&apos;s included
+            </Link>
+          </div>
         </div>
       </Section>
     </>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { OG_DEFAULT } from "@/lib/og";
 import { SITE } from "@/lib/site";
 
 /**
@@ -20,6 +21,7 @@ export function pageMetadata({
   ogTitle,
   ogDescription,
   type = "website",
+  image = OG_DEFAULT,
 }: {
   /** Page title WITHOUT the site suffix — this adds it. */
   title: string;
@@ -30,6 +32,8 @@ export function pageMetadata({
   ogTitle?: string;
   ogDescription?: string;
   type?: "website" | "article";
+  /** Root-relative share card. Defaults to the general one. */
+  image?: string;
 }): Metadata {
   const fullTitle = `${title} | ${SITE.name}`;
 
@@ -47,14 +51,13 @@ export function pageMetadata({
       siteName: SITE.name,
       locale: SITE.locale,
       type,
+      images: [{ url: image, width: 1200, height: 630 }],
     },
-    // The OG image itself comes from the opengraph-image file convention, which
-    // applies per route segment and is inherited — it must not be repeated here
-    // or the convention's entry is overridden by a bare object.
     twitter: {
       card: "summary_large_image",
       title: ogTitle ?? fullTitle,
       description: ogDescription ?? description,
+      images: [image],
     },
   };
 }

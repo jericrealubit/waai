@@ -619,3 +619,56 @@
 .accordion-panel[data-state="closed"] {
   animation: accordion-up 180ms var(--ease-site);
 }
+
+/* Print. Mainly for the quote docket's "Print this docket" button — a worksite
+   docket you can actually put on a clipboard. Everything that isn't the sheet
+   is dropped: the fixed header would otherwise reprint on every page, and the
+   nav, footer and scroll button are all meaningless on paper.
+
+   Colours are forced to ink on white because the concrete ground would
+   otherwise flood a page with toner for no benefit. */
+@media print {
+  header,
+  footer,
+  nav,
+  button,
+  .hazard-rule {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  body::before {
+    display: none !important; /* the blueprint grid */
+  }
+
+  main {
+    padding-top: 0 !important;
+  }
+
+  .docket-sheet {
+    box-shadow: none !important;
+    border-color: #000 !important;
+    break-inside: avoid;
+  }
+
+  /* The estimate's hi-vis fill prints as a solid block; keep the figure legible
+     by dropping to a hairline-ruled band instead. */
+  .docket-sheet .bg-hivis {
+    background: #fff !important;
+    border-top: 2px solid #000 !important;
+    border-bottom: 2px solid #000 !important;
+  }
+
+  .docket-sheet .bg-hivis * {
+    color: #000 !important;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    word-break: break-all;
+  }
+}

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ServiceCard } from "@/components/service-card";
 import { Section } from "@/components/ui/section";
 import { SERVICES } from "@/lib/content/services";
+import { OG_IMAGES } from "@/lib/og";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -10,6 +11,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Four service lines for Western Australian businesses: tradie websites, restaurant ordering systems, manufacturing log automation and ecommerce builds.",
   path: "/services",
+  image: OG_IMAGES.services,
   ogDescription:
     "Tradie websites, restaurant ordering, manufacturing log automation and ecommerce — each backed by live work.",
 });

@@ -38,6 +38,8 @@ export type SiteEvent =
   | "email_click"
   /** A primary or ghost CTA was pressed. */
   | "cta_click"
+  /** The quote docket was configured through to a price. */
+  | "quote_configured"
   /** A click out to a live build or a public repository. */
   | "outbound_click";
 

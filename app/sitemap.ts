@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl("/"), changeFrequency: "monthly", priority: 1 },
     { url: absoluteUrl("/services"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/work"), changeFrequency: "monthly", priority: 0.9 },
+    { url: absoluteUrl("/quote"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/about"), changeFrequency: "yearly", priority: 0.7 },
     { url: absoluteUrl("/privacy"), changeFrequency: "yearly", priority: 0.2 },
     { url: absoluteUrl("/terms"), changeFrequency: "yearly", priority: 0.2 },
