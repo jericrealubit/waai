@@ -124,6 +124,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Site Notice",
+        recommended: true,
         price: 599,
         monthly: 99,
         summary:
@@ -179,6 +180,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Menu Board",
+        recommended: true,
         price: 799,
         monthly: 109,
         summary:
@@ -234,6 +236,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Single Line",
+        recommended: true,
         price: 1499,
         monthly: 139,
         summary:
@@ -290,6 +293,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Storefront",
+        recommended: true,
         price: 1999,
         monthly: 159,
         summary:
