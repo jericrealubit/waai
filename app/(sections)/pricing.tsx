@@ -51,11 +51,31 @@ export default function Pricing() {
               {service.tiers.map((tier) => (
                 <div
                   key={tier.name}
-                  className="flex flex-col gap-3 border-b border-line px-6 py-6 transition-colors last:border-b-0 hover:bg-hivis/5 md:border-b-0 md:border-r md:px-7 md:last:border-r-0"
+                  className={`relative flex flex-col gap-3 border-b border-line px-6 py-6 transition-colors last:border-b-0 hover:bg-hivis/5 md:border-b-0 md:border-r md:px-7 md:last:border-r-0 ${
+                    tier.recommended ? "bg-hivis/5" : ""
+                  }`}
                 >
-                  <h4 className="font-display text-lg font-extrabold uppercase tracking-tight text-foreground">
-                    {tier.name}
-                  </h4>
+                  {/* A hi-vis rule across the top of the tier most people
+                      actually buy. Three identical columns leave the visitor to
+                      do the comparison alone, and the usual outcome is that
+                      they pick none of them. */}
+                  {tier.recommended && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 top-0 h-1 bg-hivis"
+                    />
+                  )}
+
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h4 className="font-display text-lg font-extrabold uppercase tracking-tight text-foreground">
+                      {tier.name}
+                    </h4>
+                    {tier.recommended && (
+                      <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-widest text-hivis-text">
+                        Most chosen
+                      </span>
+                    )}
+                  </div>
 
                   <div>
                     <div className="font-mono text-2xl font-bold tabular-nums text-foreground">

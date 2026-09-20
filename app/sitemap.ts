@@ -20,9 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl("/"), changeFrequency: "monthly", priority: 1 },
     { url: absoluteUrl("/services"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/work"), changeFrequency: "monthly", priority: 0.9 },
-    // /about is not listed yet — it doesn't exist. Submitting a URL that 404s
-    // is a crawl error against the domain, so add the entry in the same commit
-    // that adds the page, never ahead of it.
+    { url: absoluteUrl("/about"), changeFrequency: "yearly", priority: 0.7 },
     { url: absoluteUrl("/privacy"), changeFrequency: "yearly", priority: 0.2 },
     { url: absoluteUrl("/terms"), changeFrequency: "yearly", priority: 0.2 },
   ];

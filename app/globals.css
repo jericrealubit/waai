@@ -22,13 +22,6 @@
    theme's text ramp because that ramp is where legibility is won or lost.
    Targets: body |Lc| >= 75, large/secondary >= 60, UI boundaries WCAG >= 3:1. */
 @theme {
-  /* Footer attribution flame + the two smoke puffs. Timing is deliberately
-     untouched from the original: one 1.8s beat, an ~80ms lag between the flare
-     and the puff launch so the flame reads as *blowing* the smoke, puff flight
-     of exactly three beats so a puff leaves on every flare without drifting.
-     Only the flame's glow colour changed — cyan/purple -> hi-vis/amber — so the
-     mark now belongs to the worksite palette. The puff *fill* colours live on
-     the elements in components/footer.tsx. */
   /* ── Display type scale ───────────────────────────────────────────────────
      Every heading on the site used to re-type `text-4xl md:text-6xl` or
      `text-5xl md:text-7xl` at each call site, which meant the scale lived in
@@ -62,6 +55,13 @@
   --ease-site: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-stamp: cubic-bezier(0.34, 1.56, 0.64, 1);
 
+  /* Footer attribution flame + the two smoke puffs. Timing is deliberately
+     untouched from the original: one 1.8s beat, an ~80ms lag between the flare
+     and the puff launch so the flame reads as *blowing* the smoke, puff flight
+     of exactly three beats so a puff leaves on every flare without drifting.
+     Only the flame's glow colour changed — cyan/purple -> hi-vis/amber — so the
+     mark now belongs to the worksite palette. The puff *fill* colours live on
+     the elements in components/footer.tsx. */
   --animate-flame: flame-flicker 1.8s infinite ease-in-out;
   --animate-smoke-1: smoke-rise 5.4s infinite ease-out 0.31s;
   --animate-smoke-2: smoke-rise 5.4s infinite ease-out 2.11s;
@@ -583,4 +583,39 @@
       focus-visible:ring-source focus-visible:ring-offset-2
       focus-visible:ring-offset-background;
   }
+}
+
+/* Radix Accordion open/close. Radix exposes the measured panel height as
+   --radix-accordion-content-height, which is the only way to animate to "auto".
+   These are CSS animations, so the global prefers-reduced-motion rule in
+   @layer base already zeroes them — no extra guard needed here. */
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+[data-state="open"] > .accordion-panel,
+.accordion-panel[data-state="open"] {
+  animation: accordion-down 220ms var(--ease-site);
+}
+
+.accordion-panel[data-state="closed"] {
+  animation: accordion-up 180ms var(--ease-site);
 }

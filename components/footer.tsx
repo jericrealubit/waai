@@ -17,6 +17,22 @@ export function Footer() {
               Custom websites, ordering systems and internal tools for Western
               Australian businesses.
             </p>
+
+            {/* /chat was previously linked from nowhere on the site. */}
+            <nav aria-label="More" className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
+              <Link
+                href="/about"
+                className="focus-ring text-sm text-muted-foreground transition-colors hover:text-source"
+              >
+                About
+              </Link>
+              <Link
+                href="/chat"
+                className="focus-ring text-sm text-muted-foreground transition-colors hover:text-source"
+              >
+                Ask the assistant
+              </Link>
+            </nav>
           </div>
 
           <nav aria-label="Services">

@@ -55,6 +55,16 @@ export interface PriceTier {
   monthly: number | null;
   /** One line on what this tier covers, relative to the one below it. */
   summary: string;
+  /**
+   * Marks the tier most clients actually choose. Exactly one per service, and
+   * it must stay an honest statement about what gets bought — not whichever
+   * tier we would prefer to sell. Rendered as a hi-vis rule and a "Most
+   * chosen" tag.
+   *
+   * Three identical-looking tiers make the visitor do the comparison work
+   * unaided, and the common result is that they pick nothing and leave.
+   */
+  recommended?: boolean;
 }
 
 export interface Service {
