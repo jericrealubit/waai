@@ -10,11 +10,11 @@ import { SERVICES } from "@/lib/content/services";
 export const metadata: Metadata = {
   title: "Our work | WA AI Digital",
   description:
-    "Five shipped projects across tradie websites, restaurant ordering, manufacturing log automation and ecommerce — each with a live site and a public repository.",
+    "Six shipped projects across tradie websites, restaurant ordering, manufacturing log automation and ecommerce — each with a live site and a public repository.",
   openGraph: {
     title: "Our work | WA AI Digital",
     description:
-      "Five shipped projects, each with a live site and a public GitHub repository.",
+      "Six shipped projects, each with a live site and a public GitHub repository.",
     url: "https://waai.au/work",
     siteName: "WA AI Digital",
     locale: "en_AU",

@@ -2,6 +2,33 @@
 
 import { useState, type FormEvent } from "react";
 
+import { SERVICES } from "@/lib/content/services";
+
+/**
+ * Derived from SERVICES so a renamed service line can't leave a stale option
+ * behind. The list used to be hand-maintained — six options against four
+ * service lines, defaulting to "Restaurant Menu Website", so every enquirer
+ * who ignored the field was silently filed as a restaurant lead.
+ */
+const INTEREST_OPTIONS = [
+  ...SERVICES.map((service) => service.name),
+  "Something else",
+];
+
+/**
+ * Budget bands spanning the rate card, so a prospect self-selects into a tier
+ * before the first call. Qualifying on budget up front is the difference
+ * between writing a quote and losing an hour.
+ */
+const BUDGET_OPTIONS = [
+  "Under $1,000",
+  "$1,000 – $2,000",
+  "$2,000 – $5,000",
+  "Over $5,000",
+  "I'd rather pay monthly",
+  "Not sure yet",
+];
+
 const CONTACT_ITEMS = [
   {
     label: "Phone",
@@ -27,7 +54,10 @@ const INITIAL_FORM = {
   name: "",
   businessName: "",
   email: "",
-  interestedIn: "Restaurant Menu Website",
+  phone: "",
+  suburb: "",
+  interestedIn: "",
+  budget: "",
   projectDetails: "",
 };
 
@@ -84,8 +114,10 @@ export default function Contact() {
             </h2>
             <p className="mb-10 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
               Quotes going unanswered, phone orders eating your evenings, paper
-              job sheets piling up. Tell us the business and we&apos;ll tell you
-              what it takes — and what it costs — before you commit to anything.
+              job sheets piling up. Tell us the business and we&apos;ll send
+              back a written plan — which tier fits, what it would include, and
+              the fixed price — within one business day. No charge, no
+              obligation, and no call required to get it.
             </p>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
@@ -147,8 +179,8 @@ export default function Contact() {
                   Message sent
                 </h3>
                 <p className="mb-8 max-w-xs text-muted-foreground">
-                  Thanks — we&apos;ve got your details and will be in touch
-                  shortly.
+                  Thanks — we&apos;ve got your details. Your written plan and
+                  fixed price will land within one business day.
                 </p>
                 <button
                   type="button"
@@ -223,47 +255,131 @@ export default function Contact() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label
-                    htmlFor="contact-interest"
-                    className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
-                  >
-                    Interested In
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="contact-interest"
-                      value={form.interestedIn}
-                      onChange={(e) =>
-                        setForm((f) => ({
-                          ...f,
-                          interestedIn: e.target.value,
-                        }))
-                      }
-                      className="field-input cursor-pointer appearance-none"
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="contact-phone"
+                      className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
                     >
-                      <option>Restaurant Menu Website</option>
-                      <option>Menu + Ordering System</option>
-                      <option>Tradie Website</option>
-                      <option>Manufacturing Log Automation</option>
-                      <option>E-commerce Store</option>
-                      <option>Custom Digital Solution</option>
-                    </select>
-                    <div className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-foreground-subtle">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                      Phone
+                    </label>
+                    <input
+                      id="contact-phone"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      placeholder="0400 000 000"
+                      value={form.phone}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, phone: e.target.value }))
+                      }
+                      className="field-input"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="contact-suburb"
+                      className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
+                    >
+                      Suburb
+                    </label>
+                    <input
+                      id="contact-suburb"
+                      type="text"
+                      placeholder="e.g. Rockingham"
+                      value={form.suburb}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, suburb: e.target.value }))
+                      }
+                      className="field-input"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="contact-interest"
+                      className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
+                    >
+                      Interested In
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="contact-interest"
+                        required
+                        value={form.interestedIn}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            interestedIn: e.target.value,
+                          }))
+                        }
+                        className="field-input cursor-pointer appearance-none"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
+                        <option value="" disabled>
+                          Select one
+                        </option>
+                        {INTEREST_OPTIONS.map((option) => (
+                          <option key={option}>{option}</option>
+                        ))}
+                      </select>
+                      <div className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-foreground-subtle">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="contact-budget"
+                      className="ml-0.5 font-mono text-xs font-bold uppercase tracking-wide text-foreground"
+                    >
+                      Budget
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="contact-budget"
+                        value={form.budget}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, budget: e.target.value }))
+                        }
+                        className="field-input cursor-pointer appearance-none"
+                      >
+                        <option value="">Prefer not to say</option>
+                        {BUDGET_OPTIONS.map((option) => (
+                          <option key={option}>{option}</option>
+                        ))}
+                      </select>
+                      <div className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-foreground-subtle">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>

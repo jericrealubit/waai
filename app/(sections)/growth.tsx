@@ -1,6 +1,8 @@
-import { Clock, ShieldCheck, TrendingUp, Zap } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Clock, ShieldCheck, TrendingUp, Zap } from "lucide-react";
 
 import { Section } from "@/components/ui/section";
+import { CARE_PLAN_MONTHLY } from "@/lib/content/services";
 
 const features = [
   {
@@ -16,9 +18,9 @@ const features = [
     icon: Zap,
   },
   {
-    title: "Ongoing Maintenance",
+    title: "Content & Updates",
     description:
-      "Weekly security patches, software updates, and performance monitoring to keep your systems running 24/7.",
+      "Price changes, new service pages, menu updates — sent through and live the same week, without you touching the code.",
     icon: ShieldCheck,
   },
   {
@@ -58,12 +60,25 @@ export default function Growth() {
         ))}
       </div>
 
-      <p className="mt-10 text-center text-sm font-bold text-foreground">
-        From $99/month
-        <span className="ml-2 font-medium text-muted-foreground">
-          on top of any build
-        </span>
-      </p>
+      {/* ${CARE_PLAN_MONTHLY} is the same figure baked into every monthly
+          build plan on the rate card — the two must not drift apart, which is
+          why this reads it from the data rather than hardcoding a number. */}
+      <div className="mt-10 text-center">
+        <p className="text-sm font-bold text-foreground">
+          ${CARE_PLAN_MONTHLY}/month
+          <span className="ml-2 font-medium text-muted-foreground">
+            on top of a build you bought outright — already included if
+            you&apos;re on a monthly plan
+          </span>
+        </p>
+        <Link
+          href="/#pricing"
+          className="focus-ring mt-5 inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wide text-source transition-colors hover:text-hivis-text"
+        >
+          See the rate card
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
     </Section>
   );
 }

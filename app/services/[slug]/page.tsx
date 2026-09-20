@@ -6,7 +6,13 @@ import { ArrowLeft, Check, Plus } from "lucide-react";
 import { CaseStudyCard } from "@/components/case-study-card";
 import { Section } from "@/components/ui/section";
 import { getCaseStudiesForService } from "@/lib/content/case-studies";
-import { SERVICES, formatFromPrice, getService } from "@/lib/content/services";
+import {
+  SERVICES,
+  TERM_MONTHS,
+  formatFromPrice,
+  formatTierPrice,
+  getService,
+} from "@/lib/content/services";
 
 export function generateStaticParams() {
   return SERVICES.map((service) => ({ slug: service.slug }));
@@ -85,6 +91,36 @@ export default async function ServiceDetailPage({
             </p>
           )}
         </div>
+
+        {/* The three buyable sizes, same data as the rate card on the home
+            page. A visitor who lands here from search never sees that section,
+            so the tiers have to be reachable from the service page too. */}
+        <div className="mt-12 grid gap-px border-2 border-bitumen bg-line md:grid-cols-3">
+          {service.tiers.map((tier) => (
+            <div key={tier.name} className="flex flex-col gap-3 bg-paper p-6 md:p-7">
+              <h2 className="font-display text-lg font-extrabold uppercase tracking-tight text-foreground">
+                {tier.name}
+              </h2>
+              <div>
+                <div className="font-mono text-2xl font-bold tabular-nums text-foreground">
+                  {formatTierPrice(tier)}
+                </div>
+                {tier.monthly !== null && (
+                  <div className="mt-1 font-mono text-[11px] font-bold uppercase tracking-wide text-hivis-text">
+                    or ${tier.monthly}/mo over {TERM_MONTHS} months
+                  </div>
+                )}
+              </div>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {tier.summary}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-foreground-subtle">
+          {service.replaces}
+        </p>
       </Section>
 
       <Section className="py-12">

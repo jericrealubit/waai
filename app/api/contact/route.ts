@@ -39,7 +39,13 @@ interface ContactPayload {
   name: string;
   businessName: string;
   email: string;
+  /** Optional, but the fastest way to reply to a trade enquiry. */
+  phone: string;
+  /** Optional. Drives whether the job is inside the service radius. */
+  suburb: string;
   interestedIn: string;
+  /** Optional self-selected budget band — blank means "prefer not to say". */
+  budget: string;
   projectDetails: string;
 }
 
@@ -70,7 +76,10 @@ export async function POST(request: Request) {
   const name = body.name?.trim() ?? "";
   const businessName = body.businessName?.trim() ?? "";
   const email = body.email?.trim() ?? "";
+  const phone = body.phone?.trim() ?? "";
+  const suburb = body.suburb?.trim() ?? "";
   const interestedIn = body.interestedIn?.trim() || "Not specified";
+  const budget = body.budget?.trim() || "Not specified";
   const projectDetails = body.projectDetails?.trim() ?? "";
 
   if (!name || !email || !projectDetails) {
@@ -107,7 +116,10 @@ export async function POST(request: Request) {
     <p><strong>Name:</strong> ${escapeHtml(name)}</p>
     <p><strong>Business:</strong> ${escapeHtml(businessName || "—")}</p>
     <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+    <p><strong>Phone:</strong> ${escapeHtml(phone || "—")}</p>
+    <p><strong>Suburb:</strong> ${escapeHtml(suburb || "—")}</p>
     <p><strong>Interested in:</strong> ${escapeHtml(interestedIn)}</p>
+    <p><strong>Budget:</strong> ${escapeHtml(budget)}</p>
     <p><strong>Project details:</strong></p>
     <p>${escapeHtml(projectDetails).replace(/\n/g, "<br />")}</p>
   `;
