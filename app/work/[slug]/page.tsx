@@ -4,7 +4,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Github, Lock } from "lucide-react";
 
+import { JsonLd } from "@/components/json-ld";
 import { Section } from "@/components/ui/section";
+import { breadcrumbLd, caseStudyLd } from "@/lib/jsonld";
+import { pageMetadata } from "@/lib/seo";
 import { CASE_STUDIES, getCaseStudy } from "@/lib/content/case-studies";
 import { SERVICES_BY_SLUG } from "@/lib/content/services";
 
@@ -22,22 +25,24 @@ export async function generateMetadata({
 
   if (!study) return { title: "Not found | WA AI Digital" };
 
-  const title = `${study.name} | Case study | WA AI Digital`;
+  const base = pageMetadata({
+    title: `${study.name} | Case study`,
+    description: study.outcome,
+    path: `/work/${study.slug}`,
+    type: "article",
+  });
+
+  // A case study keeps its own screenshot as the share image rather than the
+  // generic card — the picture of the actual shipped build is the whole
+  // argument the page is making.
+  if (!study.screenshot) return base;
+
+  const images = [{ url: study.screenshot.src, width: 1440, height: 810 }];
 
   return {
-    title,
-    description: study.outcome,
-    openGraph: {
-      title,
-      description: study.outcome,
-      url: `https://waai.au/work/${study.slug}`,
-      siteName: "WA AI Digital",
-      locale: "en_AU",
-      type: "article",
-      ...(study.screenshot && {
-        images: [{ url: study.screenshot.src, width: 1440, height: 810 }],
-      }),
-    },
+    ...base,
+    openGraph: { ...base.openGraph, images },
+    twitter: { ...base.twitter, images },
   };
 }
 
@@ -68,6 +73,14 @@ export default async function CaseStudyPage({
 
   return (
     <>
+      <JsonLd data={caseStudyLd(study)} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Our work", path: "/work" },
+          { name: study.name, path: `/work/${study.slug}` },
+        ])}
+      />
+
       <Section className="pb-8">
         <Link
           href="/work"

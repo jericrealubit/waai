@@ -22,10 +22,16 @@ export function ScrollToTop() {
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    /* The global reduced-motion rule in globals.css forces `scroll-behavior:
+       auto`, but that only governs CSS-driven scrolling — it cannot reach a
+       scrollTo() that asks for smooth explicitly. Checked here instead, so a
+       visitor who asked for less motion doesn't get the whole page flung past
+       them. */
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
   };
 
   return (

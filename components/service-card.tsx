@@ -16,7 +16,7 @@ const ICONS: Record<ServiceIcon, React.ComponentType<{ className?: string }>> = 
 
 interface ServiceCardProps {
   service: Service;
-  /** Drives the stagger delay, matching components/ui/feature-card.tsx. */
+  /** Drives the stagger delay. */
   index: number;
 }
 

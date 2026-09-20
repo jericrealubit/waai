@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
+import { readAttribution, track } from "@/lib/analytics";
 import { SERVICES } from "@/lib/content/services";
 
 /**
@@ -59,6 +60,9 @@ const INITIAL_FORM = {
   interestedIn: "",
   budget: "",
   projectDetails: "",
+  /* Honeypot — rendered hidden, must stay empty. Named for what a bot expects
+     to see rather than anything that hints at its purpose. */
+  companyWebsite: "",
 };
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -67,6 +71,20 @@ export default function Contact() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  /* Fires `form_start` once per mount. A ref, not state, because nothing
+     renders differently — re-rendering the whole form on first keystroke to
+     flip a boolean nobody reads would be a real cost for no benefit. */
+  const startedRef = useRef(false);
+  /* Time of first interaction. A submit that arrives implausibly fast after
+     the form was first touched is a bot; the server uses this to decide. */
+  const startedAtRef = useRef<number | null>(null);
+
+  function handleFirstInteraction() {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    startedAtRef.current = Date.now();
+    track("form_start", { form_id: "contact" });
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -77,7 +95,14 @@ export default function Contact() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          // Where this visitor came from, captured on their first page view.
+          attribution: readAttribution(),
+          elapsedMs: startedAtRef.current
+            ? Date.now() - startedAtRef.current
+            : null,
+        }),
       });
 
       const data = (await response.json().catch(() => null)) as {
@@ -90,14 +115,28 @@ export default function Contact() {
         setErrorMessage(
           data?.error ?? "Something went wrong sending that. Please try again.",
         );
+        track("form_error", {
+          form_id: "contact",
+          reason: data?.error ?? `http_${response.status}`,
+        });
         return;
       }
 
       setStatus("success");
+      // The conversion. Only the qualifying fields go to GA — never the name,
+      // email, phone or the project description, which are personal
+      // information and have no business in an analytics property.
+      track("generate_lead", {
+        form_id: "contact",
+        service: form.interestedIn || "Not specified",
+        budget: form.budget || "Not specified",
+        suburb_given: form.suburb.trim().length > 0,
+      });
       setForm(INITIAL_FORM);
     } catch {
       setStatus("error");
       setErrorMessage("Something went wrong sending that. Please try again.");
+      track("form_error", { form_id: "contact", reason: "network" });
     }
   }
 
@@ -158,7 +197,14 @@ export default function Contact() {
 
           <div className="glass-card p-7 md:p-10">
             {status === "success" ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
+              /* The form is replaced wholesale on success, so without a live
+                 region a screen-reader user hears nothing at all — the focused
+                 submit button simply vanishes. */
+              <div
+                role="status"
+                aria-live="polite"
+                className="flex flex-col items-center justify-center py-12 text-center"
+              >
                 <div className="mb-6 flex h-16 w-16 items-center justify-center bg-hivis/10 text-hivis">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +237,35 @@ export default function Contact() {
                 </button>
               </div>
             ) : (
-              <form className="space-y-6" onSubmit={handleSubmit}>
+              <form
+                className="space-y-6"
+                onSubmit={handleSubmit}
+                /* Capture-phase so it fires for the first keystroke in any
+                   field without every input needing its own handler. */
+                onChangeCapture={handleFirstInteraction}
+              >
+                {/* Honeypot. Hidden from sight and from assistive tech, and
+                    skipped by keyboard tabbing — a human will never fill it,
+                    so anything that does is automated and the server drops it
+                    silently. `hidden` rather than display:none via CSS, which
+                    a scripted filler is more likely to notice and respect. */}
+                <div hidden aria-hidden="true">
+                  <label htmlFor="contact-company-website">
+                    Company website — leave this empty
+                  </label>
+                  <input
+                    id="contact-company-website"
+                    name="company_website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.companyWebsite}
+                    onChange={(e) =>
+                      setForm({ ...form, companyWebsite: e.target.value })
+                    }
+                  />
+                </div>
+
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
                     <label
@@ -408,7 +482,14 @@ export default function Contact() {
                 </div>
 
                 {status === "error" && (
-                  <p className="border-2 border-red-500/50 bg-red-500/10 px-5 py-3 font-mono text-sm font-semibold text-red-700 dark:text-red-300">
+                  /* role="alert" so a screen reader announces the failure —
+                     without it, a blind visitor gets no signal at all that the
+                     submission didn't go through. Colours come from the
+                     --destructive token rather than raw red-* utilities. */
+                  <p
+                    role="alert"
+                    className="border-2 border-destructive/50 bg-destructive/10 px-5 py-3 font-mono text-sm font-semibold text-destructive"
+                  >
                     {errorMessage}
                   </p>
                 )}

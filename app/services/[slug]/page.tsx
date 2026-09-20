@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Check, Plus } from "lucide-react";
 
 import { CaseStudyCard } from "@/components/case-study-card";
+import { JsonLd } from "@/components/json-ld";
 import { Section } from "@/components/ui/section";
+import { breadcrumbLd, serviceLd } from "@/lib/jsonld";
+import { pageMetadata } from "@/lib/seo";
 import { getCaseStudiesForService } from "@/lib/content/case-studies";
 import {
   SERVICES,
@@ -28,20 +31,11 @@ export async function generateMetadata({
 
   if (!service) return { title: "Not found | WA AI Digital" };
 
-  const title = `${service.name} | WA AI Digital`;
-
-  return {
-    title,
+  return pageMetadata({
+    title: service.name,
     description: service.valueProp,
-    openGraph: {
-      title,
-      description: service.valueProp,
-      url: `https://waai.au/services/${service.slug}`,
-      siteName: "WA AI Digital",
-      locale: "en_AU",
-      type: "website",
-    },
-  };
+    path: `/services/${service.slug}`,
+  });
 }
 
 export default async function ServiceDetailPage({
@@ -58,6 +52,16 @@ export default async function ServiceDetailPage({
 
   return (
     <>
+      {/* The published fixed tiers, marked up as real Offers. This is the one
+          place on the site where transparent pricing can earn a rich result. */}
+      <JsonLd data={serviceLd(service)} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Services", path: "/services" },
+          { name: service.name, path: `/services/${service.slug}` },
+        ])}
+      />
+
       <Section className="pb-12">
         <Link
           href="/services"

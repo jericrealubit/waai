@@ -3,21 +3,16 @@ import type { Metadata } from "next";
 import { ServiceCard } from "@/components/service-card";
 import { Section } from "@/components/ui/section";
 import { SERVICES } from "@/lib/content/services";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Services | WA AI Digital",
+export const metadata: Metadata = pageMetadata({
+  title: "Services",
   description:
     "Four service lines for Western Australian businesses: tradie websites, restaurant ordering systems, manufacturing log automation and ecommerce builds.",
-  openGraph: {
-    title: "Services | WA AI Digital",
-    description:
-      "Tradie websites, restaurant ordering, manufacturing log automation and ecommerce — each backed by live work.",
-    url: "https://waai.au/services",
-    siteName: "WA AI Digital",
-    locale: "en_AU",
-    type: "website",
-  },
-};
+  path: "/services",
+  ogDescription:
+    "Tradie websites, restaurant ordering, manufacturing log automation and ecommerce — each backed by live work.",
+});
 
 export default function ServicesIndexPage() {
   return (

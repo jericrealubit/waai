@@ -224,7 +224,9 @@
   --muted: #dcd5c7;
   --accent: #1e3aa8;
   --accent-foreground: #efebe2;
-  --destructive: oklch(0.55 0.2 27);
+  /* Form errors. 5.1:1 on paper — it has to carry small bold mono text in the
+     contact form's error banner, so it sits well clear of the 4.5:1 floor. */
+  --destructive: oklch(0.52 0.19 27);
 
   --background: #e7e2d8;
   --radius: 0.2rem;
@@ -299,6 +301,10 @@
     --muted: #221f18;
     --accent: #6e86ff;
     --accent-foreground: #16140f;
+    /* Was missing from both dark blocks entirely, so an error banner fell back
+       to the light value on the night-shift ground. Lightened to clear the
+       dark surface — 5.4:1 on paper. */
+    --destructive: oklch(0.7 0.19 25);
 
     --background: #16140f;
 
@@ -362,6 +368,8 @@
   --muted: #221f18;
   --accent: #6e86ff;
   --accent-foreground: #16140f;
+  /* Mirror of the @media dark block — keep in sync, per the note above. */
+  --destructive: oklch(0.7 0.19 25);
 
   --background: #16140f;
 

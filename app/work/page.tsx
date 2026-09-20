@@ -4,23 +4,18 @@ import { ArrowRight } from "lucide-react";
 
 import { CaseStudyCard } from "@/components/case-study-card";
 import { Section } from "@/components/ui/section";
+import { pageMetadata } from "@/lib/seo";
 import { CASE_STUDIES } from "@/lib/content/case-studies";
 import { SERVICES } from "@/lib/content/services";
 
-export const metadata: Metadata = {
-  title: "Our work | WA AI Digital",
+export const metadata: Metadata = pageMetadata({
+  title: "Our work",
   description:
     "Six shipped projects across tradie websites, restaurant ordering, manufacturing log automation and ecommerce — each with a live site and a public repository.",
-  openGraph: {
-    title: "Our work | WA AI Digital",
-    description:
-      "Six shipped projects, each with a live site and a public GitHub repository.",
-    url: "https://waai.au/work",
-    siteName: "WA AI Digital",
-    locale: "en_AU",
-    type: "website",
-  },
-};
+  path: "/work",
+  ogDescription:
+    "Six shipped projects, each with a live site and a public GitHub repository.",
+});
 
 export default function WorkIndexPage() {
   /* Grouped once, up front, so the jump chips and the sections below are
