@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { Reveal } from "@/components/ui/reveal";
 import { Section } from "@/components/ui/section";
 import {
   CARE_PLAN_MONTHLY,
@@ -18,13 +19,14 @@ export default function Pricing() {
       description="Three fixed sizes per service line — pick one, or pay it monthly. Every price on this page is what the build costs, not a starting point that moves once we talk. Hosting, domain and security patches are a flat $50/yr on top."
     >
       <div className="space-y-10">
-        {SERVICES.map((service) => (
-          <div
+        {SERVICES.map((service, index) => (
+          <Reveal
             key={service.slug}
+            index={index}
             className="border-2 border-bitumen bg-paper shadow-e1"
           >
             <div className="flex flex-col gap-2 border-b-2 border-bitumen px-6 py-5 md:flex-row md:items-baseline md:justify-between md:px-8">
-              <h3 className="font-display text-2xl font-extrabold uppercase leading-none tracking-tight text-foreground md:text-3xl">
+              <h3 className="font-display text-display-3 font-extrabold uppercase text-foreground">
                 <Link
                   href={`/services/${service.slug}`}
                   className="focus-ring transition-colors hover:text-hivis-text"
@@ -78,7 +80,7 @@ export default function Pricing() {
             <p className="border-t border-line px-6 py-4 text-sm leading-relaxed text-foreground-subtle md:px-8">
               {service.replaces}
             </p>
-          </div>
+          </Reveal>
         ))}
       </div>
 
@@ -124,7 +126,7 @@ export default function Pricing() {
       {/* The highest-intent section on the site used to end here with no way
           to act on it. Mirrors the closing band on app/work/page.tsx. */}
       <div className="glass-card mt-10 px-7 py-10 text-left md:px-14 md:py-12 md:text-center">
-        <h3 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground md:text-4xl">
+        <h3 className="font-display text-display-3 font-extrabold uppercase text-foreground">
           Not sure which one you need?
         </h3>
         <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto">

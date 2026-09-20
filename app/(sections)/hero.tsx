@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { SpecCell } from "@/components/ui/spec-cell";
 import { CASE_STUDIES } from "@/lib/content/case-studies";
 
 export default function Hero() {
@@ -28,7 +29,7 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1 className="font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground sm:text-6xl md:text-7xl">
+          <h1 className="font-display text-display-1 font-extrabold uppercase text-foreground">
             No mockups. Every build is{" "}
             <span className="text-hivis">live</span>, the code is{" "}
             <span className="text-source">public</span>.
@@ -70,10 +71,22 @@ export default function Hero() {
             </span>
           </div>
           <div className="grid grid-cols-2">
-            <TbCell k="Firm" v="WA AI Digital" />
-            <TbCell k="Base" v="Perth, WA" border />
-            <TbCell k="Projects shipped" v={String(shipped).padStart(2, "0")} />
-            <TbCell k="Public repos" v={String(repos).padStart(2, "0")} border />
+            <SpecCell label="Firm" value="WA AI Digital" className="border-b border-line" />
+            <SpecCell
+              label="Base"
+              value="Perth, WA"
+              className="border-b border-l border-line"
+            />
+            <SpecCell
+              label="Projects shipped"
+              value={String(shipped).padStart(2, "0")}
+              className="border-b border-line"
+            />
+            <SpecCell
+              label="Public repos"
+              value={String(repos).padStart(2, "0")}
+              className="border-b border-l border-line"
+            />
           </div>
           <div className="flex items-center gap-2.5 px-3.5 py-3">
             <span
@@ -104,28 +117,5 @@ export default function Hero() {
       {/* The one signature accent — used exactly once, here. */}
       <div className="hazard-rule mt-14" aria-hidden="true" />
     </section>
-  );
-}
-
-function TbCell({
-  k,
-  v,
-  border,
-}: {
-  k: string;
-  v: string;
-  border?: boolean;
-}) {
-  return (
-    <div
-      className={`border-b border-line px-3.5 py-3 ${border ? "border-l border-line" : ""}`}
-    >
-      <div className="font-mono text-[10px] uppercase tracking-widest text-foreground-subtle">
-        {k}
-      </div>
-      <div className="mt-1 font-display text-xl font-extrabold uppercase leading-none tracking-tight text-foreground">
-        {v}
-      </div>
-    </div>
   );
 }

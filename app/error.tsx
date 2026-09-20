@@ -34,7 +34,7 @@ export default function Error({
         <div className="glass-card p-8 md:p-12">
           <span className="section-label">Error · 500</span>
 
-          <h1 className="mt-3 font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground md:text-7xl">
+          <h1 className="mt-3 font-display text-display-1 font-extrabold uppercase text-foreground">
             Something broke
           </h1>
 

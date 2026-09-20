@@ -1,9 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowRight, Factory, HardHat, ShoppingBag, Utensils } from "lucide-react";
 
+import { Reveal } from "@/components/ui/reveal";
 import { formatFromPrice, type Service, type ServiceIcon } from "@/lib/content/services";
 
 /** Keeps lucide components out of the data file so it stays a plain .ts module. */
@@ -29,12 +27,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
   const Icon = ICONS[service.icon];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-    >
+    <Reveal index={index}>
       <Link
         href={`/services/${service.slug}`}
         className="group glass-card glass-card-interactive relative flex h-full flex-col p-8 focus-ring"
@@ -44,7 +37,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         </div>
 
         <div className="flex flex-1 flex-col">
-          <h3 className="mb-4 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+          <h3 className="mb-4 font-display text-display-3 font-extrabold uppercase text-foreground">
             {service.name}
           </h3>
           <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
@@ -62,6 +55,6 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
           </div>
         </div>
       </Link>
-    </motion.div>
+    </Reveal>
   );
 }

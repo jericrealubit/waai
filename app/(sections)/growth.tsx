@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Clock, ShieldCheck, TrendingUp, Zap } from "lucide-react";
 
+import { Reveal } from "@/components/ui/reveal";
 import { Section } from "@/components/ui/section";
 import { CARE_PLAN_MONTHLY } from "@/lib/content/services";
 
@@ -45,8 +46,12 @@ export default function Growth() {
       className="bg-transparent"
     >
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {features.map((feature) => (
-          <div key={feature.title} className="glass-card p-8">
+        {features.map((feature, index) => (
+          <Reveal
+            key={feature.title}
+            index={index}
+            className="glass-card p-6 md:p-8 xl:p-9"
+          >
             <div className="mb-5 flex h-12 w-12 items-center justify-center bg-hivis/10 text-hivis">
               <feature.icon className="h-6 w-6" />
             </div>
@@ -56,7 +61,7 @@ export default function Growth() {
             <p className="text-sm leading-relaxed text-muted-foreground">
               {feature.description}
             </p>
-          </div>
+          </Reveal>
         ))}
       </div>
 

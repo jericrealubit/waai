@@ -57,7 +57,7 @@ export default function WorkIndexPage() {
               index the eye needs a hard edge to know a new group started,
               and the count sets an expectation before the cards load in. */}
           <div className="mb-8 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b-2 border-bitumen pb-4">
-            <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground md:text-4xl">
+            <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
               {service.name}
             </h2>
             <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground-subtle">
@@ -84,7 +84,7 @@ export default function WorkIndexPage() {
           the last card and dropping them into the footer wastes that. */}
       <Section size="tight" className="pb-24">
         <div className="glass-card px-7 py-10 text-left md:px-14 md:py-14 md:text-center">
-          <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground md:text-5xl">
+          <h2 className="font-display text-display-2 font-extrabold uppercase text-foreground">
             Want one of these for your business?
           </h2>
           <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto md:text-lg">

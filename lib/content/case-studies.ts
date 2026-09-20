@@ -24,6 +24,16 @@
  *    The admin panel is still gated (its live URL only renders a Google
  *    sign-in button); the primary screenshot shown is the storefront's.
  *
+ *  - `metrics` carries COUNTABLE facts only — things a reader could check by
+ *    opening the live site or the repo. Never a business outcome (conversion
+ *    lift, revenue, traffic, "x% faster"): we have no access to any client's
+ *    analytics or books, so such a figure could only be invented. Omitting the
+ *    field is always allowed; padding it is not.
+ *  - `testimonial` requires `consent: true` typed literally, which asserts the
+ *    named client approved that exact wording for publication. Drafts awaiting
+ *    a client's sign-off live in docs/testimonial-drafts.md and must NOT be
+ *    added here until the client has agreed to them.
+ *
  * `liveUrl` and `repoUrl` are the canonical copies of these URLs. They are
  * declared exactly once, here, so a card and its detail page cannot drift.
  */
@@ -78,6 +88,42 @@ export interface CaseStudy {
   /** Specific details worth calling out. */
   highlights: string[];
   stack: string[];
+  /**
+   * COUNTABLE facts only — a number a reader could verify for themselves by
+   * opening the live site or the repo, or by looking at a public profile.
+   * Page counts, catalogue sizes, review counts, form field counts.
+   *
+   * NEVER a business outcome: no conversion lift, no revenue, no traffic
+   * figure, no "40% faster". We do not have access to any client's analytics
+   * or books, so any such number would be invented — which is both a lie to
+   * the reader and, presented as a marketing claim, exposure under the
+   * Australian Consumer Law. `source` names where a figure came from when it
+   * is not the build itself (e.g. "hipages").
+   *
+   * Omit the field rather than pad it. Two honest metrics beat four invented
+   * ones, and a case study with none is not a weaker case study.
+   */
+  metrics?: { value: string; label: string; source?: string }[];
+  /**
+   * A real, attributed quote from the client.
+   *
+   * `consent: true` is a literal, not a boolean — typing it is the attestation
+   * that THIS client has seen THIS wording and agreed to it being published
+   * with their name and business attached. There is no way to render a
+   * testimonial without asserting that, which is the point: an un-approved
+   * draft cannot be committed here by accident.
+   *
+   * No paraphrasing, no composites, no "a client in Rockingham". If the quote
+   * is not the client's own approved words, it does not go in this file.
+   */
+  testimonial?: {
+    quote: string;
+    author: string;
+    role: string;
+    business: string;
+    suburb?: string;
+    consent: true;
+  };
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
@@ -113,6 +159,13 @@ export const CASE_STUDIES: CaseStudy[] = [
       "An autoplaying testimonial carousel that attaches a real suburb to each review — the strongest local trust signal available to a trade business.",
       "39 reviews at a 5.0 hipages rating surfaced on the page rather than buried on a third-party profile.",
       "Click-to-call in the header, because a meaningful share of trade enquiries never touch a form.",
+    ],
+    /* Both countable, both checkable: the thirteen pages by opening the site,
+       the rating on the trade's public hipages profile. */
+    metrics: [
+      { value: "13", label: "Individually rankable service pages" },
+      { value: "5.0", label: "Rating across 39 reviews", source: "hipages" },
+      { value: "30km", label: "Service radius mapped from Caversham" },
     ],
     stack: [
       "Next.js 16",
@@ -158,6 +211,13 @@ export const CASE_STUDIES: CaseStudy[] = [
       "The single-source config file makes the whole site's content auditable at a glance — useful when the business owner, not a developer, is the one requesting changes.",
       "A deliberate contrast with the sister project: same core stack, opposite conversion strategy, because the two trades convert differently.",
     ],
+    /* Countable by opening the site and the repo. "0 forms" is the
+       deliberate design decision, not an absence of work. */
+    metrics: [
+      { value: "4", label: "Focused pages, three service lines" },
+      { value: "0", label: "Contact forms — the phone is the CTA" },
+      { value: "1", label: "Typed config file drives all copy" },
+    ],
     stack: [
       "Next.js 16",
       "React 19",
@@ -201,6 +261,12 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Dual 'Get a Free Quote' and 'Call' CTAs in the hero, because trade enquiries split between a form and a phone call and the site shouldn't force a choice.",
       "GeneralContractor schema.org markup carrying the NZBN and a per-service Offer entry — richer local-SEO structured data than a flat LocalBusiness block.",
       "The quote form validates and logs every enquiry server-side today; wiring in real email delivery is a config change, not a rebuild, since the insertion point is already there.",
+    ],
+    /* Countable from the live site and the repo's content files. */
+    metrics: [
+      { value: "5", label: "Dedicated service pages" },
+      { value: "12", label: "Canterbury suburbs modelled" },
+      { value: "NZBN", label: "Carried in GeneralContractor schema" },
     ],
     stack: [
       "Next.js 16",
@@ -248,6 +314,13 @@ export const CASE_STUDIES: CaseStudy[] = [
       "The geofence and trading-hours gate solve an operational problem, not a technical one: they stop the kitchen having to ring customers back to cancel.",
       "Pickup only — this build takes no payment online, by design. Customers pay at collection.",
     ],
+    /* All countable from the live menu and the repo. The 0% is the point of
+       the build: no platform commission on any order. */
+    metrics: [
+      { value: "0%", label: "Commission per order" },
+      { value: "5", label: "Menu categories, filterable" },
+      { value: "60km", label: "Delivery radius gate" },
+    ],
     stack: [
       "Vanilla ES6 modules",
       "Tailwind (CDN)",
@@ -291,6 +364,13 @@ export const CASE_STUDIES: CaseStudy[] = [
       "The cycle timer re-syncs on visibilitychange, so a press cycle keeps timing correctly even when the operator's phone locks mid-cycle — the failure mode that would otherwise make the whole tool untrustworthy.",
       "Both presses, all four tables and every mat type (DF, DD, CF, CD, SG) are first-class in the data model rather than free-text fields.",
       "The printable sheet is deliberately paper-shaped: the floor still wants a physical copy, and this one arrives already totalled.",
+    ],
+    /* Countable from the running app. "2 taps" is the interaction cost of
+       timing a cycle, which is the whole design constraint. */
+    metrics: [
+      { value: "2", label: "Taps to time a press cycle" },
+      { value: "15", label: "Rows per printable audit sheet" },
+      { value: "1", label: "Page the PDF force-fits to" },
     ],
     stack: [
       "Next.js 16",
@@ -349,6 +429,13 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Checkout is guest-only by design — no account required to buy, which removes the most common drop-off point in a small catalogue.",
       "Sortable image thumbnails in the admin control gallery order on the storefront, so merchandising is a drag rather than a data edit.",
       "SweetAlert2 confirmation on every destructive action in the admin — deleting a product is a two-step operation.",
+    ],
+    /* Countable from the two repos. Deliberately no revenue or order-volume
+       figure — Stripe live-vs-test mode is unverified (see ACCURACY RULES). */
+    metrics: [
+      { value: "2", label: "Apps sharing one database" },
+      { value: "S3", label: "Multi-image upload, drag to reorder" },
+      { value: "Webhook", label: "Stripe signature verified server-side" },
     ],
     stack: [
       "Next.js 13 (Pages Router)",

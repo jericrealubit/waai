@@ -1,7 +1,4 @@
-"use client";
-
-import { motion } from "framer-motion";
-
+import { Reveal } from "@/components/ui/reveal";
 import { Section } from "@/components/ui/section";
 
 const STEPS = [
@@ -37,24 +34,21 @@ export default function Process() {
     >
       <div className="grid grid-cols-1 border-2 border-bitumen bg-paper md:grid-cols-2">
         {STEPS.map((item, index) => (
-          <motion.div
+          <Reveal
             key={item.step}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            index={index}
             className="border-b border-line px-6 py-7 last:border-b-0 md:odd:border-r md:odd:border-line md:[&:nth-child(3)]:border-b-0 md:[&:nth-child(4)]:border-b-0"
           >
             <span className="font-mono text-xs font-bold uppercase tracking-widest text-hivis-text">
               Step {item.step}
             </span>
-            <h3 className="mb-2.5 mt-2 font-display text-2xl font-extrabold uppercase leading-none tracking-tight text-foreground">
+            <h3 className="mb-2.5 mt-2 font-display text-display-3 font-extrabold uppercase text-foreground">
               {item.title}
             </h3>
             <p className="max-w-[46ch] text-sm leading-relaxed text-muted-foreground">
               {item.body}
             </p>
-          </motion.div>
+          </Reveal>
         ))}
       </div>
     </Section>

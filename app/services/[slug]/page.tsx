@@ -73,7 +73,7 @@ export default async function ServiceDetailPage({
 
         <div className="max-w-3xl">
           <span className="section-label">{service.shortName}</span>
-          <h1 className="mt-3 font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground md:text-7xl">
+          <h1 className="mt-3 font-display text-display-1 font-extrabold uppercase text-foreground">
             {service.name}
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
@@ -130,7 +130,7 @@ export default async function ServiceDetailPage({
       <Section className="py-12">
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-6 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-6 font-display text-display-3 font-extrabold uppercase text-foreground">
               What a build includes
             </h2>
             <ul className="space-y-4">
@@ -144,7 +144,7 @@ export default async function ServiceDetailPage({
           </div>
 
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-2 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-2 font-display text-display-3 font-extrabold uppercase text-foreground">
               Also available
             </h2>
             <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
@@ -190,7 +190,7 @@ export default async function ServiceDetailPage({
       <Section className="py-12">
         <div className="glass-card flex flex-col items-start gap-6 p-10 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
               Want one of these?
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">

@@ -148,7 +148,7 @@ export default function Contact() {
             <span className="section-label mb-5">
               Site office — open for briefs
             </span>
-            <h2 className="mb-5 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
+            <h2 className="mb-5 font-display text-display-2 font-extrabold uppercase text-foreground">
               Tell us what needs building.
             </h2>
             <p className="mb-10 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -221,7 +221,7 @@ export default function Contact() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-3 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+                <h3 className="mb-3 font-display text-display-3 font-extrabold uppercase text-foreground">
                   Message sent
                 </h3>
                 <p className="mb-8 max-w-xs text-muted-foreground">

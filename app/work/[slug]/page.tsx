@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Github, Lock } from "lucide-react";
 
 import { JsonLd } from "@/components/json-ld";
+import { TestimonialCard } from "@/components/testimonial";
 import { Section } from "@/components/ui/section";
+import { SpecStrip } from "@/components/ui/spec-cell";
 import { breadcrumbLd, caseStudyLd } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { CASE_STUDIES, getCaseStudy } from "@/lib/content/case-studies";
@@ -94,7 +96,7 @@ export default async function CaseStudyPage({
           <Link href={`/services/${service.slug}`} className="section-label">
             {service.name}
           </Link>
-          <h1 className="mt-3 font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground md:text-7xl">
+          <h1 className="mt-3 font-display text-display-1 font-extrabold uppercase text-foreground">
             {study.name}
           </h1>
           <p className="mt-3 font-mono text-xs font-bold uppercase tracking-widest text-foreground-subtle">
@@ -103,6 +105,16 @@ export default async function CaseStudyPage({
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             {study.summary}
           </p>
+
+          {/* Countable facts, above the CTAs. A skim-reader who never reaches
+              the approach section still leaves with three checkable numbers —
+              and every one of them can be verified by opening the live link
+              directly below. */}
+          <SpecStrip metrics={study.metrics} className="mt-8" />
+
+          {/* Renders nothing until this client has approved a quote — see the
+              consent rule on the field in lib/content/case-studies.ts. */}
+          <TestimonialCard testimonial={study.testimonial} className="mt-8" />
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
@@ -186,13 +198,13 @@ export default async function CaseStudyPage({
       <Section className="py-12">
         <div className="grid gap-12 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <h2 className="mb-4 flex items-baseline gap-3 font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-4 flex items-baseline gap-3 font-display text-display-3 font-extrabold uppercase text-foreground">
               <span className="font-mono text-xs font-bold text-hivis-text">01</span>
               The problem
             </h2>
             <p className="mb-12 leading-relaxed text-muted-foreground">{study.problem}</p>
 
-            <h2 className="mb-6 flex items-baseline gap-3 font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-6 flex items-baseline gap-3 font-display text-display-3 font-extrabold uppercase text-foreground">
               <span className="font-mono text-xs font-bold text-hivis-text">02</span>
               The build
             </h2>
@@ -207,7 +219,7 @@ export default async function CaseStudyPage({
               ))}
             </ol>
 
-            <h2 className="mb-6 flex items-baseline gap-3 font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-6 flex items-baseline gap-3 font-display text-display-3 font-extrabold uppercase text-foreground">
               <span className="font-mono text-xs font-bold text-hivis-text">03</span>
               Worth calling out
             </h2>

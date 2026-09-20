@@ -18,7 +18,7 @@ export function LegalDocumentPage({ doc }: { doc: LegalDocument }) {
       <div className="max-w-[68ch]">
         <span className="section-label">Legal</span>
 
-        <h1 className="mt-3 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
+        <h1 className="mt-3 font-display text-display-2 font-extrabold uppercase text-foreground">
           {doc.title}
         </h1>
 
@@ -33,7 +33,7 @@ export function LegalDocumentPage({ doc }: { doc: LegalDocument }) {
         <div className="mt-12 space-y-10">
           {doc.sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+              <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
                 {section.heading}
               </h2>
 

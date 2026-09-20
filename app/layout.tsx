@@ -7,6 +7,7 @@ import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { AttributionCapture } from "@/components/analytics/tracked-link";
 import { JsonLd } from "@/components/json-ld";
+import { MotionProvider } from "@/components/motion-provider";
 import { organizationLd } from "@/lib/jsonld";
 import { SITE } from "@/lib/site";
 
@@ -121,7 +122,10 @@ export default function RootLayout({
 
         {/* Added pt-24 to ensure content doesn't start under the fixed floating header */}
         <main id="main" tabIndex={-1} className="pt-24 md:pt-32">
-          {children}
+          {/* Makes framer-motion respect prefers-reduced-motion, which the CSS
+              catch-all in globals.css cannot reach. `children` passes through
+              as a prop, so the sections stay server components. */}
+          <MotionProvider>{children}</MotionProvider>
         </main>
 
         <ScrollToTop />

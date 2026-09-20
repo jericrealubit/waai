@@ -113,18 +113,38 @@ press floor), deliberately *not* the old dark-cyber look.
 `data-theme` attribute on `<html>`. A pre-paint script in `app/layout.tsx` sets
 it before first paint (stored choice, else OS) so there's no flash, and
 `components/theme-toggle.tsx` (in the header) flips + persists it to
-`localStorage`; with no stored choice it keeps following the OS live. In
-`app/globals.css`: `:root` holds the **light** ("daylight") palette;
-`@media (prefers-color-scheme: dark) :root:not([data-theme])` is the OS/no-JS
-**dark** ("night-shift") fallback; and `:root[data-theme="dark"]` is the explicit
-dark choice (**mirror of the media block — keep the two dark blocks in sync**).
+`localStorage`; with no stored choice it keeps following the OS live.
+
+In `app/globals.css` there is **one palette block**. Every colour token is
+declared once in `:root` as a **`light-dark(light, dark)` pair**, and
+`color-scheme` is the only thing that flips per theme — set by
+`@media (prefers-color-scheme: dark) :root:not([data-theme])` for the OS/no-JS
+path, and by `:root[data-theme="dark"]` / `:root[data-theme="light"]` for an
+explicit choice (the attribute rules have higher specificity, so the toggle wins
+in both directions). **To add a colour, add one `light-dark()` line.**
+
+This replaced three blocks — a light `:root` plus two verbatim dark copies of 58
+declarations each, kept in step by a comment. That arrangement lost
+`--destructive` (defined light, missing from both dark blocks) and made the
+`prefers-contrast` override key off the OS rather than the resolved theme, so a
+dark-OS visitor who toggled to light got the dark high-contrast ramp on a light
+ground. Both are fixed by the collapse.
+
+**The one exception is `--elev-1..3`**, which are still written per theme: they
+are structurally different shadows (offset ink vs. inset lit edge + contact
+shadow), and `light-dark()` is a `<color>` function that cannot express them. Six
+declarations, and they live in the same three `color-scheme` rules.
+
 Every brand colour is an *indirection* (`--color-hivis: var(--hivis)` in `@theme
-inline`, value resolved per theme) so the whole palette flips together. The
-shadcn `dark:` variant keys off the attribute
+inline`) so the whole palette flips together. The shadcn `dark:` variant keys off
+the attribute
 (`@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *))`),
 which tracks the resolved theme because the script always stamps `data-theme`.
-Any new colour must be added to **both** dark blocks as well as `:root` — never a
-bare hex in a component.
+Never a bare hex in a component.
+
+Note Lightning CSS downlevels `light-dark()` into its own
+`--lightningcss-light`/`--lightningcss-dark` toggle pair in the built CSS. That
+is expected; the three `color-scheme` rules are what drive it.
 
 Reach for the tokens, never a raw `slate-*`/`gray-*`/`white`/`black`. The text
 ramp — **body copy is near-ink; `steel` (`text-foreground-subtle`) is metadata
