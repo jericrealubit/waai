@@ -1,10 +1,8 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowRight, ExternalLink, Github, Lock } from "lucide-react";
 
+import { Reveal } from "@/components/ui/reveal";
 import type { CaseStudy } from "@/lib/content/case-studies";
 
 interface CaseStudyCardProps {
@@ -41,11 +39,9 @@ export function CaseStudyCard({ study, index }: CaseStudyCardProps) {
   const plateNo = String(index + 1).padStart(2, "0");
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+    <Reveal
+      as="article"
+      index={index}
       className="group glass-card glass-card-interactive relative isolate flex h-full flex-col overflow-hidden"
     >
       <div className="relative aspect-video w-full overflow-hidden border-b-2 border-bitumen bg-cement">
@@ -93,7 +89,7 @@ export function CaseStudyCard({ study, index }: CaseStudyCardProps) {
           {study.sector}
         </p>
 
-        <h3 className="mb-3 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+        <h3 className="mb-3 font-display text-display-3 font-extrabold uppercase text-foreground">
           <Link
             href={`/work/${study.slug}`}
             className="after:absolute after:inset-0 after:z-0 after:content-[''] hover:text-hivis-text focus-ring"
@@ -172,6 +168,6 @@ export function CaseStudyCard({ study, index }: CaseStudyCardProps) {
           </div>
         )}
       </div>
-    </motion.article>
+    </Reveal>
   );
 }

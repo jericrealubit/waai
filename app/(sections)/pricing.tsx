@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { Reveal } from "@/components/ui/reveal";
 import { Section } from "@/components/ui/section";
 import {
   CARE_PLAN_MONTHLY,
@@ -18,13 +19,14 @@ export default function Pricing() {
       description="Three fixed sizes per service line — pick one, or pay it monthly. Every price on this page is what the build costs, not a starting point that moves once we talk. Hosting, domain and security patches are a flat $50/yr on top."
     >
       <div className="space-y-10">
-        {SERVICES.map((service) => (
-          <div
+        {SERVICES.map((service, index) => (
+          <Reveal
             key={service.slug}
+            index={index}
             className="border-2 border-bitumen bg-paper shadow-e1"
           >
             <div className="flex flex-col gap-2 border-b-2 border-bitumen px-6 py-5 md:flex-row md:items-baseline md:justify-between md:px-8">
-              <h3 className="font-display text-2xl font-extrabold uppercase leading-none tracking-tight text-foreground md:text-3xl">
+              <h3 className="font-display text-display-3 font-extrabold uppercase text-foreground">
                 <Link
                   href={`/services/${service.slug}`}
                   className="focus-ring transition-colors hover:text-hivis-text"
@@ -49,11 +51,31 @@ export default function Pricing() {
               {service.tiers.map((tier) => (
                 <div
                   key={tier.name}
-                  className="flex flex-col gap-3 border-b border-line px-6 py-6 transition-colors last:border-b-0 hover:bg-hivis/5 md:border-b-0 md:border-r md:px-7 md:last:border-r-0"
+                  className={`relative flex flex-col gap-3 border-b border-line px-6 py-6 transition-colors last:border-b-0 hover:bg-hivis/5 md:border-b-0 md:border-r md:px-7 md:last:border-r-0 ${
+                    tier.recommended ? "bg-hivis/5" : ""
+                  }`}
                 >
-                  <h4 className="font-display text-lg font-extrabold uppercase tracking-tight text-foreground">
-                    {tier.name}
-                  </h4>
+                  {/* A hi-vis rule across the top of the tier most people
+                      actually buy. Three identical columns leave the visitor to
+                      do the comparison alone, and the usual outcome is that
+                      they pick none of them. */}
+                  {tier.recommended && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 top-0 h-1 bg-hivis"
+                    />
+                  )}
+
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h4 className="font-display text-lg font-extrabold uppercase tracking-tight text-foreground">
+                      {tier.name}
+                    </h4>
+                    {tier.recommended && (
+                      <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-widest text-hivis-text">
+                        Most chosen
+                      </span>
+                    )}
+                  </div>
 
                   <div>
                     <div className="font-mono text-2xl font-bold tabular-nums text-foreground">
@@ -78,7 +100,7 @@ export default function Pricing() {
             <p className="border-t border-line px-6 py-4 text-sm leading-relaxed text-foreground-subtle md:px-8">
               {service.replaces}
             </p>
-          </div>
+          </Reveal>
         ))}
       </div>
 
@@ -124,7 +146,7 @@ export default function Pricing() {
       {/* The highest-intent section on the site used to end here with no way
           to act on it. Mirrors the closing band on app/work/page.tsx. */}
       <div className="glass-card mt-10 px-7 py-10 text-left md:px-14 md:py-12 md:text-center">
-        <h3 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground md:text-4xl">
+        <h3 className="font-display text-display-3 font-extrabold uppercase text-foreground">
           Not sure which one you need?
         </h3>
         <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto">

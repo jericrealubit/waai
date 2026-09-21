@@ -15,6 +15,7 @@ export function Header() {
   const navLinks = [
     { href: "/services", label: "Services" },
     { href: "/work", label: "Our Work" },
+    { href: "/about", label: "About" },
     { href: "/#process", label: "Process" },
     { href: "/#pricing", label: "Pricing" },
     { href: "/#contact", label: "Contact" },
@@ -58,10 +59,10 @@ export function Header() {
           <ThemeToggle />
 
           <Link
-            href="/#contact"
+            href="/quote"
             className="hidden md:inline-flex btn-primary focus-ring"
           >
-            Start Project
+            Get a price
           </Link>
 
           {/* Burger Menu Button — an icon-only control, so it needs a label of
@@ -119,11 +120,11 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="/#contact"
+              href="/quote"
               onClick={() => setIsOpen(false)}
               className="btn-primary focus-ring mt-2 w-full"
             >
-              Start Project
+              Get a price
             </Link>
           </motion.div>
         )}

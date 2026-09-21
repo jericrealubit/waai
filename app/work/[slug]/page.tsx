@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, Github, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, Github, Lock } from "lucide-react";
 
+import { JsonLd } from "@/components/json-ld";
+import { TestimonialCard } from "@/components/testimonial";
 import { Section } from "@/components/ui/section";
+import { SpecStrip } from "@/components/ui/spec-cell";
+import { breadcrumbLd, caseStudyLd } from "@/lib/jsonld";
+import { pageMetadata } from "@/lib/seo";
 import { CASE_STUDIES, getCaseStudy } from "@/lib/content/case-studies";
 import { SERVICES_BY_SLUG } from "@/lib/content/services";
 
@@ -22,22 +27,24 @@ export async function generateMetadata({
 
   if (!study) return { title: "Not found | WA AI Digital" };
 
-  const title = `${study.name} | Case study | WA AI Digital`;
+  const base = pageMetadata({
+    title: `${study.name} | Case study`,
+    description: study.outcome,
+    path: `/work/${study.slug}`,
+    type: "article",
+  });
+
+  // A case study keeps its own screenshot as the share image rather than the
+  // generic card — the picture of the actual shipped build is the whole
+  // argument the page is making.
+  if (!study.screenshot) return base;
+
+  const images = [{ url: study.screenshot.src, width: 1440, height: 810 }];
 
   return {
-    title,
-    description: study.outcome,
-    openGraph: {
-      title,
-      description: study.outcome,
-      url: `https://waai.au/work/${study.slug}`,
-      siteName: "WA AI Digital",
-      locale: "en_AU",
-      type: "article",
-      ...(study.screenshot && {
-        images: [{ url: study.screenshot.src, width: 1440, height: 810 }],
-      }),
-    },
+    ...base,
+    openGraph: { ...base.openGraph, images },
+    twitter: { ...base.twitter, images },
   };
 }
 
@@ -68,6 +75,14 @@ export default async function CaseStudyPage({
 
   return (
     <>
+      <JsonLd data={caseStudyLd(study)} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Our work", path: "/work" },
+          { name: study.name, path: `/work/${study.slug}` },
+        ])}
+      />
+
       <Section className="pb-8">
         <Link
           href="/work"
@@ -81,7 +96,7 @@ export default async function CaseStudyPage({
           <Link href={`/services/${service.slug}`} className="section-label">
             {service.name}
           </Link>
-          <h1 className="mt-3 font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground md:text-7xl">
+          <h1 className="mt-3 font-display text-display-1 font-extrabold uppercase text-foreground">
             {study.name}
           </h1>
           <p className="mt-3 font-mono text-xs font-bold uppercase tracking-widest text-foreground-subtle">
@@ -90,6 +105,16 @@ export default async function CaseStudyPage({
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             {study.summary}
           </p>
+
+          {/* Countable facts, above the CTAs. A skim-reader who never reaches
+              the approach section still leaves with three checkable numbers —
+              and every one of them can be verified by opening the live link
+              directly below. */}
+          <SpecStrip metrics={study.metrics} className="mt-8" />
+
+          {/* Renders nothing until this client has approved a quote — see the
+              consent rule on the field in lib/content/case-studies.ts. */}
+          <TestimonialCard testimonial={study.testimonial} className="mt-8" />
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
@@ -173,13 +198,13 @@ export default async function CaseStudyPage({
       <Section className="py-12">
         <div className="grid gap-12 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <h2 className="mb-4 flex items-baseline gap-3 font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-4 flex items-baseline gap-3 font-display text-display-3 font-extrabold uppercase text-foreground">
               <span className="font-mono text-xs font-bold text-hivis-text">01</span>
               The problem
             </h2>
             <p className="mb-12 leading-relaxed text-muted-foreground">{study.problem}</p>
 
-            <h2 className="mb-6 flex items-baseline gap-3 font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-6 flex items-baseline gap-3 font-display text-display-3 font-extrabold uppercase text-foreground">
               <span className="font-mono text-xs font-bold text-hivis-text">02</span>
               The build
             </h2>
@@ -194,7 +219,7 @@ export default async function CaseStudyPage({
               ))}
             </ol>
 
-            <h2 className="mb-6 flex items-baseline gap-3 font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-6 flex items-baseline gap-3 font-display text-display-3 font-extrabold uppercase text-foreground">
               <span className="font-mono text-xs font-bold text-hivis-text">03</span>
               Worth calling out
             </h2>
@@ -268,6 +293,34 @@ export default async function CaseStudyPage({
               </div>
             </div>
           </aside>
+        </div>
+      </Section>
+
+      {/* A CTA tied to THIS story rather than a generic one. A reader who has
+          just worked through a build in their own trade is the most qualified
+          visitor the site gets, and the next step should name what they
+          just read. */}
+      <Section size="tight">
+        <div className="glass-card px-7 py-10 text-left md:px-14 md:py-12 md:text-center">
+          <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
+            Want one like this?
+          </h2>
+          <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto">
+            Price a {service.shortName.toLowerCase()} build yourself — four
+            questions, the fixed price on screen before you give us anything.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 md:justify-center">
+            <Link href="/quote" className="btn-primary focus-ring w-full sm:w-auto">
+              Get a price
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href={`/services/${service.slug}`}
+              className="btn-glass focus-ring w-full sm:w-auto"
+            >
+              What&apos;s included
+            </Link>
+          </div>
         </div>
       </Section>
     </>

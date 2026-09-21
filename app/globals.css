@@ -22,6 +22,39 @@
    theme's text ramp because that ramp is where legibility is won or lost.
    Targets: body |Lc| >= 75, large/secondary >= 60, UI boundaries WCAG >= 3:1. */
 @theme {
+  /* ── Display type scale ───────────────────────────────────────────────────
+     Every heading on the site used to re-type `text-4xl md:text-6xl` or
+     `text-5xl md:text-7xl` at each call site, which meant the scale lived in
+     ~20 class attributes and nowhere else. It also stopped adapting at `md`:
+     `xl:` was used zero times, so a 1920px display got the same 60px heading
+     as a 1024px one.
+
+     These are fluid — one rung per role, `clamp()`ed so they keep growing past
+     the last breakpoint and shrink sensibly on a 390px phone. Line-height and
+     tracking travel WITH the size, which is the part hand-typed utilities kept
+     getting wrong (0.92 leading is right at 92px and far too tight at 44px). */
+  --text-display-1: clamp(2.75rem, 1.55rem + 5.4vw, 5.75rem); /* page titles */
+  --text-display-1--line-height: 0.94;
+  --text-display-1--letter-spacing: -0.02em;
+  --text-display-2: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem); /* section headings */
+  --text-display-2--line-height: 0.97;
+  --text-display-2--letter-spacing: -0.015em;
+  --text-display-3: clamp(1.5rem, 1.25rem + 1.1vw, 2.125rem); /* card headings */
+  --text-display-3--line-height: 1.02;
+  --text-display-3--letter-spacing: -0.01em;
+  /* The lede under a heading. Measure is still capped in `ch` at the call
+     site — this only governs size and leading. */
+  --text-lede: clamp(1rem, 0.94rem + 0.3vw, 1.1875rem);
+  --text-lede--line-height: 1.65;
+
+  /* ── Motion vocabulary ────────────────────────────────────────────────────
+     A site with one easing curve reads as one system. `site` is the standard
+     ease-out for entrances and hovers; `stamp` overshoots slightly and is for
+     things that land like a stamp being pressed. Mirrored in lib/motion.ts so
+     framer-motion and CSS agree. */
+  --ease-site: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-stamp: cubic-bezier(0.34, 1.56, 0.64, 1);
+
   /* Footer attribution flame + the two smoke puffs. Timing is deliberately
      untouched from the original: one 1.8s beat, an ~80ms lag between the flare
      and the puff launch so the flame reads as *blowing* the smoke, puff flight
@@ -167,212 +200,139 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── LIGHT — "daylight" (default) ──────────────────────────────────────────── */
+/* ── PALETTE ────────────────────────────────────────────────────────────────
+   Light is "daylight", dark is "night shift". Every colour token is declared
+   ONCE, as a light-dark() pair; `color-scheme` is the only thing that flips.
+
+   This was three blocks: a light :root, a @media (prefers-color-scheme: dark)
+   copy, and a :root[data-theme="dark"] copy — the two dark ones holding 58
+   identical declarations each under a comment asking the next person to keep
+   them in sync. Adding one colour meant three edits and the compiler could not
+   tell you when you forgot the third. --destructive is what that looked like
+   in practice: defined in light, missing from both dark blocks, so an error
+   banner fell back to the light red on the night-shift ground.
+
+   light-dark() resolves against `color-scheme`, which the rules below set, so
+   the explicit toggle still beats the OS in both directions and the no-JS OS
+   path still works. Contrast figures are stated light / dark.
+   ──────────────────────────────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
 
   /* Surfaces — warm mineral, deliberately greyer/cooler than a cream (#F4F1EA)
-     to read as concrete, not paper stock. */
-  --concrete: #e7e2d8; /* page ground */
-  --paper: #efebe2; /* cards, panels, title-blocks */
-  --cement: #dcd5c7; /* secondary fills */
+     to read as concrete, not paper stock. Dark is a warm near-black steel. */
+  --concrete: light-dark(#e7e2d8, #16140f); /* page ground */
+  --paper: light-dark(#efebe2, #1c1a14); /* cards, panels, title-blocks */
+  --cement: light-dark(#dcd5c7, #221f18); /* secondary fills */
 
-  /* Text ramp on concrete. Body copy is near-ink by design; `steel` is
-     metadata only (raw steel as body is APCA-borderline — the inverse of the
-     old #94a3b8 trap). */
-  --bitumen: #1a1813; /* headings, emphasis      · 14.6:1 · Lc  99 */
-  --foreground: #1a1813;
-  --muted-foreground: #3a362e; /* body copy       ·  9.2:1 · Lc  85 */
-  --foreground-subtle: #5e5b51; /* meta, caption  ·  4.8:1 · Lc  62 */
-  --steel: #5e5b51;
+  /* Text ramp. Body copy is near-ink by design; `steel` is metadata only (raw
+     steel as body is APCA-borderline — the inverse of the old #94a3b8 trap). */
+  --bitumen: light-dark(#1a1813, #ece6d8); /* headings  · 14.6:1 / 13.9:1 */
+  --foreground: var(--bitumen);
+  --muted-foreground: light-dark(#3a362e, #c9c2b2); /* body ·  9.2:1 / 10.4:1 */
+  --foreground-subtle: light-dark(#5e5b51, #a39d8e); /* meta ·  4.8:1 /  6.4:1 */
+  --steel: var(--foreground-subtle);
 
   /* Signals. Hi-vis is the live product + primary action; never small text on
      light (use --hivis-text). Source carries links. */
-  --hivis: #e8420a; /* fill / large accent */
-  --hivis-ink: #1a1813; /* text on a hi-vis fill · 4.4:1 bold */
-  --hivis-text: #b8330a; /* hi-vis as small text  · 4.8:1 */
-  --source: #1e3aa8; /* links                 · 7.4:1 */
-  --smoke: #8f8676; /* footer puffs — darker than concrete so they read */
+  --hivis: light-dark(#e8420a, #ff5a1e); /* fill / large accent */
+  --hivis-ink: light-dark(#1a1813, #16140f); /* on a hi-vis fill · 4.4:1 / 5.5:1 */
+  --hivis-text: light-dark(#b8330a, #ff824f); /* hi-vis as small text · 4.8:1 / 6.6:1 */
+  --source: light-dark(#1e3aa8, #6e86ff); /* links · 7.4:1 / 6.0:1 */
+  --smoke: light-dark(#8f8676, #b8b2a2); /* footer puffs — read on either ground */
 
-  --line: #c4bba8; /* hairline dividers */
-  --line-strong: #a79d88; /* stronger internal edges */
-  --border: #c4bba8;
-  --border-strong: #a79d88;
+  --line: light-dark(#c4bba8, #35312a); /* hairline dividers */
+  --line-strong: light-dark(#a79d88, #524c3f); /* stronger internal edges */
+  --border: var(--line);
+  --border-strong: var(--line-strong);
   --border-brand: var(--hivis);
 
-  /* Offset hard ink shadow — height on a light ground reads as a cast shadow
-     down-right, like a card lifted off a drawing sheet. */
+  /* Form controls. --input must clear 3:1 against BOTH the field fill and the
+     surface behind it (WCAG 1.4.11): 3.4:1 on paper and 3.2:1 on concrete in
+     light, 4.0:1 and 4.3:1 in dark. */
+  --input: light-dark(#6b6456, #6e685b);
+  --input-bg: light-dark(#f3efe7, #12100b);
+  --ring: var(--source);
+
+  /* shadcn semantic aliases. Nothing on the site consumes these directly —
+     they exist so a shadcn primitive dropped in later inherits the palette
+     instead of arriving in neutral greys. */
+  --card: var(--paper);
+  --card-foreground: var(--bitumen);
+  --popover: var(--paper);
+  --popover-foreground: var(--bitumen);
+  --primary: var(--hivis);
+  --primary-foreground: var(--hivis-ink);
+  --secondary: var(--cement);
+  --secondary-foreground: var(--bitumen);
+  --muted: var(--cement);
+  --accent: var(--source);
+  --accent-foreground: light-dark(#efebe2, #16140f);
+  /* Form errors — carries small bold mono text in the contact form's error
+     banner, so it clears the 4.5:1 floor on both grounds: 5.1:1 / 5.4:1. */
+  --destructive: light-dark(oklch(0.52 0.19 27), oklch(0.7 0.19 25));
+
+  --background: var(--concrete);
+  --radius: 0.2rem;
+
+  --chart-1: var(--hivis);
+  --chart-2: var(--source);
+  --chart-3: var(--line-strong);
+  --chart-4: var(--steel);
+  --chart-5: var(--hivis-text);
+
+  --sidebar: var(--paper);
+  --sidebar-foreground: var(--bitumen);
+  --sidebar-primary: var(--hivis);
+  --sidebar-primary-foreground: var(--hivis-ink);
+  --sidebar-accent: var(--cement);
+  --sidebar-accent-foreground: var(--bitumen);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--source);
+
+  /* Elevation is the one thing light-dark() cannot express — it is a <color>
+     function, and these two are structurally different shadows rather than one
+     colour in two values. Light is an offset hard ink shadow, a card lifted off
+     a drawing sheet. Dark is a lit top edge plus a soft contact shadow, because
+     an offset ink shadow is invisible on near-black. The dark values are
+     therefore still repeated in the two rules below — six declarations, not the
+     116 this block replaced. */
   --elev-1: 3px 3px 0 rgb(26 24 19 / 0.07);
   --elev-2: 5px 5px 0 rgb(26 24 19 / 0.11);
   --elev-3: 8px 8px 0 rgb(26 24 19 / 0.15);
-
-  /* Form controls. --input must clear 3:1 against BOTH the field fill and the
-     surface behind it (WCAG 1.4.11). #6b6456 = 3.4:1 on paper, 3.2:1 on
-     concrete. */
-  --input: #6b6456;
-  --input-bg: #f3efe7;
-  --ring: var(--source);
-
-  --card: #efebe2;
-  --card-foreground: #1a1813;
-  --popover: #efebe2;
-  --popover-foreground: #1a1813;
-  --primary: #e8420a;
-  --primary-foreground: #1a1813;
-  --secondary: #dcd5c7;
-  --secondary-foreground: #1a1813;
-  --muted: #dcd5c7;
-  --accent: #1e3aa8;
-  --accent-foreground: #efebe2;
-  --destructive: oklch(0.55 0.2 27);
-
-  --background: #e7e2d8;
-  --radius: 0.2rem;
-
-  --chart-1: #e8420a;
-  --chart-2: #1e3aa8;
-  --chart-3: #a79d88;
-  --chart-4: #5e5b51;
-  --chart-5: #b8330a;
-
-  --sidebar: #efebe2;
-  --sidebar-foreground: #1a1813;
-  --sidebar-primary: #e8420a;
-  --sidebar-primary-foreground: #1a1813;
-  --sidebar-accent: #dcd5c7;
-  --sidebar-accent-foreground: #1a1813;
-  --sidebar-border: #c4bba8;
-  --sidebar-ring: #1e3aa8;
 }
 
-/* ── DARK — "night shift" (OS dark) ─────────────────────────────────────────── */
+/* The whole theme switch. Everything above resolves off `color-scheme`, so
+   these rules carry only it and the elevation exception.
+
+   The @media rule serves no-JS visitors: the pre-paint script in
+   app/layout.tsx stamps data-theme whenever JS runs, and :not([data-theme])
+   steps aside the moment it does. The attribute rules have higher specificity,
+   so an explicit choice beats the OS in both directions. */
 @media (prefers-color-scheme: dark) {
-  /* OS fallback — applies only when no explicit choice has been made. The
-     pre-paint script sets a `data-theme` whenever JS runs, so in practice this
-     block serves no-JS visitors; JS visitors are handled by the attribute
-     blocks (:root and :root[data-theme="dark"]). */
   :root:not([data-theme]) {
     color-scheme: dark;
 
-    --concrete: #16140f; /* warm near-black steel */
-    --paper: #1c1a14;
-    --cement: #221f18;
-
-    --bitumen: #ece6d8; /* headings          · 13.9:1 · Lc -96 */
-    --foreground: #ece6d8;
-    --muted-foreground: #c9c2b2; /* body     · 10.4:1 · Lc -82 */
-    --foreground-subtle: #a39d8e; /* meta    ·  6.4:1 · Lc -62 */
-    --steel: #a39d8e;
-
-    --hivis: #ff5a1e; /* brighter on dark */
-    --hivis-ink: #16140f; /* text on hi-vis fill · 5.5:1 */
-    --hivis-text: #ff824f; /* hi-vis small text   · 6.6:1 */
-    --source: #6e86ff; /* links               · 6.0:1 */
-    --smoke: #b8b2a2; /* light warm smoke on the dark ground */
-
-    --line: #35312a;
-    --line-strong: #524c3f;
-    --border: #35312a;
-    --border-strong: #524c3f;
-    --border-brand: var(--hivis);
-
-    /* Offset ink shadow vanishes on near-black; height reads from a lit top
-       edge + a soft contact shadow instead. */
     --elev-1: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 2px 6px rgb(0 0 0 / 0.5);
     --elev-2: inset 0 1px 0 rgb(255 255 255 / 0.08),
       0 6px 18px -6px rgb(0 0 0 / 0.6);
     --elev-3: inset 0 1px 0 rgb(255 255 255 / 0.1),
       0 12px 30px -10px rgb(0 0 0 / 0.7);
-
-    --input: #6e685b; /* 4.0:1 on paper, 4.3:1 on concrete */
-    --input-bg: #12100b;
-    --ring: var(--source);
-
-    --card: #1c1a14;
-    --card-foreground: #ece6d8;
-    --popover: #1c1a14;
-    --popover-foreground: #ece6d8;
-    --primary: #ff5a1e;
-    --primary-foreground: #16140f;
-    --secondary: #221f18;
-    --secondary-foreground: #ece6d8;
-    --muted: #221f18;
-    --accent: #6e86ff;
-    --accent-foreground: #16140f;
-
-    --background: #16140f;
-
-    --sidebar: #1c1a14;
-    --sidebar-foreground: #ece6d8;
-    --sidebar-primary: #ff5a1e;
-    --sidebar-primary-foreground: #16140f;
-    --sidebar-accent: #221f18;
-    --sidebar-accent-foreground: #ece6d8;
-    --sidebar-border: #35312a;
-    --sidebar-ring: #6e86ff;
   }
 }
 
-/* Explicit dark choice (the toggle, or a stored preference applied pre-paint).
-   Higher specificity than the OS `:root` above, so it wins in both directions.
-   MIRROR of the @media dark block — keep the two in sync if the palette moves. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-
-  --concrete: #16140f;
-  --paper: #1c1a14;
-  --cement: #221f18;
-
-  --bitumen: #ece6d8;
-  --foreground: #ece6d8;
-  --muted-foreground: #c9c2b2;
-  --foreground-subtle: #a39d8e;
-  --steel: #a39d8e;
-
-  --hivis: #ff5a1e;
-  --hivis-ink: #16140f;
-  --hivis-text: #ff824f;
-  --source: #6e86ff;
-  --smoke: #b8b2a2;
-
-  --line: #35312a;
-  --line-strong: #524c3f;
-  --border: #35312a;
-  --border-strong: #524c3f;
-  --border-brand: var(--hivis);
 
   --elev-1: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 2px 6px rgb(0 0 0 / 0.5);
   --elev-2: inset 0 1px 0 rgb(255 255 255 / 0.08),
     0 6px 18px -6px rgb(0 0 0 / 0.6);
   --elev-3: inset 0 1px 0 rgb(255 255 255 / 0.1),
     0 12px 30px -10px rgb(0 0 0 / 0.7);
+}
 
-  --input: #6e685b;
-  --input-bg: #12100b;
-  --ring: var(--source);
-
-  --card: #1c1a14;
-  --card-foreground: #ece6d8;
-  --popover: #1c1a14;
-  --popover-foreground: #ece6d8;
-  --primary: #ff5a1e;
-  --primary-foreground: #16140f;
-  --secondary: #221f18;
-  --secondary-foreground: #ece6d8;
-  --muted: #221f18;
-  --accent: #6e86ff;
-  --accent-foreground: #16140f;
-
-  --background: #16140f;
-
-  --sidebar: #1c1a14;
-  --sidebar-foreground: #ece6d8;
-  --sidebar-primary: #ff5a1e;
-  --sidebar-primary-foreground: #16140f;
-  --sidebar-accent: #221f18;
-  --sidebar-accent-foreground: #ece6d8;
-  --sidebar-border: #35312a;
-  --sidebar-ring: #6e86ff;
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 @layer base {
@@ -426,21 +386,19 @@
     }
   }
 
-  /* Honour the OS "increase contrast" switch in both themes: push the ramp to
-     its ceiling and make hairlines real lines. */
+  /* Honour the OS "increase contrast" switch: push the ramp to its ceiling and
+     make hairlines real lines.
+
+     This was two blocks, the second keyed off (prefers-color-scheme: dark) —
+     the OS, not the resolved theme. A visitor on a dark OS who toggled the site
+     to light got the dark high-contrast ramp on a light ground. light-dark()
+     reads `color-scheme`, so one block is now correct in every combination. */
   @media (prefers-contrast: more) {
     :root {
       --muted-foreground: var(--bitumen);
-      --foreground-subtle: #45423a;
-      --line: #8f8676;
-      --line-strong: #6b6456;
-    }
-  }
-  @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
-    :root {
-      --foreground-subtle: #cfc9ba;
-      --line: #6e685b;
-      --line-strong: #8a8474;
+      --foreground-subtle: light-dark(#45423a, #cfc9ba);
+      --line: light-dark(#8f8676, #6e685b);
+      --line-strong: light-dark(#6b6456, #8a8474);
     }
   }
 }
@@ -624,5 +582,93 @@
     @apply focus-visible:outline-none focus-visible:ring-2
       focus-visible:ring-source focus-visible:ring-offset-2
       focus-visible:ring-offset-background;
+  }
+}
+
+/* Radix Accordion open/close. Radix exposes the measured panel height as
+   --radix-accordion-content-height, which is the only way to animate to "auto".
+   These are CSS animations, so the global prefers-reduced-motion rule in
+   @layer base already zeroes them — no extra guard needed here. */
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+[data-state="open"] > .accordion-panel,
+.accordion-panel[data-state="open"] {
+  animation: accordion-down 220ms var(--ease-site);
+}
+
+.accordion-panel[data-state="closed"] {
+  animation: accordion-up 180ms var(--ease-site);
+}
+
+/* Print. Mainly for the quote docket's "Print this docket" button — a worksite
+   docket you can actually put on a clipboard. Everything that isn't the sheet
+   is dropped: the fixed header would otherwise reprint on every page, and the
+   nav, footer and scroll button are all meaningless on paper.
+
+   Colours are forced to ink on white because the concrete ground would
+   otherwise flood a page with toner for no benefit. */
+@media print {
+  header,
+  footer,
+  nav,
+  button,
+  .hazard-rule {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  body::before {
+    display: none !important; /* the blueprint grid */
+  }
+
+  main {
+    padding-top: 0 !important;
+  }
+
+  .docket-sheet {
+    box-shadow: none !important;
+    border-color: #000 !important;
+    break-inside: avoid;
+  }
+
+  /* The estimate's hi-vis fill prints as a solid block; keep the figure legible
+     by dropping to a hairline-ruled band instead. */
+  .docket-sheet .bg-hivis {
+    background: #fff !important;
+    border-top: 2px solid #000 !important;
+    border-bottom: 2px solid #000 !important;
+  }
+
+  .docket-sheet .bg-hivis * {
+    color: #000 !important;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    word-break: break-all;
   }
 }

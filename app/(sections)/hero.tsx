@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { HazardRule } from "@/components/hero/hazard-rule";
+import { TitleBlock } from "@/components/hero/title-block";
 import { CASE_STUDIES } from "@/lib/content/case-studies";
 
 export default function Hero() {
@@ -28,7 +30,7 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1 className="font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground sm:text-6xl md:text-7xl">
+          <h1 className="font-display text-display-1 font-extrabold uppercase text-foreground">
             No mockups. Every build is{" "}
             <span className="text-hivis">live</span>, the code is{" "}
             <span className="text-source">public</span>.
@@ -55,77 +57,16 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Engineering title-block — real metadata, like the corner of a
-            drawing. The stamp turns "live + source" into the signature mark. */}
-        <aside
-          className="border-2 border-bitumen bg-paper shadow-e2"
-          aria-label="Firm summary"
-        >
-          <div className="flex items-center justify-between border-b-2 border-bitumen px-3.5 py-2.5">
-            <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-foreground">
-              Drawing No. WAAI-00
-            </span>
-            <span className="font-mono text-[11px] uppercase tracking-widest text-foreground-subtle">
-              Rev. 2026
-            </span>
-          </div>
-          <div className="grid grid-cols-2">
-            <TbCell k="Firm" v="WA AI Digital" />
-            <TbCell k="Base" v="Perth, WA" border />
-            <TbCell k="Projects shipped" v={String(shipped).padStart(2, "0")} />
-            <TbCell k="Public repos" v={String(repos).padStart(2, "0")} border />
-          </div>
-          <div className="flex items-center gap-2.5 px-3.5 py-3">
-            <span
-              aria-hidden="true"
-              className="h-2 w-2 animate-pulse rounded-full bg-hivis"
-            />
-            <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-foreground">
-              Status: all builds live
-            </span>
-          </div>
-          <div className="flex justify-center pb-6 pt-1">
-            <span
-              className="stamp"
-              role="img"
-              aria-label="Field verified: live and source open"
-            >
-              <span className="block text-sm font-bold tracking-widest">
-                ◱ Field-Verified
-              </span>
-              <span className="mt-0.5 block text-[9px] tracking-[0.2em]">
-                Live + Source · WA
-              </span>
-            </span>
-          </div>
-        </aside>
+        {/* The engineering title-block. A client leaf: the server still paints
+            the frame, the borders and the labels — only the entries animate in.
+            Counts stay derived here so they are correct without JavaScript. */}
+        <TitleBlock shipped={shipped} repos={repos} />
+
       </div>
 
-      {/* The one signature accent — used exactly once, here. */}
-      <div className="hazard-rule mt-14" aria-hidden="true" />
+      {/* The one signature accent — used exactly once, here. Draws across on
+          first load; see components/hero/hazard-rule.tsx. */}
+      <HazardRule />
     </section>
-  );
-}
-
-function TbCell({
-  k,
-  v,
-  border,
-}: {
-  k: string;
-  v: string;
-  border?: boolean;
-}) {
-  return (
-    <div
-      className={`border-b border-line px-3.5 py-3 ${border ? "border-l border-line" : ""}`}
-    >
-      <div className="font-mono text-[10px] uppercase tracking-widest text-foreground-subtle">
-        {k}
-      </div>
-      <div className="mt-1 font-display text-xl font-extrabold uppercase leading-none tracking-tight text-foreground">
-        {v}
-      </div>
-    </div>
   );
 }

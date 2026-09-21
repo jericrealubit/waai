@@ -55,6 +55,16 @@ export interface PriceTier {
   monthly: number | null;
   /** One line on what this tier covers, relative to the one below it. */
   summary: string;
+  /**
+   * Marks the tier most clients actually choose. Exactly one per service, and
+   * it must stay an honest statement about what gets bought — not whichever
+   * tier we would prefer to sell. Rendered as a hi-vis rule and a "Most
+   * chosen" tag.
+   *
+   * Three identical-looking tiers make the visitor do the comparison work
+   * unaided, and the common result is that they pick nothing and leave.
+   */
+  recommended?: boolean;
 }
 
 export interface Service {
@@ -73,6 +83,15 @@ export interface Service {
    * price is what `formatFromPrice` surfaces as the headline "From $X".
    */
   tiers: PriceTier[];
+  /**
+   * Optional extras a client can add to any tier, priced as one-off amounts.
+   * Drives the add-on step of the quote docket at /quote.
+   *
+   * The monthly equivalent is always DERIVED from the resulting total by
+   * `deriveMonthly` in lib/pricing.ts — never stored here — so an add-on
+   * cannot introduce a monthly figure that disagrees with the rate card.
+   */
+  addOns?: { id: string; label: string; price: number; note: string }[];
   priceNote: string;
   /**
    * What this build displaces — a statement about the alternative's model,
@@ -105,6 +124,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Site Notice",
+        recommended: true,
         price: 599,
         monthly: 99,
         summary:
@@ -160,6 +180,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Menu Board",
+        recommended: true,
         price: 799,
         monthly: 109,
         summary:
@@ -215,6 +236,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Single Line",
+        recommended: true,
         price: 1499,
         monthly: 139,
         summary:
@@ -271,6 +293,7 @@ export const SERVICES: Service[] = [
     tiers: [
       {
         name: "Storefront",
+        recommended: true,
         price: 1999,
         monthly: 159,
         summary:

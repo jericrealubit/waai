@@ -142,7 +142,7 @@ datasheet voice: URLs, stacks, prices, plate labels).
 
 Entrance animations use framer-motion `initial` / `whileInView` with
 `viewport={{ once: true }}` and a `delay: index * 0.1` stagger (see
-`components/ui/feature-card.tsx`). `"use client"` is applied only to files that
+`components/service-card.tsx`). `"use client"` is applied only to files that
 need state or motion; sections without interaction stay server components.
 
 **The footer signature** — "Smoked & Coded by: jeric" with a flickering flame

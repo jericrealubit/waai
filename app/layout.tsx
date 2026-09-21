@@ -5,6 +5,12 @@ import { Header } from "@/components/header"; // Corrected import
 import { Footer } from "@/components/footer";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { AttributionCapture } from "@/components/analytics/tracked-link";
+import { JsonLd } from "@/components/json-ld";
+import { MotionProvider } from "@/components/motion-provider";
+import { organizationLd } from "@/lib/jsonld";
+import { OG_DEFAULT } from "@/lib/og";
+import { SITE } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +31,7 @@ const sairaCondensed = Saira_Condensed({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://waai.au"),
+  metadataBase: new URL(SITE.url),
   title: "WA AI Digital | Custom Websites & Ordering Systems",
   description:
     "Innovating the West with bespoke digital solutions. From lightning-fast ordering systems to AI-driven business growth and maintenance.",
@@ -36,6 +42,13 @@ export const metadata: Metadata = {
     "Digital Growth",
     "Website Maintenance",
   ],
+  authors: [{ name: SITE.founder, url: `${SITE.url}/about` }],
+  creator: SITE.founder,
+  publisher: SITE.name,
+  // Canonical for the home page. Every other route sets its own via
+  // `pageMetadata` in lib/seo.ts; without these, any URL carrying a tracking
+  // parameter reads as a separate document to a crawler.
+  alternates: { canonical: "/" },
   // Generated from a simplified crop of public/logo-mark.png — see
   // public/favicon*.png, apple-touch-icon.png and android-chrome-*.png.
   icons: {
@@ -49,17 +62,20 @@ export const metadata: Metadata = {
   openGraph: {
     title: "WA AI Digital",
     description: "Innovating the West with Custom Web & AI Systems.",
-    url: "https://waai.au",
-    siteName: "WA AI Digital",
-    images: [
-      {
-        url: "/og-image.png", // Recommended: add a preview image in public folder
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "en_AU",
+    url: SITE.url,
+    siteName: SITE.name,
+    // This used to point at /og-image.png, a file that was never added, so
+    // every share rendered a broken card. See lib/og.ts for why the cards are
+    // committed PNGs rather than generated per request.
+    images: [{ url: OG_DEFAULT, width: 1200, height: 630 }],
+    locale: SITE.locale,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "WA AI Digital",
+    description: "Innovating the West with Custom Web & AI Systems.",
+    images: [OG_DEFAULT],
   },
   robots: {
     index: true,
@@ -94,14 +110,37 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
+        {/* Keyboard users otherwise tab through the whole fixed header on
+            every page before reaching content. Visually hidden until focused. */}
+        <a
+          href="#main"
+          className="sr-only z-[60] focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:border-2 focus:border-bitumen focus:bg-paper focus:px-5 focus:py-3 focus:font-mono focus:text-sm focus:font-bold focus:uppercase focus:tracking-wide focus:text-foreground focus:shadow-e2"
+        >
+          Skip to content
+        </a>
+
         <Header />
 
         {/* Added pt-24 to ensure content doesn't start under the fixed floating header */}
-        <main className="pt-24 md:pt-32">{children}</main>
+        <main id="main" tabIndex={-1} className="pt-24 md:pt-32">
+          {/* Makes framer-motion respect prefers-reduced-motion, which the CSS
+              catch-all in globals.css cannot reach. `children` passes through
+              as a prop, so the sections stay server components. */}
+          <MotionProvider>{children}</MotionProvider>
+        </main>
 
         <ScrollToTop />
 
+        {/* Records utm_* and referrer on first load so an enquiry submitted
+            three pages later still knows where the visitor came from. */}
+        <AttributionCapture />
+
         <Footer />
+
+        {/* The firm's identity, emitted once for the whole site. Every other
+            schema on the site references this node by @id rather than
+            restating the business details. */}
+        <JsonLd data={organizationLd()} />
       </body>
 
       {/* GA4. Google's snippet says "paste on every page"; in the App Router

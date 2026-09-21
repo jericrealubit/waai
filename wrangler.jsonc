@@ -19,6 +19,24 @@
   "images": {
     "binding": "IMAGES"
   },
+  // Enquiry storage and the contact form's rate-limit counters.
+  //
+  // app/api/contact/route.ts writes every lead here BEFORE calling Resend, so a
+  // send failure — an outage, a revoked key, or the 100/day free tier being
+  // exhausted — costs a delayed reply rather than a lost customer. Keys are
+  // `lead:<ISO timestamp>:<uuid>` with a 400-day TTL; rate-limit counters share
+  // the namespace under `rl:h:<ip>` / `rl:d:<ip>` and expire on their own.
+  //
+  // The route treats the binding as optional and degrades to send-only if it is
+  // missing, so removing this block breaks nothing — it just loses the records.
+  // See docs/LEADS.md.
+  "kv_namespaces": [
+    {
+      "binding": "LEADS",
+      "id": "9ee36b96c8ba4e96ac4d3b84bae253cd",
+      "preview_id": "b756aa24dde4419db59904cc10cf4f87"
+    }
+  ],
   "observability": {
     "enabled": true
   }

@@ -17,6 +17,22 @@ export function Footer() {
               Custom websites, ordering systems and internal tools for Western
               Australian businesses.
             </p>
+
+            {/* /chat was previously linked from nowhere on the site. */}
+            <nav aria-label="More" className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
+              <Link
+                href="/about"
+                className="focus-ring text-sm text-muted-foreground transition-colors hover:text-source"
+              >
+                About
+              </Link>
+              <Link
+                href="/chat"
+                className="focus-ring text-sm text-muted-foreground transition-colors hover:text-source"
+              >
+                Ask the assistant
+              </Link>
+            </nav>
           </div>
 
           <nav aria-label="Services">
@@ -96,10 +112,28 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} WA AI Digital — Perth, Western
-            Australia
-          </p>
+          <div className="flex flex-col items-center gap-2 sm:items-start">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} WA AI Digital — Perth, Western
+              Australia
+            </p>
+            {/* The site runs analytics and collects enquiry details, so these
+                two have to be reachable from every page. */}
+            <nav aria-label="Legal" className="flex items-center gap-4">
+              <Link
+                href="/privacy"
+                className="focus-ring text-xs text-foreground-subtle transition-colors hover:text-hivis-text"
+              >
+                Privacy
+              </Link>
+              <Link
+                href="/terms"
+                className="focus-ring text-xs text-foreground-subtle transition-colors hover:text-hivis-text"
+              >
+                Terms
+              </Link>
+            </nav>
+          </div>
 
           {/* Build credit. The flame and smoke are decorative, so they are
               aria-hidden. They animate unconditionally by explicit choice —

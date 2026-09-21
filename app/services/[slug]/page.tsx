@@ -4,8 +4,14 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Check, Plus } from "lucide-react";
 
 import { CaseStudyCard } from "@/components/case-study-card";
+import { FaqList } from "@/components/faq";
+import { JsonLd } from "@/components/json-ld";
 import { Section } from "@/components/ui/section";
+import { breadcrumbLd, faqLd, serviceLd } from "@/lib/jsonld";
+import { ogForService } from "@/lib/og";
+import { pageMetadata } from "@/lib/seo";
 import { getCaseStudiesForService } from "@/lib/content/case-studies";
+import { getFaqsForService } from "@/lib/content/faqs";
 import {
   SERVICES,
   TERM_MONTHS,
@@ -28,20 +34,12 @@ export async function generateMetadata({
 
   if (!service) return { title: "Not found | WA AI Digital" };
 
-  const title = `${service.name} | WA AI Digital`;
-
-  return {
-    title,
+  return pageMetadata({
+    title: service.name,
     description: service.valueProp,
-    openGraph: {
-      title,
-      description: service.valueProp,
-      url: `https://waai.au/services/${service.slug}`,
-      siteName: "WA AI Digital",
-      locale: "en_AU",
-      type: "website",
-    },
-  };
+    path: `/services/${service.slug}`,
+    image: ogForService(service.slug),
+  });
 }
 
 export default async function ServiceDetailPage({
@@ -55,9 +53,21 @@ export default async function ServiceDetailPage({
   if (!service) notFound();
 
   const studies = getCaseStudiesForService(service.slug);
+  const faqs = getFaqsForService(service.slug);
 
   return (
     <>
+      {/* The published fixed tiers, marked up as real Offers. This is the one
+          place on the site where transparent pricing can earn a rich result. */}
+      <JsonLd data={serviceLd(service)} />
+      <JsonLd data={faqLd(faqs)} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Services", path: "/services" },
+          { name: service.name, path: `/services/${service.slug}` },
+        ])}
+      />
+
       <Section className="pb-12">
         <Link
           href="/services"
@@ -69,7 +79,7 @@ export default async function ServiceDetailPage({
 
         <div className="max-w-3xl">
           <span className="section-label">{service.shortName}</span>
-          <h1 className="mt-3 font-display text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-foreground md:text-7xl">
+          <h1 className="mt-3 font-display text-display-1 font-extrabold uppercase text-foreground">
             {service.name}
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
@@ -97,10 +107,28 @@ export default async function ServiceDetailPage({
             so the tiers have to be reachable from the service page too. */}
         <div className="mt-12 grid gap-px border-2 border-bitumen bg-line md:grid-cols-3">
           {service.tiers.map((tier) => (
-            <div key={tier.name} className="flex flex-col gap-3 bg-paper p-6 md:p-7">
-              <h2 className="font-display text-lg font-extrabold uppercase tracking-tight text-foreground">
-                {tier.name}
-              </h2>
+            <div
+              key={tier.name}
+              className={`relative flex flex-col gap-3 p-6 md:p-7 ${
+                tier.recommended ? "bg-hivis/5" : "bg-paper"
+              }`}
+            >
+              {tier.recommended && (
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-0 h-1 bg-hivis"
+                />
+              )}
+              <div className="flex items-baseline justify-between gap-2">
+                <h2 className="font-display text-lg font-extrabold uppercase tracking-tight text-foreground">
+                  {tier.name}
+                </h2>
+                {tier.recommended && (
+                  <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-widest text-hivis-text">
+                    Most chosen
+                  </span>
+                )}
+              </div>
               <div>
                 <div className="font-mono text-2xl font-bold tabular-nums text-foreground">
                   {formatTierPrice(tier)}
@@ -126,7 +154,7 @@ export default async function ServiceDetailPage({
       <Section className="py-12">
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-6 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-6 font-display text-display-3 font-extrabold uppercase text-foreground">
               What a build includes
             </h2>
             <ul className="space-y-4">
@@ -140,7 +168,7 @@ export default async function ServiceDetailPage({
           </div>
 
           <div className="glass-card p-8 md:p-10">
-            <h2 className="mb-2 font-display text-2xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="mb-2 font-display text-display-3 font-extrabold uppercase text-foreground">
               Also available
             </h2>
             <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
@@ -183,10 +211,19 @@ export default async function ServiceDetailPage({
         </Section>
       )}
 
+      <Section
+        label="Questions"
+        heading="Before you enquire"
+        description="The things people ask once the price has sunk in."
+        centered={false}
+      >
+        <FaqList faqs={faqs} />
+      </Section>
+
       <Section className="py-12">
         <div className="glass-card flex flex-col items-start gap-6 p-10 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground">
+            <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
               Want one of these?
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
