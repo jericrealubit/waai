@@ -19,6 +19,8 @@ const eslintConfig = defineConfig([
     ".open-next/**",
     // Wrangler's scratch bundles, written during `wrangler dev`.
     ".wrangler/**",
+    // Generated Workers runtime types.
+    "cloudflare-env.d.ts",
   ]),
 ]);
 
