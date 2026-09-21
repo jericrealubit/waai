@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { EASE_STAMP } from "@/lib/motion";
+import { EASE_STAMP, STAMP_IN_VARIANTS } from "@/lib/motion";
 
 /**
  * One line of the works order: a mono field label, and the answer stamped in
@@ -37,10 +37,10 @@ export function DocketRow({
           {value ? (
             <motion.span
               key={value}
-              initial={{ opacity: 0, y: 8, rotate: -3, scale: 1.12 }}
-              animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+              variants={STAMP_IN_VARIANTS}
+              initial="hidden"
+              animate="shown"
               exit={{ opacity: 0 }}
-              transition={{ type: "spring", stiffness: 420, damping: 28 }}
               className="block origin-left font-display text-lg font-extrabold uppercase leading-tight tracking-tight text-foreground"
             >
               {value}

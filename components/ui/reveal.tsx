@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 import { REVEAL_VARIANTS, revealTransition } from "@/lib/motion";
 
@@ -17,9 +17,16 @@ import { REVEAL_VARIANTS, revealTransition } from "@/lib/motion";
  * viewport edge, so a card is already settling by the time it is properly on
  * screen rather than visibly popping after it arrives.
  *
- * Reduced motion is handled globally by <MotionProvider> in the root layout,
- * not here — see components/motion-provider.tsx for why the CSS rule in
- * globals.css was never enough.
+ * REDUCED MOTION IS GUARDED HERE, NOT DELEGATED — and this is the important
+ * part. `<MotionProvider>`'s `reducedMotion="user"` does not snap an animation
+ * to its final state; measured behaviour is that the animation never runs, so
+ * the element is left sitting at `initial`. With a `hidden` variant of
+ * `opacity: 0` that means **the content is invisible, permanently**, for every
+ * visitor who has asked for reduced motion — which was every service card,
+ * case-study card, process step, pricing block and growth card on the site.
+ *
+ * The rule this encodes: an entrance may never be the thing that makes content
+ * visible. When motion is unwanted, render at rest.
  */
 const ELEMENTS = {
   div: motion.div,
@@ -41,10 +48,16 @@ export function Reveal({
   className?: string;
   children: React.ReactNode;
 }) {
+  const reduce = useReducedMotion();
+
   // The motion components have per-element prop types that don't unify, and
   // this wrapper exposes no element-specific props anyway — so pick the
   // component and treat it as one shape.
   const Component = ELEMENTS[as] as typeof motion.div;
+
+  if (reduce) {
+    return <Component className={className}>{children}</Component>;
+  }
 
   return (
     <Component

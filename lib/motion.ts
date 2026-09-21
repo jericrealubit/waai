@@ -26,6 +26,45 @@ export const REVEAL_VARIANTS: Variants = {
 };
 
 /**
+ * The two springs the site uses for things that LAND rather than ease in.
+ *
+ * Declared here rather than inline so the quote docket and the hero's
+ * title-block are provably the same gesture — "they read as one system" stops
+ * being a claim in a comment and becomes a shared import.
+ */
+export const SPRING_STAMP_IN: Transition = {
+  type: "spring",
+  stiffness: 420,
+  damping: 28,
+};
+
+export const SPRING_STAMP_PRESS: Transition = {
+  type: "spring",
+  stiffness: 260,
+  damping: 18,
+};
+
+/**
+ * A value stamping onto a form — a docket row's answer, a title-block cell's
+ * entry. Overshoots slightly and settles square.
+ *
+ * `shown` is a function variant: pass the delay through framer's `custom` prop
+ * so each caller owns its own choreography rather than this file guessing at
+ * one. Put `origin-left` on the element — the rotation is meant to pivot from
+ * where the text starts, not its centre.
+ */
+export const STAMP_IN_VARIANTS: Variants = {
+  hidden: { opacity: 0, y: 8, rotate: -3, scale: 1.12 },
+  shown: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    rotate: 0,
+    scale: 1,
+    transition: { ...SPRING_STAMP_IN, delay },
+  }),
+};
+
+/**
  * Stagger delay for an item at `index`.
  *
  * Capped deliberately. The old `index * 0.1` meant the sixth card in a grid sat

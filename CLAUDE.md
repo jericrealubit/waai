@@ -205,12 +205,41 @@ large/secondary `≥ 60`, UI boundaries `≥ 3:1`. Two that bite here:
    the field fill and the surface behind it, in both themes. `.field-input`
    already does; reuse it.
 
-Entrance animations use framer-motion `initial` / `whileInView` with
-`viewport={{ once: true }}` and a `delay: index * 0.1` stagger. `"use client"` is
-applied only to files that need state or motion; sections without interaction
-stay server components. A global `prefers-reduced-motion` rule in `globals.css`
-zeroes durations (framer-motion never consults the OS setting on its own, so that
-catch-all covers the scroll-triggered animations).
+Entrance animations use framer-motion with the variants and springs in
+`lib/motion.ts` — `REVEAL_VARIANTS` via `<Reveal>` for scroll-triggered
+sections, `STAMP_IN_VARIANTS` + `SPRING_STAMP_*` for things that *land*. The
+stagger is `staggerDelay()`: 70ms, **capped at five steps** — never
+`index * 0.1`, which left the sixth card in a grid invisible for half a second
+and read as the page still loading. `"use client"` is applied only to files that
+need state or motion; sections without interaction stay server components, with
+motion pushed into small client leaves (`components/hero/*`,
+`components/docket/*`).
+
+**Reduced motion has three tiers and they do not overlap.** Getting this wrong
+is silent — the animation simply keeps running for someone who asked it not to:
+
+1. **CSS animations and transitions** — covered by the `prefers-reduced-motion`
+   catch-all in `@layer base` (`animate-pulse`, the accordion, `.glass-card`'s
+   hover). `.motion-always` carves out the footer badge; don't remove it.
+2. **framer-motion component animations** — covered by `<MotionProvider>`'s
+   `reducedMotion="user"`. The CSS catch-all can *never* reach these: framer
+   writes inline `transform`/`opacity` from JS, which is neither a CSS animation
+   nor a CSS transition.
+3. **Raw motion values** — a bare `animate()` driving text
+   (`components/docket/estimate.tsx`, `components/hero/count-up.tsx`) or a
+   `useScroll` value bound to `style` (`components/hero/title-block.tsx`).
+   Neither is an *animation* framer's config can filter, so each needs its own
+   explicit `useReducedMotion()` guard.
+
+Scroll-linked motion uses framer's `useScroll`/`useTransform`, **not** CSS
+`animation-timeline: view()/scroll()`: that feature is ~84% global but Firefox
+stable still lacks it, and framer is already in the bundle on every route.
+Never declare `will-change` in CSS — framer sets and clears it per animation,
+and a permanently promoted layer costs more than it saves.
+
+The landing page's `<h1>` is its LCP element and nothing on `/` carries
+`priority`, so **the hero's left column stays free of client JS and entrance
+motion**. Only the title-block aside animates.
 
 **The footer signature — "Smoked & Coded by: jeric".** A flame + three smoke
 puffs in `components/footer.tsx`, driven by the `flame-flicker` / `smoke-rise`

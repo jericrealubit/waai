@@ -14,7 +14,12 @@ export function SpecCell({
   className,
 }: {
   label: string;
-  value: string;
+  /**
+   * A string in most places. Widened to ReactNode so the hero's title-block can
+   * pass an animated span — the cell's border and label are printed by the
+   * server and never move; only the entry stamps in.
+   */
+  value: React.ReactNode;
   /** Optional provenance, e.g. the third party a figure came from. */
   note?: string;
   className?: string;
