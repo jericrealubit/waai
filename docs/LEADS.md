@@ -37,13 +37,24 @@ Adds two things:
    tried. With KV the worst case is a delayed reply rather than a lost customer.
 2. **Per-IP rate limiting** — 5/hour and 20/day, counted in the same namespace.
 
-### Setup
+### Status: done
+
+Both namespaces exist and the binding is wired in `wrangler.jsonc`. Verified
+end to end under the real Workers runtime: with a deliberately invalid
+`RESEND_API_KEY`, a submitted enquiry returned 502 **and** the complete lead was
+still in KV — which is the entire point of the feature. The rate limiter cut in
+on the 6th submission within the hour, and the blocked attempts wrote no leads.
+
+### Setup (for reference, or a second environment)
 
 ```bash
 # 1. Create the namespace (and a preview one for local dev)
 npx wrangler kv namespace create LEADS
 npx wrangler kv namespace create LEADS --preview
 ```
+
+Wrangler prints the binding block but does not write it to the config — paste
+the ids into `wrangler.jsonc` yourself, then run `npm run cf-typegen`.
 
 Add the returned ids to `wrangler.jsonc`:
 
@@ -66,10 +77,23 @@ npm run deploy
 
 ### Reading the leads back
 
+Because the binding carries **both** an `id` and a `preview_id`, every `kv key`
+command needs to say which one it means — otherwise wrangler refuses with
+*"The binding LEADS has both an id and a preview_id configured."*
+
 ```bash
-npx wrangler kv key list --binding LEADS --remote | grep '"lead:'
-npx wrangler kv key get "lead:2026-09-21T03:14:15.926Z:<uuid>" --binding LEADS --remote
+# Real enquiries from the deployed site:
+npx wrangler kv key list --binding LEADS --preview false --remote | grep '"lead:'
+npx wrangler kv key get  --binding LEADS --preview false --remote "lead:<ISO>:<uuid>"
+
+# What `wrangler dev` wrote locally — note this is the PREVIEW namespace, and
+# `--local` keeps you in miniflare rather than touching the real one:
+npx wrangler kv key list --binding LEADS --preview --local
 ```
+
+The `--preview` distinction is the easy mistake: `wrangler dev` binds `env.LEADS`
+to the **preview** namespace, so a local test then listed without `--preview`
+reads the empty production namespace and looks like the write silently failed.
 
 Keys are `lead:<ISO timestamp>:<uuid>`, so they list in chronological order.
 Each holds the whole submission including the docket configuration and the
