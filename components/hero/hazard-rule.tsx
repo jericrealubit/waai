@@ -23,6 +23,14 @@ import { DURATION, EASE_SITE } from "@/lib/motion";
  *
  * It draws at the same moment the stamp presses: the sheet gets signed and
  * ruled off in one beat, and neither asks the eye to follow it.
+ *
+ * ONCE DRAWN, IT RUNS. The stripes travel continuously — the site's "the plant
+ * is switched on" tell. That loop is CSS, not framer: an idle loop held open by
+ * requestAnimationFrame costs main thread for as long as the tab is open, and
+ * the CSS catch-all under prefers-reduced-motion already parks it. The belt is
+ * a separate child because the travelling thing has to be an over-wide element
+ * inside a clip — see `.hazard-rule__belt` in globals.css for the geometry and
+ * for why the step is 50.912px and not 51.
  */
 export function HazardRule({ delay = 0.62 }: { delay?: number }) {
   const reduce = useReducedMotion();
@@ -36,6 +44,8 @@ export function HazardRule({ delay = 0.62 }: { delay?: number }) {
       initial={animateIn ? { scaleX: 0 } : false}
       animate={{ scaleX: 1 }}
       transition={{ duration: DURATION.slow, delay, ease: EASE_SITE }}
-    />
+    >
+      <span className="hazard-rule__belt" />
+    </motion.div>
   );
 }

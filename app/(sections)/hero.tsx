@@ -17,14 +17,22 @@ export default function Hero() {
   return (
     // No `min-h-screen`: layout pads `main` with pt-24/32 to clear the fixed
     // header, so a full-viewport hero would push the first section off-screen.
-    <section className="px-6 pt-10 md:px-20 md:pt-16">
-      <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[1.55fr_1fr] lg:gap-14">
+    //
+    // `isolate` scopes the survey sweep's z-index to this section, so the one
+    // decorative layer below can sit at z-0 without reasoning about the fixed
+    // header (z-50) or the body's blueprint grid.
+    <section className="relative isolate px-6 pt-10 md:px-20 md:pt-16">
+      {/* The survey head tracking across the sheet — the hero's one ambient
+          loop, and pure CSS, so the LCP column stays free of client JS. See
+          `.hero-scan` and the HERO AMBIENT note in app/globals.css. */}
+      <div className="hero-scan" aria-hidden="true" />
+
+      <div className="relative z-10 mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[1.55fr_1fr] lg:gap-14">
         <div>
           <div className="mb-5 flex items-center gap-3">
-            <span
-              aria-hidden="true"
-              className="h-2.5 w-2.5 rounded-full bg-hivis shadow-[0_0_0_4px_color-mix(in_srgb,var(--hivis)_24%,transparent)]"
-            />
+            {/* The site's live mark. Shared with the title-block's status row,
+                so "this is transmitting" is one object, not two lookalikes. */}
+            <span aria-hidden="true" className="beacon h-2.5 w-2.5" />
             <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground-subtle">
               WA AI Digital — Perth, Western Australia
             </span>
@@ -65,7 +73,8 @@ export default function Hero() {
       </div>
 
       {/* The one signature accent — used exactly once, here. Draws across on
-          first load; see components/hero/hazard-rule.tsx. */}
+          first load, then runs continuously; see
+          components/hero/hazard-rule.tsx. */}
       <HazardRule />
     </section>
   );
