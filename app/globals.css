@@ -432,6 +432,133 @@
   opacity: 0.6;
 }
 
+/* ── HERO AMBIENT — "the sheet is live" ───────────────────────────────
+   Continuous motion, and all of it CSS. That is a constraint, not a shortcut.
+
+   Every other animation on this site is an ENTRANCE: it runs once and stops,
+   which is the shape framer-motion is good at. An idle loop is the opposite
+   problem. As a framer `repeat: Infinity` it would hold a requestAnimationFrame
+   loop open for as long as the landing page sits in a tab, on the main thread,
+   and `reducedMotion="user"` does not filter a repeat that only moves opacity
+   — the same argument already written on the title-block's status dot. A CSS
+   @keyframes loop runs on the compositor, ships no JavaScript onto the page
+   whose <h1> is the LCP element, and is already covered by the
+   prefers-reduced-motion catch-all in @layer base. Tier 1, for free.
+
+   WHICH IS WHY EVERY LOOP BELOW DECLARES ITS RESTING POSE AS A BASE STYLE.
+   This is the part that is easy to get wrong, and was. The catch-all zeroes
+   `animation-duration` and clamps `animation-iteration-count` to 1, so the
+   loop finishes in 0.01ms — and because it does not (and must not) add
+   `animation-fill-mode: forwards`, a finished animation leaves the element
+   showing NEITHER keyframe. It reverts to the element's own declared style.
+
+   Designing the 0% and 100% frames to be tolerable is therefore not enough
+   and gives false confidence: the first cut of the survey sweep had both ends
+   safely off-screen and still parked a translucent orange slab across the
+   middle of the hero for every visitor who had asked for less motion, because
+   the un-animated `.hero-scan::before` is simply where it was authored. The
+   rule that actually holds:
+
+       write the resting pose as the element's normal CSS,
+       and let 0% restate it.
+
+   So `.hero-scan::before` carries its off-screen translate as a base
+   declaration, `.beacon::after` is authored at opacity 0, and each meter bar
+   is authored at its own floor. Get that right and the base-layer catch-all
+   is genuinely sufficient — no second media query, nothing to keep in sync.
+   Verify it the only way that works: load the page with reduced motion on and
+   look at it.
+
+   Everything here moves `transform` and `opacity` only. Never add a loop that
+   animates `background-position`, `width`, `top`, a filter or a box-shadow:
+   those repaint, and this is a repaint that never ends. */
+
+@keyframes survey-sweep {
+  /* -110% and 390% are both fully clear of a 26%-wide element's own track:
+     -1.1 × 26% = -28.6% of the hero, and 3.9 × 26% = 101.4%. The hold from
+     55% to 100% is the ~5s of stillness between passes — an instrument that
+     swept without pause would read as a loading bar. */
+  0% {
+    transform: translate3d(-110%, 0, 0);
+  }
+  55%,
+  100% {
+    transform: translate3d(390%, 0, 0);
+  }
+}
+
+@keyframes datum-drop {
+  /* No fade of its own at the ends: the clip's mask already feathers the top
+     16% and bottom 16%, so the line emerges and dissolves there for free.
+     The opacity here does one job only — parking it invisible for the 30% of
+     the cycle it spends below the sheet. */
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(100%);
+  }
+  71%,
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes beacon-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+@keyframes belt-run {
+  to {
+    transform: translate3d(-50.912px, 0, 0);
+  }
+}
+
+@keyframes meter-bar {
+  0%,
+  100% {
+    transform: scaleY(var(--lo, 0.4));
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes readout-roll {
+  0%,
+  17% {
+    transform: translate3d(0, 0, 0);
+  }
+  25%,
+  42% {
+    transform: translate3d(0, -20%, 0);
+  }
+  50%,
+  67% {
+    transform: translate3d(0, -40%, 0);
+  }
+  75%,
+  92% {
+    transform: translate3d(0, -60%, 0);
+  }
+  100% {
+    transform: translate3d(0, -80%, 0);
+  }
+}
+
 @layer components {
   /* ── Spec panel ─────────────────────────────────────────────────────────
      The worksite's flat panel: a paper face inside a strong ink frame, lifting
@@ -539,16 +666,39 @@
     transform: rotate(-4deg);
   }
 
-  /* ── Hazard rule — the one signature accent stripe. Use exactly once. */
+  /* ── Hazard rule — the one signature accent stripe. Use exactly once.
+
+     The stripes RUN. This is the site's "the plant is switched on" tell, and
+     it is the one place the identity already had a machine in it.
+
+     The pattern is NOT animated in place. A repeating-linear-gradient can only
+     travel by moving `background-position`, which repaints the full width of
+     the rule on every frame, forever — so the gradient lives on an over-wide
+     child that is translated inside this clip instead, and the whole loop is
+     compositor-only.
+
+     THE MAGIC NUMBER: the pattern's period is 36px measured ALONG the -45deg
+     gradient axis, so one seamless horizontal step is 36 / cos(45°) =
+     50.912px. Round that to 51 and the belt jumps, once per cycle, forever. */
   .hazard-rule {
+    position: relative;
     height: 12px;
+    overflow: hidden;
+    background: var(--bitumen);
+    border-top: 1.5px solid var(--bitumen);
+    border-bottom: 1.5px solid var(--bitumen);
+  }
+  .hazard-rule__belt {
+    position: absolute;
+    /* The extra 52px on the right is the slack the translate eats; without it
+       the trailing edge walks into view at the end of each cycle. */
+    inset: 0 -52px 0 0;
     background: repeating-linear-gradient(
       -45deg,
       var(--hivis) 0 18px,
       var(--bitumen) 18px 36px
     );
-    border-top: 1.5px solid var(--bitumen);
-    border-bottom: 1.5px solid var(--bitumen);
+    animation: belt-run 2.4s linear infinite;
   }
 
   /* ── Live / source tags on a spec card. `live` = the running product
@@ -582,6 +732,223 @@
     @apply focus-visible:outline-none focus-visible:ring-2
       focus-visible:ring-source focus-visible:ring-offset-2
       focus-visible:ring-offset-background;
+  }
+
+  /* ── THE INSTRUMENT SET ─────────────────────────────────────────
+     Five idle loops that make the hero read as a sheet on a live instrument
+     rather than a printed page. See the HERO AMBIENT note above the keyframes
+     for why every one of them is CSS and not framer-motion.
+
+     TWO OF THEM CROSS THE WHOLE HERO, and they are deliberately unalike on
+     every axis that matters — direction, weight, colour and period. A scanner
+     reads as a scanner because two references move across each other; two
+     similar things moving together just read as a glitch. So:
+
+       the survey head   horizontal   wide, soft   hi-vis (a SIGNAL)   11s
+       the datum line    vertical     1px, crisp   ink (a DRAWN LINE)  17s
+
+     11 and 17 are coprime, so the pair only returns to the same relative
+     position every 187 seconds. Nobody will ever see the composition repeat.
+     Keep them coprime if you retime either one. */
+
+  /* The survey head: a soft hi-vis wash with a crisp leading edge, tracking
+     across the drawing sheet. Sits BEHIND the content (the hero's columns are
+     `relative z-10`), which is not only a layering choice — over the text it
+     would put a moving tint on the <h1> and make the hi-vis CTA flicker as it
+     passed. Behind, it plays across the concrete and the blueprint grid, and
+     the measured contrast of every glyph on the page is untouched. */
+  .hero-scan {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* Feathered top and bottom. Without this the beam is a hard-edged slab
+       clipped at the section box, which reads as a rendering fault rather
+       than light. The mask is on the static clip, never on the moving child:
+       masking the child would re-apply it on every frame of the sweep. */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 16%,
+      #000 84%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 16%,
+      #000 84%,
+      transparent 100%
+    );
+  }
+  .hero-scan::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    /* THE RESTING POSE — parked off the left edge. See the note above the
+       keyframes: this, not the 0% frame, is what a visitor on reduced motion
+       is left looking at. */
+    transform: translateX(-110%);
+    /* A flat percentage, never a clamp(): the keyframe below travels in
+       percentages of THIS element's own width, so the two only stay in step
+       while the width is a plain fraction of the hero. */
+    width: 26%;
+    border-right: 1.5px solid color-mix(in srgb, var(--hivis) 34%, transparent);
+    /* 11% IS NOT A ROUND NUMBER, IT IS A BUDGET. The beam passes behind live
+       text, so while it is over a paragraph the ground under that paragraph
+       IS the washed colour, and the whole text ramp has to survive it. At
+       11% the ramp measures (plain -> under the beam's brightest column):
+
+         light  headings 13.7 -> 12.0   body 9.3 -> 8.1   meta 5.3 -> 4.59
+         dark   headings 14.8 -> 13.0   body 10.4 -> 9.1  meta 6.8 -> 5.98
+
+       Metadata on the light ground is the binding constraint and it fails
+       WCAG AA at 13% (4.49:1). Do not raise this past 12% to make the effect
+       easier to see — darken the ground or move the beam in front of nothing
+       instead. */
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      color-mix(in srgb, var(--hivis) 3%, transparent) 58%,
+      color-mix(in srgb, var(--hivis) 11%, transparent) 100%
+    );
+    animation: survey-sweep 11s linear infinite;
+  }
+
+  /* The datum line: a measurement reference tracking DOWN the sheet, with a
+     short hi-vis cursor head running in the margin.
+
+     ON THE COLOUR — ink, not a signal. Hi-vis means the live product and
+     cobalt means the open source; this line means neither, it is a
+     construction line on the drawing. Spending a signal colour on it would
+     both dilute the two signals and put a second orange in the hero fighting
+     the survey head. In `--line-strong` it instead reads as one of the
+     blueprint grid's own lines, brighter and alive — which is exactly the
+     idea. The one hi-vis mark is the 32px cursor head, and on `md` it sits
+     entirely inside the px-20 gutter, off the text.
+
+     ON THE COST — this is the hero's second full-size composited layer, which
+     is the reason it was cut from the first pass and then deliberately added
+     back. It is affordable only because it is transparent, gradient-painted
+     once, and moved by transform alone. It is full-size because translateY
+     resolves against the element's OWN height: a 1px-tall line cannot travel
+     the hero in percentages, and a px distance would need re-tuning at every
+     breakpoint. Do not add a third. */
+  .hero-scan::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* THE RESTING POSE. Same rule as the sweep above — the base style is what
+       reduced motion leaves on screen, so it is authored invisible. */
+    opacity: 0;
+    background-image:
+      /* the cursor head */
+      linear-gradient(to right, var(--hivis) 0 32px, transparent 32px),
+      /* the datum itself */
+      linear-gradient(to bottom, var(--line-strong) 0 1px, transparent 1px);
+    background-repeat: no-repeat;
+    background-size:
+      100% 1px,
+      100% 100%;
+    /* The head is inset one gutter so it does not sit flush against the
+       browser edge, where it reads as a rendering artefact rather than a
+       mark. One value, not a breakpoint pair mirroring the section's
+       `px-6 md:px-20`: at 1.5rem it lands on the content edge on a phone and
+       in the margin on a desktop, and a datum's tick belongs in the margin
+       anyway. The hairline itself stays full-bleed, like the survey head. */
+    background-position:
+      1.5rem 0,
+      0 0;
+    animation: datum-drop 17s linear infinite;
+  }
+
+  /* The live mark. Replaces a bare `animate-pulse` dot: a pulse fades the
+     whole dot out, which reads as a thing switching off and on. A beacon keeps
+     the dot lit and throws a ring, which reads as a thing transmitting. Size
+     comes from the call site so the eyebrow and the title-block can differ. */
+  .beacon {
+    position: relative;
+    display: inline-block;
+    border-radius: 9999px;
+    background: var(--hivis);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hivis) 22%, transparent);
+  }
+  .beacon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1.5px solid var(--hivis);
+    opacity: 0; /* the resting pose: dot lit, no ring */
+    animation: beacon-ring 2.6s var(--ease-site) infinite;
+  }
+
+  /* A four-bar traffic meter. Each bar carries its own floor (`--lo`) and its
+     own period, all mutually prime-ish, so the group never falls into a
+     marching-band lockstep — the thing that makes a meter read as a decoration
+     instead of an instrument. */
+  .signal-meter {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 11px;
+  }
+  .signal-meter > span {
+    width: 2px;
+    height: 100%;
+    transform-origin: bottom;
+    background: var(--hivis);
+    /* The resting pose. Each bar's own floor, so at rest the four read as a
+       settled signal profile rather than four bars pinned at full height. */
+    transform: scaleY(var(--lo, 0.4));
+    animation: meter-bar 1.7s var(--ease-site) infinite;
+  }
+  .signal-meter > span:nth-child(1) {
+    --lo: 0.3;
+    animation-duration: 1.45s;
+  }
+  .signal-meter > span:nth-child(2) {
+    --lo: 0.55;
+    animation-duration: 1.9s;
+    animation-delay: 0.2s;
+  }
+  .signal-meter > span:nth-child(3) {
+    --lo: 0.4;
+    animation-duration: 1.6s;
+    animation-delay: 0.45s;
+  }
+  .signal-meter > span:nth-child(4) {
+    --lo: 0.68;
+    animation-duration: 2.15s;
+    animation-delay: 0.1s;
+  }
+
+  /* The rolling status readout — one line of the datasheet voice at a time.
+     A vertical roll, not a horizontal marquee: a marquee never holds still
+     long enough to be read, and this is real information.
+
+     The track repeats its first line as a fifth frame. That duplicate is what
+     lets the loop land on a translate of exactly -80% and still show line one,
+     so the cycle closes with no snap back. The resting pose is separate and
+     comes free here: the un-animated track is at translate 0, which is line
+     one. */
+  .readout {
+    display: block;
+    height: 1.05rem;
+    overflow: hidden;
+  }
+  .readout-track {
+    display: block;
+    animation: readout-roll 15s var(--ease-site) infinite;
+  }
+  .readout-track > span {
+    display: block;
+    height: 1.05rem;
+    line-height: 1.05rem;
+    white-space: nowrap;
   }
 }
 

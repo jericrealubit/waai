@@ -163,16 +163,18 @@ export function TitleBlock({
         animate={{ opacity: 1 }}
         transition={{ duration: DURATION.base, delay: 0.47, ease: EASE_SITE }}
       >
-        {/* Stays a CSS animation. As a framer repeat loop it would run a rAF
-            loop forever on the landing page, and `reducedMotion` does not block
-            opacity — so it would keep pulsing for someone who asked for less,
-            which the CSS catch-all currently prevents. */}
-        <span
-          aria-hidden="true"
-          className="h-2 w-2 animate-pulse rounded-full bg-hivis"
-        />
-        <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-foreground">
-          Status: all builds live
+        {/* Every loop in this row stays CSS. As framer `repeat: Infinity` each
+            would hold a rAF loop open for as long as the landing page sits in
+            a tab, and `reducedMotion` does not block a repeat that only moves
+            opacity — so they would keep running for someone who asked for
+            less, which the CSS catch-all prevents. */}
+        <span aria-hidden="true" className="beacon h-2 w-2 shrink-0" />
+        <StatusReadout shipped={shipped} repos={repos} />
+        <span className="signal-meter shrink-0" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
         </span>
       </motion.div>
 
@@ -197,6 +199,55 @@ export function TitleBlock({
         )}
       </div>
     </motion.aside>
+  );
+}
+
+/**
+ * The status row's rolling readout — the panel's live channel.
+ *
+ * Four lines, one at a time, on a vertical roll. Not a horizontal marquee:
+ * a marquee never holds a line still long enough to be read, and these are
+ * facts, not texture.
+ *
+ * EVERY LINE IS CHECKABLE. Two are derived from the same arrays the rest of
+ * the page is built from, and the other two state things this repo can be
+ * inspected for. A rolling readout is exactly the place a plausible-sounding
+ * uptime figure would end up if nobody wrote this down — on a site whose whole
+ * argument is that the work is real, an unverifiable number in the instrument
+ * panel is the most expensive kind of decoration.
+ *
+ * The roll is aria-hidden and a single stable line is exposed to assistive
+ * tech instead: text that reorders itself four times a minute is noise to a
+ * screen reader, and worse, some will announce each change.
+ */
+function StatusReadout({ shipped, repos }: { shipped: number; repos: number }) {
+  const pad = (value: number) => String(value).padStart(2, "0");
+
+  const lines = [
+    "All builds live",
+    "Source open · GitHub",
+    "Edge · Cloudflare",
+    `${pad(shipped)} shipped · ${pad(repos)} repos`,
+  ];
+
+  return (
+    <>
+      <span className="sr-only">Status: all builds live</span>
+      <span
+        aria-hidden="true"
+        className="readout min-w-0 flex-1 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground"
+      >
+        <span className="readout-track">
+          {lines.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
+          {/* The repeat of line one is load-bearing, not a typo: it is what
+              lets the loop close on a translate of -80% without a snap back.
+              See `.readout` in globals.css. */}
+          <span>{lines[0]}</span>
+        </span>
+      </span>
+    </>
   );
 }
 
