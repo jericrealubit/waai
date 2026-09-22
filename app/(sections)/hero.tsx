@@ -22,9 +22,10 @@ export default function Hero() {
     // decorative layer below can sit at z-0 without reasoning about the fixed
     // header (z-50) or the body's blueprint grid.
     <section className="relative isolate px-6 pt-10 md:px-20 md:pt-16">
-      {/* The survey head tracking across the sheet — the hero's one ambient
-          loop, and pure CSS, so the LCP column stays free of client JS. See
-          `.hero-scan` and the HERO AMBIENT note in app/globals.css. */}
+      {/* The hero's two crossing references — a survey head tracking across
+          the sheet and a datum line running down it. Pure CSS, so the LCP
+          column stays free of client JS. See `.hero-scan` and the HERO
+          AMBIENT note in app/globals.css. */}
       <div className="hero-scan" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[1.55fr_1fr] lg:gap-14">

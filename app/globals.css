@@ -487,6 +487,26 @@
   }
 }
 
+@keyframes datum-drop {
+  /* No fade of its own at the ends: the clip's mask already feathers the top
+     16% and bottom 16%, so the line emerges and dissolves there for free.
+     The opacity here does one job only — parking it invisible for the 30% of
+     the cycle it spends below the sheet. */
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(100%);
+  }
+  71%,
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
 @keyframes beacon-ring {
   0% {
     transform: scale(1);
@@ -715,9 +735,21 @@
   }
 
   /* ── THE INSTRUMENT SET ─────────────────────────────────────────
-     Four idle loops that make the hero read as a sheet on a live instrument
+     Five idle loops that make the hero read as a sheet on a live instrument
      rather than a printed page. See the HERO AMBIENT note above the keyframes
-     for why every one of them is CSS and not framer-motion. */
+     for why every one of them is CSS and not framer-motion.
+
+     TWO OF THEM CROSS THE WHOLE HERO, and they are deliberately unalike on
+     every axis that matters — direction, weight, colour and period. A scanner
+     reads as a scanner because two references move across each other; two
+     similar things moving together just read as a glitch. So:
+
+       the survey head   horizontal   wide, soft   hi-vis (a SIGNAL)   11s
+       the datum line    vertical     1px, crisp   ink (a DRAWN LINE)  17s
+
+     11 and 17 are coprime, so the pair only returns to the same relative
+     position every 187 seconds. Nobody will ever see the composition repeat.
+     Keep them coprime if you retime either one. */
 
   /* The survey head: a soft hi-vis wash with a crisp leading edge, tracking
      across the drawing sheet. Sits BEHIND the content (the hero's columns are
@@ -784,6 +816,53 @@
       color-mix(in srgb, var(--hivis) 11%, transparent) 100%
     );
     animation: survey-sweep 11s linear infinite;
+  }
+
+  /* The datum line: a measurement reference tracking DOWN the sheet, with a
+     short hi-vis cursor head running in the margin.
+
+     ON THE COLOUR — ink, not a signal. Hi-vis means the live product and
+     cobalt means the open source; this line means neither, it is a
+     construction line on the drawing. Spending a signal colour on it would
+     both dilute the two signals and put a second orange in the hero fighting
+     the survey head. In `--line-strong` it instead reads as one of the
+     blueprint grid's own lines, brighter and alive — which is exactly the
+     idea. The one hi-vis mark is the 32px cursor head, and on `md` it sits
+     entirely inside the px-20 gutter, off the text.
+
+     ON THE COST — this is the hero's second full-size composited layer, which
+     is the reason it was cut from the first pass and then deliberately added
+     back. It is affordable only because it is transparent, gradient-painted
+     once, and moved by transform alone. It is full-size because translateY
+     resolves against the element's OWN height: a 1px-tall line cannot travel
+     the hero in percentages, and a px distance would need re-tuning at every
+     breakpoint. Do not add a third. */
+  .hero-scan::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* THE RESTING POSE. Same rule as the sweep above — the base style is what
+       reduced motion leaves on screen, so it is authored invisible. */
+    opacity: 0;
+    background-image:
+      /* the cursor head */
+      linear-gradient(to right, var(--hivis) 0 32px, transparent 32px),
+      /* the datum itself */
+      linear-gradient(to bottom, var(--line-strong) 0 1px, transparent 1px);
+    background-repeat: no-repeat;
+    background-size:
+      100% 1px,
+      100% 100%;
+    /* The head is inset one gutter so it does not sit flush against the
+       browser edge, where it reads as a rendering artefact rather than a
+       mark. One value, not a breakpoint pair mirroring the section's
+       `px-6 md:px-20`: at 1.5rem it lands on the content edge on a phone and
+       in the margin on a desktop, and a datum's tick belongs in the margin
+       anyway. The hairline itself stays full-bleed, like the survey head. */
+    background-position:
+      1.5rem 0,
+      0 0;
+    animation: datum-drop 17s linear infinite;
   }
 
   /* The live mark. Replaces a bare `animate-pulse` dot: a pulse fades the
