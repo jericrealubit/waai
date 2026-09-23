@@ -6,12 +6,14 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  type MotionValue,
 } from "framer-motion";
 
 import { CountUp } from "@/components/hero/count-up";
 import { useFirstLoad } from "@/components/hero/use-first-load";
 import { StampPress } from "@/components/docket/stamp-press";
 import { SpecCell } from "@/components/ui/spec-cell";
+import { useReducedFade } from "@/components/ui/use-reduced-fade";
 import { DURATION, EASE_SITE, STAMP_IN_VARIANTS, staggerDelay } from "@/lib/motion";
 
 /**
@@ -58,15 +60,18 @@ export function TitleBlock({
   const firstLoad = useFirstLoad();
 
   /*
-   * Whether the entrance runs at all.
-   *
-   * The reduced-motion half is NOT delegated to <MotionProvider>. Measured
-   * behaviour with `reducedMotion="user"` is that the entrance does not run at
-   * all, leaving every element at its `initial` — opacity 0, invisible for
-   * good. An entrance must never be the thing that makes content visible, so
-   * when motion is unwanted these render at rest instead.
+   * Whether the entrance runs at all — first load only, regardless of
+   * `reduce`. `reduce` instead changes WHICH entrance runs: every element
+   * below branches on it individually, swapping the full declarative
+   * stamp-in for a `useReducedFade` motion value driven by a raw `animate()`
+   * call — MotionConfig was measured to suppress declarative `animate`/
+   * `variants` entirely under reduced motion, even an opacity-only target,
+   * so the reduced path never uses those props. Never gate `animateIn` itself
+   * on `!reduce` — that would send `initial` straight to `"shown"`/`false`,
+   * skipping the reduced fade entirely rather than playing it, which is
+   * exactly the invisible-content failure this used to have.
    */
-  const animateIn = firstLoad && !reduce;
+  const animateIn = firstLoad;
 
   /*
    * Window scroll, deliberately not `useScroll({ target, offset })`.
@@ -96,17 +101,43 @@ export function TitleBlock({
      begins once the visitor has committed to leaving the hero. */
   const opacity = useTransform(scrollY, [240, 700], reduce ? [1, 1] : [1, 0.55]);
 
-  const entry = (index: number, children: React.ReactNode) => (
-    <motion.span
-      className="block origin-left"
-      variants={STAMP_IN_VARIANTS}
-      custom={cellDelay(index)}
-      initial={animateIn ? "hidden" : "shown"}
-      animate="shown"
-    >
-      {children}
-    </motion.span>
-  );
+  /*
+   * One `useReducedFade` call per cell, always called (never inside `entry`,
+   * a plain non-hook helper) so the hook count stays fixed across renders.
+   * Each is a no-op until `reduce && animateIn`.
+   */
+  const headOpacity = useReducedFade(!!reduce && animateIn, HEAD_DELAY);
+  const statusOpacity = useReducedFade(!!reduce && animateIn, 0.47);
+  const firmOpacity = useReducedFade(!!reduce && animateIn, cellDelay(0));
+  const baseOpacity = useReducedFade(!!reduce && animateIn, cellDelay(1));
+  const shippedOpacity = useReducedFade(!!reduce && animateIn, cellDelay(2));
+  const reposOpacity = useReducedFade(!!reduce && animateIn, cellDelay(3));
+
+  const entry = (
+    index: number,
+    fadeOpacity: MotionValue<number>,
+    children: React.ReactNode,
+  ) => {
+    if (reduce) {
+      return (
+        <motion.span className="block origin-left" style={{ opacity: fadeOpacity }}>
+          {children}
+        </motion.span>
+      );
+    }
+
+    return (
+      <motion.span
+        className="block origin-left"
+        variants={STAMP_IN_VARIANTS}
+        custom={cellDelay(index)}
+        initial={animateIn ? "hidden" : "shown"}
+        animate="shown"
+      >
+        {children}
+      </motion.span>
+    );
+  };
 
   return (
     <motion.aside
@@ -116,9 +147,12 @@ export function TitleBlock({
     >
       <motion.div
         className="flex items-center justify-between border-b-2 border-bitumen px-3.5 py-2.5"
-        initial={animateIn ? { opacity: 0, y: -4 } : false}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.base, delay: HEAD_DELAY, ease: EASE_SITE }}
+        initial={reduce ? undefined : animateIn ? { opacity: 0, y: -4 } : false}
+        animate={reduce ? undefined : { opacity: 1, y: 0 }}
+        style={reduce ? { opacity: headOpacity } : undefined}
+        transition={
+          reduce ? undefined : { duration: DURATION.base, delay: HEAD_DELAY, ease: EASE_SITE }
+        }
       >
         <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-foreground">
           Drawing No. WAAI-00
@@ -131,18 +165,19 @@ export function TitleBlock({
       <div className="grid grid-cols-2">
         <SpecCell
           label="Firm"
-          value={entry(0, "WA AI Digital")}
+          value={entry(0, firmOpacity, "WA AI Digital")}
           className="border-b border-line"
         />
         <SpecCell
           label="Base"
-          value={entry(1, "Perth, WA")}
+          value={entry(1, baseOpacity, "Perth, WA")}
           className="border-b border-l border-line"
         />
         <SpecCell
           label="Projects shipped"
           value={entry(
             2,
+            shippedOpacity,
             <CountUp to={shipped} play={animateIn} delay={cellDelay(2)} />,
           )}
           className="border-b border-line"
@@ -151,6 +186,7 @@ export function TitleBlock({
           label="Public repos"
           value={entry(
             3,
+            reposOpacity,
             <CountUp to={repos} play={animateIn} delay={cellDelay(3)} />,
           )}
           className="border-b border-l border-line"
@@ -159,9 +195,12 @@ export function TitleBlock({
 
       <motion.div
         className="flex items-center gap-2.5 px-3.5 py-3"
-        initial={animateIn ? { opacity: 0 } : false}
-        animate={{ opacity: 1 }}
-        transition={{ duration: DURATION.base, delay: 0.47, ease: EASE_SITE }}
+        initial={reduce ? undefined : animateIn ? { opacity: 0 } : false}
+        animate={reduce ? undefined : { opacity: 1 }}
+        style={reduce ? { opacity: statusOpacity } : undefined}
+        transition={
+          reduce ? undefined : { duration: DURATION.base, delay: 0.47, ease: EASE_SITE }
+        }
       >
         {/* Every loop in this row stays CSS. As framer `repeat: Infinity` each
             would hold a rAF loop open for as long as the landing page sits in
@@ -179,7 +218,10 @@ export function TitleBlock({
       </motion.div>
 
       <div className="flex justify-center pb-6 pt-1">
-        {animateIn ? (
+        {firstLoad ? (
+          // StampPress owns the reduced-motion decision itself (fade vs. full
+          // spring) — render it whenever this is a first load, reduced motion
+          // or not, rather than pre-empting it here.
           <StampPress
             label="Field verified: live and source open"
             delay={STAMP_DELAY}

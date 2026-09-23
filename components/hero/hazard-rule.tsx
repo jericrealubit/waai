@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 import { useFirstLoad } from "@/components/hero/use-first-load";
+import { useReducedFade } from "@/components/ui/use-reduced-fade";
 import { DURATION, EASE_SITE } from "@/lib/motion";
 
 /**
@@ -18,8 +19,13 @@ import { DURATION, EASE_SITE } from "@/lib/motion";
  * Reduced motion is guarded explicitly rather than left to <MotionProvider>:
  * measured behaviour with `reducedMotion="user"` is that the entrance does not
  * run at all, which for a `scaleX: 0` initial would leave the rule permanently
- * collapsed to nothing. An entrance must never be what makes an element
- * visible.
+ * collapsed to nothing — and that held even for a declarative opacity-only
+ * target, not just a `scaleX` one; the whole animate call gets suppressed.
+ * An entrance must never be what makes an element visible. Under reduce the
+ * rule swaps from a `scaleX` draw (transform — the kind of motion being asked
+ * to be dropped) to a plain opacity fade-in, via `useReducedFade`'s raw
+ * `animate()` on a motion value, which sits outside what MotionConfig can
+ * filter; `scaleX` never leaves its default of 1 on that path.
  *
  * It draws at the same moment the stamp presses: the sheet gets signed and
  * ruled off in one beat, and neither asks the eye to follow it.
@@ -35,7 +41,23 @@ import { DURATION, EASE_SITE } from "@/lib/motion";
 export function HazardRule({ delay = 0.62 }: { delay?: number }) {
   const reduce = useReducedMotion();
   const firstLoad = useFirstLoad();
-  const animateIn = firstLoad && !reduce;
+  // First load only — `reduce` picks WHICH entrance plays, not whether one
+  // plays at all. Gating this on `!reduce` would send `initial` straight to
+  // `false`, skipping the reduced fade instead of playing it.
+  const animateIn = firstLoad;
+  const opacity = useReducedFade(!!reduce && animateIn, delay);
+
+  if (reduce) {
+    return (
+      <motion.div
+        className="hazard-rule mt-14 origin-left"
+        aria-hidden="true"
+        style={{ opacity }}
+      >
+        <span className="hazard-rule__belt" />
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div

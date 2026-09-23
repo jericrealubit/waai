@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 
+import { useReducedFade } from "@/components/ui/use-reduced-fade";
 import { SPRING_STAMP_PRESS } from "@/lib/motion";
 
 /**
@@ -23,10 +24,12 @@ import { SPRING_STAMP_PRESS } from "@/lib/motion";
  * ON REDUCED MOTION — do not delegate this to <MotionProvider>. Measured
  * behaviour with `reducedMotion="user"` is that the entrance does not run at
  * all, leaving the element at its `initial` — i.e. `opacity: 0`, permanently
- * invisible. The stamp is confirmation, not decoration, so a visitor who asked
- * for less motion must still SEE it. The guard below renders it at rest
- * instead, which is the only correctness-safe way to do this: never rely on a
- * motion config to reveal content.
+ * invisible, and that held even for a declarative opacity-only target: the
+ * whole animate call is suppressed, not just its transform properties. The
+ * stamp is confirmation, not decoration, so a visitor who asked for less
+ * motion must still SEE it, and see it land — the guard below plays a brief
+ * opacity-only fade (no scale, no rotate) via `useReducedFade`'s raw
+ * `animate()`, which sits outside what MotionConfig can filter.
  */
 export function StampPress({
   children,
@@ -39,14 +42,17 @@ export function StampPress({
   delay?: number;
 }) {
   const reduce = useReducedMotion();
+  const opacity = useReducedFade(!!reduce, delay);
 
   if (reduce) {
-    // No wrapper transform at all, so the mark sits at exactly the -4deg the
-    // `.stamp` class gives it.
+    // Opacity only — no wrapper transform, so the mark sits at exactly the
+    // -4deg the `.stamp` class gives it; only the fade is animated.
     return (
-      <span className="stamp" role="img" aria-label={label}>
-        {children}
-      </span>
+      <motion.div style={{ opacity }} className="inline-block">
+        <span className="stamp" role="img" aria-label={label}>
+          {children}
+        </span>
+      </motion.div>
     );
   }
 

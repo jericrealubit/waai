@@ -1,7 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 
+import { useReducedFade } from "@/components/ui/use-reduced-fade";
 import { REVEAL_VARIANTS, revealTransition } from "@/lib/motion";
 
 /**
@@ -24,9 +26,13 @@ import { REVEAL_VARIANTS, revealTransition } from "@/lib/motion";
  * `opacity: 0` that means **the content is invisible, permanently**, for every
  * visitor who has asked for reduced motion — which was every service card,
  * case-study card, process step, pricing block and growth card on the site.
+ * This held even for an opacity-only declarative variant — MotionConfig
+ * suppresses the whole animate call, not just its transform properties.
  *
  * The rule this encodes: an entrance may never be the thing that makes content
- * visible. When motion is unwanted, render at rest.
+ * visible. When motion is unwanted, the reduced path below still plays a
+ * fade — `useReducedFade`'s raw `animate()` sits outside what MotionConfig can
+ * filter — triggered by `useInView` standing in for `whileInView`.
  */
 const ELEMENTS = {
   div: motion.div,
@@ -55,12 +61,23 @@ export function Reveal({
   // component and treat it as one shape.
   const Component = ELEMENTS[as] as typeof motion.div;
 
+  // `Component` is already treated as `typeof motion.div` below (see comment
+  // above); the ref element type follows the same simplification.
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -12% 0px" });
+  const opacity = useReducedFade(!!reduce && inView);
+
   if (reduce) {
-    return <Component className={className}>{children}</Component>;
+    return (
+      <Component ref={ref} className={className} style={{ opacity }}>
+        {children}
+      </Component>
+    );
   }
 
   return (
     <Component
+      ref={ref}
       className={className}
       variants={REVEAL_VARIANTS}
       initial="hidden"

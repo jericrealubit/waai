@@ -57,13 +57,15 @@ export function CountUp({
   );
 
   useIsomorphicLayoutEffect(() => {
-    // Already showing the right number — nothing to do. This is what makes the
-    // reduced-motion path a true no-op rather than a set-and-hope.
-    if (reduce || !play) return;
+    if (!play) return;
 
     count.set(0);
     const controls = animate(count, to, {
-      duration: 0.4,
+      // A raw animate() driving TEXT is not something <MotionConfig
+      // reducedMotion> can filter — it is not a component animation. Under
+      // reduced motion the count still ticks, just briefly, rather than
+      // rolling through the full 0.4s climb. Same reasoning as Estimate.
+      duration: reduce ? 0.15 : 0.4,
       delay,
       ease: EASE_SITE,
     });
@@ -71,8 +73,5 @@ export function CountUp({
     return () => controls.stop();
   }, [to, delay, play, reduce, count]);
 
-  // A raw animate() driving TEXT is not something <MotionConfig reducedMotion>
-  // can filter — it is not a component animation — which is why the guard above
-  // is explicit. Same reasoning as Estimate.
   return <motion.span className="tabular-nums">{display}</motion.span>;
 }

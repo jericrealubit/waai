@@ -16,8 +16,8 @@ import { formatAUD } from "@/lib/pricing";
  * Reduced motion is handled explicitly here as well as globally. <MotionConfig
  * reducedMotion="user"> stops transform and layout animation, but this is an
  * `animate()` call on a raw motion value driving text content — the config
- * does not reach it, so the hook check is what makes the number appear at its
- * final value instead of spinning.
+ * does not reach it, so the hook check is what shortens the climb to a brief
+ * tick instead of the full roll, rather than skipping it outright.
  */
 export function Estimate({
   total,
@@ -57,13 +57,11 @@ export function Estimate({
   useEffect(() => {
     if (typeof total !== "number") return;
 
-    if (reduce) {
-      count.set(total);
-      return;
-    }
-
+    // A raw animate() driving TEXT is not something <MotionConfig
+    // reducedMotion> can filter. Under reduced motion the count still ticks,
+    // just briefly, rather than rolling through the full 0.55s climb.
     const controls = animate(count, total, {
-      duration: 0.55,
+      duration: reduce ? 0.15 : 0.55,
       ease: EASE_SITE,
     });
 

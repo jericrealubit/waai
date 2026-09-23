@@ -72,6 +72,23 @@ export const STAMP_IN_VARIANTS: Variants = {
  * choreography and into looking like the page is still loading. 70ms, capped at
  * five steps, keeps the rhythm without the tail.
  */
+/**
+ * The reduced-motion fallback transition, for a raw `animate()` call on a
+ * motion value rather than a declarative `variants`/`animate` prop.
+ *
+ * <MotionConfig reducedMotion="user"> was measured to suppress declarative
+ * component animation entirely once the OS asks for reduced motion — even a
+ * target with only `opacity` in it, not just `y`/`scale`/`rotate` ones. A raw
+ * `animate()` call sits outside what MotionConfig can filter, so every
+ * reduced-motion fallback in this codebase (`useReducedFade`, `CountUp`,
+ * `Estimate`) drives an imperative motion value with this transition instead
+ * of a declarative prop.
+ */
+export const REDUCED_FADE_TRANSITION: Transition = {
+  duration: DURATION.fast,
+  ease: EASE_SITE,
+};
+
 export function staggerDelay(index = 0): number {
   return Math.min(index, 5) * 0.07;
 }
