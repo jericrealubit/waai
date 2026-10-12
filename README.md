@@ -73,7 +73,8 @@ app/
     hero · services · featured-work · process · pricing · growth · contact
   services/            /services and /services/[slug]
   work/                /work and /work/[slug]
-  chat/                full-viewport iframe onto the hosted Chainlit bot
+  chat/                plate-framed iframe onto the hosted Chainlit bot
+  llms.txt/            the bot's facts, generated from lib/content
   api/contact/         POST handler → Resend
   layout.tsx           header, footer, theme pre-paint script, scroll-to-top
   globals.css          every theme token lives here
@@ -198,10 +199,18 @@ Workers runtime locally before you ship.
 
 ## The chat route
 
-`app/chat/page.tsx` is a full-viewport `<iframe>` onto an externally hosted
-Chainlit RAG chatbot (`jericrealubit-ragchatbot.hf.space`), positioned `fixed`
-at `z-index: 99999` with inline styles so it covers the root layout's header,
-footer and padding. **There is no chat backend in this repo.**
+`app/chat/page.tsx` frames an externally hosted Chainlit chatbot
+(`jericrealubit-ragchatbot.hf.space`) inside the normal layout. **There is no
+chat backend in this repo** — the bot is
+[jericrealubit/ragchatbot](https://github.com/jericrealubit/ragchatbot), and a
+GitHub Action there deploys its `main` branch to the Hugging Face Space.
+
+The bot answers questions about the business from `/llms.txt`
+(`app/llms.txt/route.ts`), a static plain-text file generated from
+`lib/content` and `lib/site`. Change a service, price, case study or FAQ there
+and the bot's answers follow on its next fetch (it caches for about six hours).
+Questions it can't answer from that file fall through to a live web search; an
+uploaded PDF switches it to answering from the document.
 
 ---
 
