@@ -77,11 +77,22 @@ any plan), Gmail's third-party "Send mail as" is being retired in January 2027,
 and sending therefore goes through Resend's SMTP relay from a normal mail
 client. Read it before changing anything about how mail is addressed.
 
-**`app/chat/page.tsx`** is a full-viewport `<iframe>` onto an externally hosted
-Chainlit RAG chatbot
-(`jericrealubit-ragchatbot.hf.space`), deliberately positioned `fixed` at
-`z-index: 99999` with inline styles so it covers the root layout's header, footer
-and padding. There is no chat backend in this repo.
+**`app/chat/page.tsx`** frames an externally hosted Chainlit chatbot
+(`jericrealubit-ragchatbot.hf.space`) in a plate inside the normal layout —
+header and footer stay, and the section flex-fills the viewport so the chat's
+composer is on screen without scrolling. The plate is `relative` on purpose:
+`.bg-worksite`'s grid is a fixed `body::before` that paints over any
+non-positioned element, dark iframe included. There is no chat backend in this
+repo; the bot lives in github.com/jericrealubit/ragchatbot, and a GitHub Action
+there deploys its `main` to the Space.
+
+**`app/llms.txt/route.ts`** is the bot's knowledge of the business. It renders
+`SITE`, `SERVICES`, `CASE_STUDIES` and the FAQs as one static plain-text file,
+and the bot fetches it (cached ~6h) to answer questions about WA AI Digital —
+which is what makes `/chat`'s "answers from the same data this site is built
+from" true. Editing the content arrays changes what the bot says; never
+hand-write a claim into the route. Keep it compact: the bot sends the whole file
+with each such question, against a Groq tokens-per-minute cap.
 
 **`app/layout.tsx`** owns the persistent visual chrome: the concrete ground and
 its faint blueprint grid (`.bg-worksite` — a top-masked fixed `::before` on the
