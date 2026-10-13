@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 
+import { CHAT_REPO, CHAT_SRC } from "@/lib/chat";
+
 export const metadata: Metadata = {
   title: "Assistant | WA AI Digital",
   description:
@@ -28,10 +30,10 @@ export const metadata: Metadata = {
  * the bot keeps reading that file. A Space that has gone to sleep takes a
  * while to wake, which is what the note under the frame is for — otherwise a
  * blank rectangle reads as a broken page.
+ *
+ * The floating launcher (components/chat-widget.tsx) hides itself here, so
+ * this page never runs a second session alongside its own frame.
  */
-const CHAT_SRC = "https://jericrealubit-ragchatbot.hf.space";
-const CHAT_REPO = "https://github.com/jericrealubit/ragchatbot";
-
 export default function ChatPage() {
   return (
     // The section fills the viewport under the fixed header (main's pt-24 /
