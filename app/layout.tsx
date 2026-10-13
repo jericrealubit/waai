@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Saira_Condensed } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header"; // Corrected import
 import { Footer } from "@/components/footer";
-import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import { ChatWidget } from "@/components/chat-widget";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { AttributionCapture } from "@/components/analytics/tracked-link";
 import { JsonLd } from "@/components/json-ld";
@@ -129,7 +129,8 @@ export default function RootLayout({
           <MotionProvider>{children}</MotionProvider>
         </main>
 
-        <ScrollToTop />
+        {/* Chat launcher + panel, with ScrollToTop stacked above it. */}
+        <ChatWidget />
 
         {/* Records utm_* and referrer on first load so an enquiry submitted
             three pages later still knows where the visitor came from. */}

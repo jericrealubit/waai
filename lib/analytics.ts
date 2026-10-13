@@ -41,7 +41,9 @@ export type SiteEvent =
   /** The quote docket was configured through to a price. */
   | "quote_configured"
   /** A click out to a live build or a public repository. */
-  | "outbound_click";
+  | "outbound_click"
+  /** The floating assistant panel was opened; `page` is where from. */
+  | "chat_open";
 
 export function track(name: SiteEvent, params: EventParams = {}): void {
   if (process.env.NODE_ENV !== "production") return;

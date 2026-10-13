@@ -84,7 +84,17 @@ composer is on screen without scrolling. The plate is `relative` on purpose:
 `.bg-worksite`'s grid is a fixed `body::before` that paints over any
 non-positioned element, dark iframe included. There is no chat backend in this
 repo; the bot lives in github.com/jericrealubit/ragchatbot, and a GitHub Action
-there deploys its `main` to the Space.
+there deploys its `main` to the Space. Both URLs live in `lib/chat.ts`.
+
+**`components/chat-widget.tsx`** is the floating launcher on every other page:
+a fixed bottom-right dock holding the hi-vis chat button with `ScrollToTop`
+stacked above it (so the two never collide — ScrollToTop no longer positions
+itself). The button opens the same bot in a non-modal panel, full screen below
+`sm`. The iframe mounts on first open and then **stays mounted**: closing only
+hides the panel, and because the widget lives in the root layout the
+conversation survives client-side navigation. It hides itself on `/chat`, and
+arriving there drops the panel's iframe so two sessions never run at once.
+Opening fires the `chat_open` analytics event.
 
 **`app/llms.txt/route.ts`** is the bot's knowledge of the business. It renders
 `SITE`, `SERVICES`, `CASE_STUDIES` and the FAQs as one static plain-text file,
@@ -97,7 +107,7 @@ with each such question, against a Groq tokens-per-minute cap.
 **`app/layout.tsx`** owns the persistent visual chrome: the concrete ground and
 its faint blueprint grid (`.bg-worksite` — a top-masked fixed `::before` on the
 body), the fixed `Header` bar, `main` with `pt-24 md:pt-32` to clear it,
-`ScrollToTop`, and `Footer`. The site follows the visitor's OS theme — `<html>`
+`ChatWidget` (the bottom-right dock, ScrollToTop included), and `Footer`. The site follows the visitor's OS theme — `<html>`
 carries **no `dark` class**; the light and dark palettes both live in
 `globals.css`, so there is no flash-of-wrong-theme to guard against. Anything
 added to layout must respect the stacking (`z-50` header). It also loads the
@@ -231,7 +241,11 @@ is silent — the animation simply keeps running for someone who asked it not to
 
 1. **CSS animations and transitions** — covered by the `prefers-reduced-motion`
    catch-all in `@layer base` (`animate-pulse`, the accordion, `.glass-card`'s
-   hover). `.motion-always` carves out the footer badge; don't remove it.
+   hover). `.motion-always` carves out the footer badge; don't remove it. It
+   also carves out `.chat-panel`, whose own reduced-motion query drops the
+   movement and keeps a soft fade. The panel is CSS on purpose: it stays
+   mounted and toggles, and a declarative framer toggle would sit at `initial`
+   (invisible) under reduced motion.
 2. **framer-motion component animations** — covered by `<MotionProvider>`'s
    `reducedMotion="user"`. The CSS catch-all can *never* reach these: framer
    writes inline `transform`/`opacity` from JS, which is neither a CSS animation

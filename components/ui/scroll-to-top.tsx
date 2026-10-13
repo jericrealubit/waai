@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronUp } from "lucide-react";
 
-export function ScrollToTop() {
+/** Rendered inside ChatWidget's dock, which positions it; `hidden` while the chat panel is open. */
+export function ScrollToTop({ hidden = false }: { hidden?: boolean }) {
   const [isVisible, setIsVisible] = useState(false);
+  // Under reducedMotion="user" framer never animates off `initial`, so the
+  // button would sit at opacity 0 for good. Skip the entrance instead.
+  const reduce = useReducedMotion();
 
   // Show button when page is scrolled down 400px
   useEffect(() => {
@@ -36,19 +40,19 @@ export function ScrollToTop() {
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {isVisible && !hidden && (
         <motion.button
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          initial={reduce ? false : { opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           onClick={scrollToTop}
           aria-label="Scroll to top"
           // A round ink-framed paper button — a hi-vis "tool" that floats over
           // the scrolling sheet and picks up the accent on hover.
-          className="focus-ring group fixed bottom-8 right-8 z-50 rounded-full border-2 border-bitumen bg-paper p-4 text-foreground shadow-e2 transition-colors hover:border-hivis hover:text-hivis-text"
+          className="focus-ring group rounded-full border-2 border-bitumen bg-paper p-3 text-foreground shadow-e2 transition-colors hover:border-hivis hover:text-hivis-text"
         >
           <ChevronUp
-            size={24}
+            size={20}
             className="group-hover:-translate-y-1 transition-transform duration-300"
           />
         </motion.button>
