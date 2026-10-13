@@ -59,6 +59,17 @@ facts about each shipped project that contradict what its README or the obvious
 assumption would suggest. Copy anywhere on the site must keep matching them.
 Read that comment before touching case-study copy.
 
+`CaseStudy` is a union on `kind`. A `"client"` study belongs to a service line
+(`service`) and always has a public `repoUrl`. A `"product"` is one of our own
+products (Counter, Goodlist): it has no `service` and no `repoUrl`. Every
+surface renders a missing `repoUrl` as **closed source** — no Source link, a
+`.tag-closed` marker on the card, and a note on the detail page. So the site's
+"every repo public" promise is scoped to **client builds** wherever it appears.
+`CLIENT_STUDIES` / `PRODUCT_STUDIES` split the array. Products are grouped on
+their own at `/work#products` and below the client grid on the landing page.
+`PUBLIC_REPO_COUNT` is the one count of public repos (the hero and `/about` read
+it); never re-derive it as "one per study".
+
 **`app/api/contact/route.ts`** is the only API route: it validates the contact
 payload and POSTs to Resend's HTTP API (Workers has no raw TCP sockets, so no
 SMTP). Its header comment documents the from/to asymmetry and the routing-loop
@@ -200,7 +211,10 @@ classes rather than re-typing them:
   ruled edge) and the mobile menu. Not floating glass any more.
 - `.btn-primary` (hi-vis fill) / `.btn-glass` (ghost: ink edge, hi-vis on hover).
 - `.tag-live` (hi-vis fill) / `.tag-src` (cobalt outline) — the live+source pair
-  on a spec card. `.chip-link` / `.chip-count` — the `/work` jump chips.
+  on a spec card. `.tag-closed` (dashed steel, not a link) takes the Source
+  tag's place on a closed-source product. It is deliberately neither signal,
+  since cobalt means open source. `.chip-link` / `.chip-count` — the `/work`
+  jump chips.
 - `.stamp` — the field-verification signature. `.hazard-rule` — the diagonal
   stripe; **use exactly once** (the hero baseline).
 - `.field-input` (form controls, 3:1 border + source focus ring), `.focus-ring`

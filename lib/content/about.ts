@@ -11,7 +11,7 @@ import { SITE } from "@/lib/site";
  * Kept as data rather than markup for the same reason services and case studies
  * are: copy changes shouldn't be template edits. Everything here is a plain
  * statement of fact — no invented awards, no invented years of experience, no
- * client count that contradicts the six case studies.
+ * client count that contradicts the case studies.
  */
 
 export interface AboutPrinciple {
@@ -31,15 +31,15 @@ export const ABOUT = {
 
   body: [
     "Most of my clients have been sold a website before. Usually it was expensive, it took months, nobody explained what was happening, and at the end they didn't own any of it — the files sat on someone else's account and every change was another invoice. That's the thing I'm reacting against.",
-    "So I work the opposite way. The price is on the page before you contact me. The repository is yours from day one. And every project I've shipped is linked on this site with both its live URL and its source code, so you can go and look at the actual work rather than take my word for it. If you're technical, read the code. If you're not, click the live links and see whether the thing feels fast and works on your phone.",
+    "So I work the opposite way. The price is on the page before you contact me. The repository is yours from day one. And every project I've shipped is linked on this site with its live URL — every client build with its source code too — so you can go and look at the actual work rather than take my word for it. If you're technical, read the code. If you're not, click the live links and see whether the thing feels fast and works on your phone.",
     "The work itself is mostly unglamorous and specific: thirteen separate service pages so a bricklayer ranks for 'retaining walls Caversham' rather than nothing. A smokehouse keeping the whole order value instead of a platform's cut. A press operator timing a cycle in two taps on a tablet, with the audit sheet coming out at the end without anyone adding up a column of numbers.",
   ],
 
   /** How the work is done. Each one should be falsifiable by the site itself. */
   principles: [
     {
-      title: "Every build is live, every repo is public",
-      body: "There are no mockups on this site. Each case study opens the running product and the source it was built from. It's the only claim here you can check yourself in under a minute, which is why it's the one the site leads with.",
+      title: "Every build is live, every client repo is public",
+      body: "There are no mockups on this site. Each case study opens the running product, and every client build opens the source it was built from as well — the only exceptions are the products I run myself, which are closed source and labelled that way. It's the only claim here you can check yourself in under a minute, which is why it's the one the site leads with.",
     },
     {
       title: "The price is on the page",

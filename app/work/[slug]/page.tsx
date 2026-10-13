@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, ExternalLink, Github, Lock } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ExternalLink,
+  EyeOff,
+  Github,
+  Lock,
+} from "lucide-react";
 
 import { JsonLd } from "@/components/json-ld";
 import { TestimonialCard } from "@/components/testimonial";
@@ -39,7 +46,8 @@ export async function generateMetadata({
   // argument the page is making.
   if (!study.screenshot) return base;
 
-  const images = [{ url: study.screenshot.src, width: 1440, height: 810 }];
+  // Every capture in public/work is a 1600×900 WebP (see commit ae4505a).
+  const images = [{ url: study.screenshot.src, width: 1600, height: 900 }];
 
   return {
     ...base,
@@ -48,14 +56,32 @@ export async function generateMetadata({
   };
 }
 
-/** "This build lands on a login wall; the repo is public" — shown for gated URLs. */
-function GatedNote({ label }: { label?: string }) {
+/**
+ * "This build lands on a login wall" — shown for gated URLs. A client build's
+ * gate is an internal tool whose repo is still public; a product's gate is a
+ * sign-up screen anyone can get past.
+ */
+function GatedNote({ label, product }: { label?: string; product?: boolean }) {
   return (
     <p className="mt-6 inline-flex items-start gap-2 border-2 border-line-strong bg-cement/40 px-4 py-3 font-mono text-xs leading-relaxed text-muted-foreground">
       <Lock className="mt-0.5 h-4 w-4 shrink-0 text-hivis" />
       <span>
-        {label ? `The ${label.toLowerCase()} is an internal tool` : "This is an internal tool"}{" "}
-        — the live link lands on a login screen. The repository is public.
+        {product
+          ? "The live link opens on a sign-in screen — anyone can create an account to try it."
+          : `${label ? `The ${label.toLowerCase()} is an internal tool` : "This is an internal tool"} — the live link lands on a login screen. The repository is public.`}
+      </span>
+    </p>
+  );
+}
+
+/** Shown in place of the repository button on a closed-source product. */
+function ClosedSourceNote() {
+  return (
+    <p className="mt-3 inline-flex items-start gap-2 border-2 border-dashed border-steel bg-cement/40 px-4 py-3 font-mono text-xs leading-relaxed text-muted-foreground first:mt-6">
+      <EyeOff className="mt-0.5 h-4 w-4 shrink-0 text-foreground-subtle" aria-hidden="true" />
+      <span>
+        Closed source — this is our own product, so its repository is
+        private. Every client build on this site links its public repository.
       </span>
     </p>
   );
@@ -71,7 +97,9 @@ export default async function CaseStudyPage({
 
   if (!study) notFound();
 
-  const service = SERVICES_BY_SLUG[study.service];
+  // Products sit outside the service lines, so they have no service to link.
+  const service =
+    study.kind === "client" ? SERVICES_BY_SLUG[study.service] : null;
 
   return (
     <>
@@ -93,9 +121,15 @@ export default async function CaseStudyPage({
         </Link>
 
         <div className="max-w-3xl">
-          <Link href={`/services/${service.slug}`} className="section-label">
-            {service.name}
-          </Link>
+          {service ? (
+            <Link href={`/services/${service.slug}`} className="section-label">
+              {service.name}
+            </Link>
+          ) : (
+            <Link href="/work#products" className="section-label">
+              Our products
+            </Link>
+          )}
           <h1 className="mt-3 font-display text-display-1 font-extrabold uppercase text-foreground">
             {study.name}
           </h1>
@@ -126,18 +160,25 @@ export default async function CaseStudyPage({
               <ExternalLink className="h-4 w-4" />
               Visit {study.liveLabel}
             </a>
-            <a
-              href={study.repoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-glass focus-ring"
-            >
-              <Github className="h-4 w-4" />
-              View the repository
-            </a>
+            {study.repoUrl && (
+              <a
+                href={study.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-glass focus-ring"
+              >
+                <Github className="h-4 w-4" />
+                View the repository
+              </a>
+            )}
           </div>
 
-          {study.gated && <GatedNote />}
+          {/* A column, so a gated product's two notes stack rather than
+              sitting side by side as inline boxes. */}
+          <div className="flex flex-col items-start">
+            {study.gated && <GatedNote product={study.kind === "product"} />}
+            {!study.repoUrl && <ClosedSourceNote />}
+          </div>
 
           {study.secondaryLink && (
             <div className="mt-8 border-t-2 border-line pt-6">
@@ -244,20 +285,20 @@ export default async function CaseStudyPage({
               <dl className="space-y-4 border-b border-line pb-5 text-sm">
                 <div>
                   <dt className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground-subtle">
-                    Client
+                    {service ? "Client" : "Built and run by"}
                   </dt>
                   <dd className="mt-1 font-semibold text-foreground">{study.client}</dd>
                 </div>
                 <div>
                   <dt className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground-subtle">
-                    Service line
+                    {service ? "Service line" : "Group"}
                   </dt>
                   <dd className="mt-1">
                     <Link
-                      href={`/services/${service.slug}`}
+                      href={service ? `/services/${service.slug}` : "/work#products"}
                       className="font-semibold text-source underline-offset-4 hover:underline"
                     >
-                      {service.name}
+                      {service ? service.name : "Our products"}
                     </Link>
                   </dd>
                 </div>
@@ -281,13 +322,17 @@ export default async function CaseStudyPage({
                 <span
                   className="stamp"
                   role="img"
-                  aria-label="Field verified: live and source open"
+                  aria-label={
+                    study.repoUrl
+                      ? "Field verified: live and source open"
+                      : "Field verified: live, closed source"
+                  }
                 >
                   <span className="block text-sm font-bold tracking-widest">
                     ◱ Field-Verified
                   </span>
                   <span className="mt-0.5 block text-[9px] tracking-[0.2em]">
-                    Live + Source
+                    {study.repoUrl ? "Live + Source" : "Live · Closed source"}
                   </span>
                 </span>
               </div>
@@ -301,27 +346,52 @@ export default async function CaseStudyPage({
           visitor the site gets, and the next step should name what they
           just read. */}
       <Section size="tight">
-        <div className="glass-card px-7 py-10 text-left md:px-14 md:py-12 md:text-center">
-          <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
-            Want one like this?
-          </h2>
-          <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto">
-            Price a {service.shortName.toLowerCase()} build yourself — four
-            questions, the fixed price on screen before you give us anything.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3 md:justify-center">
-            <Link href="/quote" className="btn-primary focus-ring w-full sm:w-auto">
-              Get a price
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href={`/services/${service.slug}`}
-              className="btn-glass focus-ring w-full sm:w-auto"
-            >
-              What&apos;s included
-            </Link>
+        {service ? (
+          <div className="glass-card px-7 py-10 text-left md:px-14 md:py-12 md:text-center">
+            <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
+              Want one like this?
+            </h2>
+            <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto">
+              Price a {service.shortName.toLowerCase()} build yourself — four
+              questions, the fixed price on screen before you give us anything.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3 md:justify-center">
+              <Link href="/quote" className="btn-primary focus-ring w-full sm:w-auto">
+                Get a price
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href={`/services/${service.slug}`}
+                className="btn-glass focus-ring w-full sm:w-auto"
+              >
+                What&apos;s included
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          // A product isn't a service line, so there's no tier to price —
+          // the honest next step is a conversation, not the quote docket.
+          <div className="glass-card px-7 py-10 text-left md:px-14 md:py-12 md:text-center">
+            <h2 className="font-display text-display-3 font-extrabold uppercase text-foreground">
+              Want something built like this?
+            </h2>
+            <p className="mt-4 max-w-[54ch] text-base leading-[1.65] text-muted-foreground md:mx-auto">
+              {study.name} is our own product, not a client build — but it&apos;s
+              the same hands and the same standard you&apos;d get on yours. Tell
+              us what you&apos;re trying to fix and you&apos;ll get a written
+              plan and a fixed price.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3 md:justify-center">
+              <Link href="/#contact" className="btn-primary focus-ring w-full sm:w-auto">
+                Start a project
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/work" className="btn-glass focus-ring w-full sm:w-auto">
+                See client work
+              </Link>
+            </div>
+          </div>
+        )}
       </Section>
     </>
   );

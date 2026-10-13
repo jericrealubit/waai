@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ExternalLink, Github, Lock } from "lucide-react";
+import { ArrowRight, ExternalLink, EyeOff, Github, Lock } from "lucide-react";
 
 import { Reveal } from "@/components/ui/reveal";
 import type { CaseStudy } from "@/lib/content/case-studies";
@@ -27,7 +27,9 @@ function PlateTicks() {
 /**
  * Spec card: a plate-framed live capture over a datasheet body — sector, name,
  * outcome, a `Live` tag (the running product) and a `Source` tag (the open
- * repo), and the stack as a mono line.
+ * repo), and the stack as a mono line. A study with no `repoUrl` — one of our
+ * own closed-source products — gets a non-link "Closed source" marker in the
+ * Source tag's place, and its sector line is prefixed "Own product".
  *
  * Deliberately NOT wrapped in a single Link — the two outbound links must stay
  * separately clickable, and nesting anchors is invalid HTML and unusable with a
@@ -37,6 +39,7 @@ function PlateTicks() {
  */
 export function CaseStudyCard({ study, index }: CaseStudyCardProps) {
   const plateNo = String(index + 1).padStart(2, "0");
+  const isProduct = study.kind === "product";
 
   return (
     <Reveal
@@ -79,13 +82,14 @@ export function CaseStudyCard({ study, index }: CaseStudyCardProps) {
         {study.gated && study.screenshot && (
           <span className="absolute right-3 top-3 z-20 inline-flex items-center gap-1 border border-bitumen bg-bitumen/85 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-concrete">
             <Lock className="h-3 w-3" />
-            Internal tool
+            {isProduct ? "Sign-in required" : "Internal tool"}
           </span>
         )}
       </div>
 
       <div className="flex flex-1 flex-col p-7">
         <p className="mb-2 font-mono text-[11px] font-bold uppercase tracking-wider text-foreground-subtle">
+          {isProduct && <span className="text-foreground">Own product · </span>}
           {study.sector}
         </p>
 
@@ -113,16 +117,25 @@ export function CaseStudyCard({ study, index }: CaseStudyCardProps) {
             Live
             <span className="sr-only"> — {study.liveLabel}</span>
           </a>
-          <a
-            href={study.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="tag-src relative z-10 focus-ring"
-          >
-            <Github className="h-3.5 w-3.5" />
-            Source
-            <span className="sr-only"> repository for {study.name}</span>
-          </a>
+          {study.repoUrl ? (
+            <a
+              href={study.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tag-src relative z-10 focus-ring"
+            >
+              <Github className="h-3.5 w-3.5" />
+              Source
+              <span className="sr-only"> repository for {study.name}</span>
+            </a>
+          ) : (
+            // Not a link and not raised above the title's overlay, so a click
+            // here falls through to the case study like the rest of the card.
+            <span className="tag-closed">
+              <EyeOff className="h-3.5 w-3.5" aria-hidden="true" />
+              Closed source
+            </span>
+          )}
         </div>
 
         <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-4">

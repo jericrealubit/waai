@@ -106,7 +106,9 @@ export const TERMS: LegalDocument = {
   title: "Terms of use",
   summary:
     "The terms covering this website. Project work is covered by its own written quote, not by these.",
-  effective: EFFECTIVE,
+  // Its own date since "The work shown here" changed to cover our closed-
+  // source products; the privacy policy didn't change, so it keeps EFFECTIVE.
+  effective: "13 October 2026",
   sections: [
     {
       heading: "These terms cover the website only",
@@ -124,14 +126,14 @@ export const TERMS: LegalDocument = {
     {
       heading: "The work shown here",
       body: [
-        "Every project in the case studies is a real build that is live at the URL given, with its source in the public repository linked beside it. Screenshots are of the shipped product.",
+        "Every project in the case studies is a real build that is live at the URL given, and screenshots are of the shipped product. Client builds have their source in the public repository linked beside them; our own products are marked as such, are closed source, and have no repository link.",
         "Client sites and their content belong to those clients and are shown as examples of our work, not as our property. Client names and logos remain their trade marks.",
       ],
     },
     {
       heading: "Links to other sites",
       body: [
-        "This site links out to live client builds, public repositories and an externally hosted chat assistant. We don't control those destinations and aren't responsible for their content or availability.",
+        "This site links out to live client builds, our own products, public repositories and an externally hosted chat assistant. We don't control those destinations and aren't responsible for their content or availability.",
       ],
     },
     {
