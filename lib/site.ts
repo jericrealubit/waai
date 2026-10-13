@@ -18,7 +18,7 @@ export const SITE = {
   /** Used as the OG/Twitter site name and the schema.org legal name. */
   legalName: "WA AI Digital",
   description:
-    "Websites, ordering systems and factory-floor logging for Western Australian businesses. Every build runs live and every repository is public.",
+    "Websites, ordering systems and factory-floor logging for Western Australian businesses. Every build runs live and every client repository is public.",
   phone: "+61491098073",
   phoneDisplay: "0491 098 073",
   email: "hello@waai.au",

@@ -1,9 +1,11 @@
 /**
- * Real, shipped projects — the evidence behind each service line.
+ * Real, shipped projects — the evidence behind each service line, plus the
+ * products we design, build and run ourselves.
  *
  * ACCURACY RULES for anything written here. Every claim was verified against
- * the live site and the public repo; several things people would assume are
- * true are NOT, and the copy must keep reflecting that:
+ * the live site and the repo (public for client builds, private for our own
+ * products); several things people would assume are true are NOT, and the
+ * copy must keep reflecting that:
  *
  *  - Jun's Maintenance quote form validates but only logs to console. There is
  *    no email backend. Never claim it delivers leads anywhere.
@@ -24,6 +26,30 @@
  *    The admin panel is still gated (its live URL only renders a Google
  *    sign-in button); the primary screenshot shown is the storefront's.
  *
+ *  - Counter and Goodlist are OUR OWN products (`kind: "product"`), not client
+ *    builds, and their repos are PRIVATE: no `repoUrl`, rendered as "Closed
+ *    source", never a Source link. Their copy was verified against the private
+ *    repos, which a reader can't do — so a product's `metrics` must be
+ *    checkable from the live product or its public pages (signing up counts),
+ *    never a count only the repo shows. Never imply merchants, users,
+ *    installs or revenue.
+ *  - Counter: "Card" is a tender LABEL the cashier picks — no card
+ *    processing, no terminal integration, no split tender. Receipts print
+ *    through the browser: no ESC/POS printer, cash drawer or
+ *    WebUSB/Serial/Bluetooth code, and scanners work as keyboard input only.
+ *    No offline mode (the cart persists in localStorage, nothing more).
+ *    Subscriptions are collected manually, not through Stripe. One store per
+ *    account. cpos.au is canonical — never cite the vercel.app deploy. No
+ *    client store is named anywhere; don't imply one.
+ *  - Goodlist: the Android build is in Google Play OPEN TESTING, not a
+ *    production release — never "on Google Play" as if shipped; update this
+ *    rule when it is. No iOS app (iPhone users use the web build). The repo's
+ *    store screenshots are HTML mockups — never use them. Purchases and push
+ *    are unverified as live: no paying-user or install claims. The home-screen
+ *    widget landed after the 1.5.0 release — don't cite it. "12 languages" is
+ *    a catalog count of machine-quality translations, never "fully
+ *    localised". Voice entry is English-only.
+ *
  *  - `metrics` carries COUNTABLE facts only — things a reader could check by
  *    opening the live site or the repo. Never a business outcome (conversion
  *    lift, revenue, traffic, "x% faster"): we have no access to any client's
@@ -35,38 +61,25 @@
  *    added here until the client has agreed to them.
  *
  * `liveUrl` and `repoUrl` are the canonical copies of these URLs. They are
- * declared exactly once, here, so a card and its detail page cannot drift.
+ * declared exactly once, here, so a card and its detail page cannot drift. A
+ * study without a `repoUrl` is closed source, and every surface says so.
  */
 
 import type { ServiceSlug } from "./services";
 
-export interface CaseStudy {
+/** The fields every study carries, whoever it was built for. */
+interface CaseStudyBase {
   slug: string;
   /** Project name as it should be displayed. */
   name: string;
-  /** The business, and where it operates. */
+  /** The business, and where it operates. For a product, the studio itself. */
   client: string;
   sector: string;
-  service: ServiceSlug;
   liveUrl: string;
-  repoUrl: string;
   /** Shown as the link label instead of the raw URL. */
   liveLabel: string;
   /** True when the live URL lands on a login wall rather than the product. */
   gated: boolean;
-  /**
-   * A second build linked from the same case study — e.g. the admin panel
-   * behind a storefront. Rendered as its own labelled live+repo link pair,
-   * on both the card and the detail page. Most case studies are a single
-   * build and omit this.
-   */
-  secondaryLink?: {
-    label: string;
-    liveUrl: string;
-    repoUrl: string;
-    liveLabel: string;
-    gated: boolean;
-  };
   /**
    * Null when there is no honest screenshot to show — i.e. the live URL only
    * ever renders a login screen, so a capture would show nothing about the
@@ -126,8 +139,51 @@ export interface CaseStudy {
   };
 }
 
+/**
+ * Built for a client — or, for ecommerce, as the reference build behind a
+ * service line. Always sold under a `ServiceSlug`, always live, and always
+ * with a public repository: that pairing is the claim the site leads with.
+ */
+export interface ClientCaseStudy extends CaseStudyBase {
+  kind: "client";
+  service: ServiceSlug;
+  repoUrl: string;
+  /**
+   * A second build linked from the same case study — e.g. the admin panel
+   * behind a storefront. Rendered as its own labelled live+repo link pair,
+   * on both the card and the detail page. Most case studies are a single
+   * build and omit this.
+   */
+  secondaryLink?: {
+    label: string;
+    liveUrl: string;
+    repoUrl: string;
+    liveLabel: string;
+    gated: boolean;
+  };
+}
+
+/**
+ * Designed, built and run by WA AI Digital — not a client build, and not sold
+ * as a service line, so it has no `service`. Grouped on its own at
+ * /work#products. Omitting `repoUrl` marks it closed source; every surface
+ * then renders a "Closed source" marker instead of a Source link.
+ *
+ * `service` and `secondaryLink` are typed `never` rather than left off, so
+ * code can read them on the union without narrowing first.
+ */
+export interface ProductCaseStudy extends CaseStudyBase {
+  kind: "product";
+  service?: never;
+  repoUrl?: string;
+  secondaryLink?: never;
+}
+
+export type CaseStudy = ClientCaseStudy | ProductCaseStudy;
+
 export const CASE_STUDIES: CaseStudy[] = [
   {
+    kind: "client",
     slug: "juns-maintenance",
     name: "Jun's Maintenance",
     client: "Jun's Maintenance Service",
@@ -179,6 +235,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
   },
   {
+    kind: "client",
     slug: "hvt-prestige-panel-paint",
     name: "HVT Prestige Panel & Paint",
     client: "HVT Prestige Panel & Paint",
@@ -230,6 +287,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
   },
   {
+    kind: "client",
     slug: "jrm-top-build",
     name: "JRM Top Build",
     client: "JRM Top Build Ltd",
@@ -280,6 +338,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
   },
   {
+    kind: "client",
     slug: "bbq-heaven",
     name: "BBQ Heaven",
     client: "BBQ Heaven Rockingham",
@@ -331,6 +390,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
   },
   {
+    kind: "client",
     slug: "rubbergem",
     name: "Rubbergem Production Log",
     client: "Rubbergem",
@@ -384,6 +444,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
   },
   {
+    kind: "client",
     slug: "ecommerce-platform",
     name: "Ecommerce Storefront & Admin",
     client: "Reference build",
@@ -452,12 +513,153 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Vercel",
     ],
   },
+
+  /* ── Our own products. Closed source: no `repoUrl` (see ACCURACY RULES). ── */
+
+  {
+    kind: "product",
+    slug: "counter",
+    name: "Counter",
+    client: "WA AI Digital",
+    sector: "Retail point of sale · AU, NZ & PH",
+    liveUrl: "https://cpos.au/",
+    liveLabel: "cpos.au",
+    // The root is a public landing page with self-serve sign-up; only the
+    // till and the back office sit behind sign-in.
+    gated: false,
+    screenshot: {
+      src: "/work/counter.webp",
+      alt: "Counter's back office product list, with category, size, price, stock and barcode columns under Categories, Receive, Import and Add product actions",
+      caption: "Back office — the product catalogue, stock and barcodes",
+    },
+    outcome:
+      "The till and the pay-later book in one app — scan, ring up, and put a regular's purchase on their tab instead of in a notebook.",
+    summary:
+      "Our own point of sale for a single retail store: scan a barcode with the phone's camera or a plugged-in reader, ring up the sale, and when a regular needs to pay later, it goes straight onto their tab. Built for small shops in Australia and New Zealand and sari-sari stores in the Philippines.",
+    problem:
+      "A shop that lets regulars pay later usually runs two systems that never meet: the till for the sale, and a notebook for who owes what. The notebook has no totals, no statement to hand the customer and no link back to what was actually bought — so every balance is added up by hand, and every reminder is awkward.",
+    approach: [
+      "Made the till work on the phone already in the shopkeeper's hand: camera scanning through the browser's BarcodeDetector with a zxing fallback, and USB or Bluetooth scanners picked up as keyboard input by keystroke timing — no driver, nothing to install.",
+      "Built the pay-later book as an itemised ledger rather than a running number: every entry ties back to the sale it came from, with a soft credit limit, a statement PDF and a link the customer can open to see their own tab. Reminders are pre-written WhatsApp or SMS messages the shopkeeper sends from their own phone.",
+      "Routed every sale through Postgres functions instead of direct table inserts. Insert rights on sales and payments were revoked after a review found a staff account could otherwise record a sale at any total it liked.",
+      "Handled tax the way each market does — GST at 10% in Australia and 15% in New Zealand, VAT at 12% in the Philippines — calculated once per invoice, with discounts spread across lines by largest remainder and cash totals rounded to the nearest 5c or 10c.",
+      "Derived the whole plan state — trial, Premium, lapsed — from a single paid-until date, so there is no scheduled job to forget, and priced each market on its own terms rather than converting one price by exchange rate.",
+    ],
+    highlights: [
+      "Every one of the 16 tables runs row-level security, and column-level grants stop a store admin editing their own paid-until date — permissions are enforced by Postgres, not trusted to the screen.",
+      "Philippine pricing is annual-only on purpose: on a ₱50 monthly payment, per-transaction fees would take 30–40% of it.",
+      "Cash-up uses a blind count — the drawer is counted before the expected total is shown, so the count can't be nudged toward the answer.",
+      "Tabs carry no late fees, by design. Charging for credit is what starts to pull a shop's book toward consumer-credit regulation, and a till shouldn't walk a corner shop over that line.",
+      "Card is recorded as a tender, not processed — there's no terminal integration, and receipts print through the browser. A shop starts selling without buying any hardware.",
+    ],
+    /* Checkable on cpos.au or by signing up. The repo is private, so no
+       repo-only counts here (see ACCURACY RULES). */
+    metrics: [
+      { value: "4", label: "Pricing regions — AU, NZ, PH, rest of world" },
+      { value: "3", label: "Staff roles — owner, admin, cashier" },
+      { value: "2", label: "Ways to scan — phone camera or USB/Bluetooth reader" },
+    ],
+    stack: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind v4",
+      "shadcn/ui",
+      "Supabase Postgres",
+      "Supabase Auth",
+      "zod",
+      "pdf-lib",
+      "zxing",
+      "Vitest",
+      "Cloudflare Workers",
+    ],
+  },
+  {
+    kind: "product",
+    slug: "goodlist",
+    name: "Goodlist",
+    client: "WA AI Digital",
+    sector: "Shared to-dos, alarms & meds · Android & web",
+    liveUrl: "https://goodlist.expo.app/",
+    liveLabel: "goodlist.expo.app",
+    // The web build opens on sign-in; anyone can create an account.
+    gated: true,
+    screenshot: {
+      src: "/work/goodlist.webp",
+      // A real capture from the Android app, not the repo's store artwork.
+      alt: "Goodlist's Tasks tab on Android: the group header, All, Today, Overdue and Next 7 days filters, Personal and Requested lists, a column of tasks with due dates, the 'I want to…' entry bar with a voice button, and the five-tab bar",
+      caption: "The Tasks tab on Android — filters, the task list and voice entry",
+    },
+    outcome:
+      "Personal and shared to-dos, medicine schedules and alarms that keep ringing until they're answered — one Expo codebase on Android and the web.",
+    summary:
+      "Our own task app for personal to-dos and for sharing them with a family or a small team, with recurring tasks, medicine schedules and persistent alarms built in. One codebase runs on Android and on the web; there's no iPhone app, so iPhone users use the web build.",
+    problem:
+      "A household's jobs end up spread across a shared list in one app, reminders in another and medicine times in a third — and a single notification is easy to swipe away and forget. The reminders that matter most are exactly the ones that can't be allowed to fail quietly.",
+    approach: [
+      "Built one Expo Router codebase for Android and the web — five tabs (Tasks, Calendar, Meds, Group, Settings), typed routes and the React Compiler — rather than two apps that drift apart.",
+      "Made it offline-first: the query cache persists to the device, changes made without a signal queue up and replay when it returns, and Supabase Realtime keeps a shared group's lists in step.",
+      "Scheduled alarms on the device rather than pushing them from a server, through a small Kotlin module for exact alarms — re-ringing every five minutes for up to twelve hours until answered. It asks only for SCHEDULE_EXACT_ALARM, because Google Play restricts USE_EXACT_ALARM.",
+      "Modelled medicine as schedules plus recorded doses, and derived missed doses instead of storing them, so the history can never disagree with the schedule.",
+      "Kept Premium out of the app's hands: entitlements live in the database and are written only by a RevenueCat webhook running as a Supabase Edge Function.",
+    ],
+    highlights: [
+      "A security review of the database found four holes — hijacking someone else's task, spoofing a dose, wiping a group, and rejoining after removal. Each was closed and pinned with a regression test.",
+      "Voice entry uses the phone's own speech recogniser, and no audio is kept. English only, for now.",
+      "Legal and guide text is written once and rendered both in the app and on the docs site — CI fails if the two drift apart.",
+      "Over-the-air updates are keyed to a fingerprint of the native runtime, so a JavaScript update can't land on a build it wasn't made for.",
+      "The Android build is in Google Play open testing, not yet a production release — which is why the live link here is the web build, the version anyone can open today.",
+    ],
+    /* Checkable by signing up on the web build. The repo is private. */
+    metrics: [
+      { value: "5", label: "Tabs — tasks, calendar, meds, group, settings" },
+      { value: "12", label: "Interface languages to pick from" },
+      { value: "32", label: "Themes — 29 free, 3 Premium" },
+    ],
+    stack: [
+      "Expo SDK 57",
+      "React Native 0.86",
+      "Expo Router",
+      "TypeScript",
+      "Reanimated 4",
+      "TanStack Query",
+      "Supabase Postgres",
+      "Supabase Realtime",
+      "Edge Functions",
+      "RevenueCat",
+      "Kotlin",
+      "EAS Build & Hosting",
+    ],
+  },
 ];
+
+/** Client builds, in array order — the studies sold under a service line. */
+export const CLIENT_STUDIES: ClientCaseStudy[] = CASE_STUDIES.filter(
+  (study): study is ClientCaseStudy => study.kind === "client",
+);
+
+/** Our own products, in array order — grouped on their own at /work#products. */
+export const PRODUCT_STUDIES: ProductCaseStudy[] = CASE_STUDIES.filter(
+  (study): study is ProductCaseStudy => study.kind === "product",
+);
+
+/**
+ * Public repositories linked from the site: each study's own repo plus its
+ * secondary build's. A closed-source product adds nothing. The hero's
+ * title-block and /about both read this, so neither can claim a repo that
+ * isn't public.
+ */
+export const PUBLIC_REPO_COUNT = CASE_STUDIES.reduce(
+  (n, study) => n + (study.repoUrl ? 1 : 0) + (study.secondaryLink ? 1 : 0),
+  0,
+);
 
 export function getCaseStudy(slug: string): CaseStudy | undefined {
   return CASE_STUDIES.find((study) => study.slug === slug);
 }
 
-export function getCaseStudiesForService(service: ServiceSlug): CaseStudy[] {
-  return CASE_STUDIES.filter((study) => study.service === service);
+export function getCaseStudiesForService(
+  service: ServiceSlug,
+): ClientCaseStudy[] {
+  return CLIENT_STUDIES.filter((study) => study.service === service);
 }

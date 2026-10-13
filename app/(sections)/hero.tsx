@@ -3,16 +3,17 @@ import { ArrowRight } from "lucide-react";
 
 import { HazardRule } from "@/components/hero/hazard-rule";
 import { TitleBlock } from "@/components/hero/title-block";
-import { CASE_STUDIES } from "@/lib/content/case-studies";
+import {
+  CASE_STUDIES,
+  PUBLIC_REPO_COUNT,
+} from "@/lib/content/case-studies";
 
 export default function Hero() {
   // Live counts, derived from the data so the title-block can't drift from
-  // what's actually shipped. Repos include each case study's secondary build.
+  // what's actually shipped. Repos counts only PUBLIC ones — each client
+  // build's repo plus its secondary build's; closed-source products add none.
   const shipped = CASE_STUDIES.length;
-  const repos = CASE_STUDIES.reduce(
-    (n, s) => n + 1 + (s.secondaryLink ? 1 : 0),
-    0,
-  );
+  const repos = PUBLIC_REPO_COUNT;
 
   return (
     // No `min-h-screen`: layout pads `main` with pt-24/32 to clear the fixed
@@ -41,7 +42,7 @@ export default function Hero() {
 
           <h1 className="font-display text-display-1 font-extrabold uppercase text-foreground">
             No mockups. Every build is{" "}
-            <span className="text-hivis">live</span>, the code is{" "}
+            <span className="text-hivis">live</span>, client code is{" "}
             <span className="text-source">public</span>.
           </h1>
 
@@ -50,7 +51,8 @@ export default function Hero() {
             ecommerce — for Western Australian businesses.{" "}
             <span className="font-semibold text-foreground">
               Every project on this site opens the real thing running in
-              production, and the source it&apos;s built from.
+              production — and every client build opens the source it&apos;s
+              built from.
             </span>{" "}
             Click around. Read the code.
           </p>

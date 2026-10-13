@@ -727,7 +727,8 @@
   }
 
   /* ── Live / source tags on a spec card. `live` = the running product
-     (hi-vis fill), `src` = the open source (cobalt outline). */
+     (hi-vis fill), `src` = the open source (cobalt outline), `closed` = a
+     live product whose source is NOT public (our own products). */
   .tag-live {
     @apply inline-flex items-center gap-1.5 border-2 border-hivis bg-hivis px-2.5
       py-1 font-mono text-xs font-bold text-hivis-ink transition-transform
@@ -738,6 +739,15 @@
     @apply inline-flex items-center gap-1.5 border-2 border-source bg-transparent
       px-2.5 py-1 font-mono text-xs font-bold text-source transition-transform
       hover:-translate-y-0.5;
+    border-radius: var(--radius);
+  }
+  /* Deliberately neither signal — cobalt means open source, so a closed
+     product can't wear it. Dashed because a dashed line on a drawing is a
+     hidden edge: the code exists, it just isn't shown. Steel edge (clears 3:1
+     on paper in both themes) and body-ink text. Not a link, so no hover lift. */
+  .tag-closed {
+    @apply inline-flex items-center gap-1.5 border-2 border-dashed border-steel
+      bg-transparent px-2.5 py-1 font-mono text-xs font-bold text-muted-foreground;
     border-radius: var(--radius);
   }
 

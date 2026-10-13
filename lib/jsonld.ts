@@ -87,7 +87,12 @@ export function serviceLd(service: Service): Json {
   };
 }
 
-/** A shipped project. `CreativeWork` — it is a built thing, not an article. */
+/**
+ * A shipped project. `CreativeWork` — it is a built thing, not an article.
+ * Our own products stay `CreativeWork` too: Google's SoftwareApplication rich
+ * result needs a rating or reviews, which the ratings note above rules out.
+ * The product's own site is the place for that markup.
+ */
 export function caseStudyLd(study: CaseStudy): Json {
   return {
     "@context": "https://schema.org",

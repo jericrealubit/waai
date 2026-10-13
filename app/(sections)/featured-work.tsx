@@ -4,7 +4,11 @@ import { ArrowRight } from "lucide-react";
 import { CaseStudyCard } from "@/components/case-study-card";
 import { TestimonialCard } from "@/components/testimonial";
 import { Section } from "@/components/ui/section";
-import { CASE_STUDIES } from "@/lib/content/case-studies";
+import {
+  CASE_STUDIES,
+  CLIENT_STUDIES,
+  PRODUCT_STUDIES,
+} from "@/lib/content/case-studies";
 
 export default function FeaturedWork() {
   // The first two case studies carrying an approved quote. Two, because a
@@ -18,15 +22,47 @@ export default function FeaturedWork() {
     <Section
       id="work"
       label="Our work"
-      heading="Real projects, live and open"
-      description="Each of these is running in production. Every card links to the site itself and to the repository behind it — nothing here is a mockup."
+      heading="Real projects, live and checkable"
+      description="Each of these is running in production. Every card opens the live site, and every client build links the repository behind it too — nothing here is a mockup."
       className="bg-cement/30"
     >
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {CASE_STUDIES.map((study, index) => (
+        {CLIENT_STUDIES.map((study, index) => (
           <CaseStudyCard key={study.slug} study={study} index={index} />
         ))}
       </div>
+
+      {/* Our own products get their own run rather than trailing the client
+          grid: they're closed source, and one shared grid would let them
+          borrow the "repository behind it" promise above — and leave an
+          orphaned last row besides. Plates restart at 01, as on /work. */}
+      {PRODUCT_STUDIES.length > 0 && (
+        <>
+          <div className="mb-8 mt-14 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b-2 border-bitumen pb-4">
+            <h3 className="font-display text-display-3 font-extrabold uppercase text-foreground">
+              Built and run by us
+            </h3>
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground-subtle">
+              {PRODUCT_STUDIES.length}{" "}
+              {PRODUCT_STUDIES.length === 1 ? "product" : "products"} · closed
+              source
+            </span>
+            <Link
+              href="/work#products"
+              className="focus-ring inline-flex w-full items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wide text-source transition-colors hover:text-hivis-text md:ml-auto md:w-auto"
+            >
+              About our products
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {PRODUCT_STUDIES.map((study, index) => (
+              <CaseStudyCard key={study.slug} study={study} index={index} />
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Approved client quotes, shown inside this section rather than as a new
           landing section — the section ids here are the header nav's contract

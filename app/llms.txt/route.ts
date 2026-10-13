@@ -1,6 +1,7 @@
 import { ABOUT } from "@/lib/content/about";
 import {
-  CASE_STUDIES,
+  CLIENT_STUDIES,
+  PRODUCT_STUDIES,
   getCaseStudiesForService,
   type CaseStudy,
 } from "@/lib/content/case-studies";
@@ -58,17 +59,20 @@ function serviceSection(service: Service): string[] {
   ];
 }
 
-function liveLine(label: string, liveUrl: string, repoUrl: string, gated: boolean): string {
-  return `- ${label}: ${liveUrl}${gated ? " (login required)" : ""} · source ${repoUrl}`;
+/** No `repoUrl` means closed source — said outright, so the bot never offers a repo that isn't public. */
+function liveLine(label: string, liveUrl: string, repoUrl: string | undefined, gated: boolean): string {
+  return `- ${label}: ${liveUrl}${gated ? " (login required)" : ""} · ${repoUrl ? `source ${repoUrl}` : "closed source"}`;
 }
 
 function caseStudySection(study: CaseStudy): string[] {
   const metrics = (study.metrics ?? []).map(
     (m) => `${m.value} ${m.label}${m.source ? ` (${m.source})` : ""}`,
   );
+  const group =
+    study.kind === "client" ? SERVICES_BY_SLUG[study.service].name : "Our own product";
   return [
     `### ${study.name} — ${study.client}, ${study.sector}`,
-    `${SERVICES_BY_SLUG[study.service].name}. ${study.outcome} ${absoluteUrl(`/work/${study.slug}`)}`,
+    `${group}. ${study.outcome} ${absoluteUrl(`/work/${study.slug}`)}`,
     ...(metrics.length > 0 ? [`- Facts: ${metrics.join("; ")}.`] : []),
     `- Stack: ${study.stack.join(", ")}`,
     liveLine("Live", study.liveUrl, study.repoUrl, study.gated),
@@ -116,7 +120,15 @@ export function GET(): Response {
     ...SERVICES.flatMap(serviceSection),
     "## Case studies",
     "",
-    ...CASE_STUDIES.flatMap(caseStudySection),
+    ...CLIENT_STUDIES.flatMap(caseStudySection),
+    ...(PRODUCT_STUDIES.length > 0
+      ? [
+          "## Our own products",
+          "Built and run by WA AI Digital — not client work, and closed source.",
+          "",
+          ...PRODUCT_STUDIES.flatMap(caseStudySection),
+        ]
+      : []),
     "## FAQs",
     "",
     ...faqLines(GENERAL_FAQS),

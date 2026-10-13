@@ -50,7 +50,7 @@ export const GENERAL_FAQS: Faq[] = [
   {
     question: "Can I see the code before I commit?",
     answer:
-      "You can see all of it right now. Every project in our case studies links both the live site and its public GitHub repository. Read the code of a finished build before you spend anything — that's the point of publishing them.",
+      "Yes — right now. Every client build in our case studies links both the live site and its public GitHub repository, so you can read the code of a finished job before you spend anything; that's the point of publishing them. The exceptions are our own products, which are closed source and marked that way.",
   },
   {
     question: "Do you work with businesses outside Perth?",

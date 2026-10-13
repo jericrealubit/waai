@@ -6,19 +6,23 @@ import { JsonLd } from "@/components/json-ld";
 import { Section } from "@/components/ui/section";
 import { SpecCell } from "@/components/ui/spec-cell";
 import { ABOUT } from "@/lib/content/about";
-import { CASE_STUDIES } from "@/lib/content/case-studies";
+import {
+  CASE_STUDIES,
+  PUBLIC_REPO_COUNT,
+} from "@/lib/content/case-studies";
 import { breadcrumbLd } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { SITE, absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
-  description: `${ABOUT.name} builds websites and small business systems for Western Australian trades, kitchens and workshops. Every project is live and every repository is public.`,
+  description: `${ABOUT.name} builds websites and small business systems for Western Australian trades, kitchens and workshops. Every project is live and every client repository is public.`,
   path: "/about",
 });
 
 export default function AboutPage() {
   const shipped = CASE_STUDIES.length;
+  const pad = (value: number) => String(value).padStart(2, "0");
 
   return (
     <>
@@ -81,8 +85,8 @@ export default function AboutPage() {
           </div>
           <div className="px-3.5 py-3">
             <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-foreground">
-              {String(shipped).padStart(2, "0")} projects shipped · all live,
-              all source open
+              {pad(shipped)} projects shipped · all live ·{" "}
+              {pad(PUBLIC_REPO_COUNT)} public repos
             </span>
           </div>
         </div>
